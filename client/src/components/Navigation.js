@@ -311,6 +311,9 @@ function Navigation() {
           <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
             Sitzungsablauf
           </NavLink>
+          <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
+            Programm bearbeiten
+          </NavLink>
         </NavLinks>
 
         <HamburgerButton onClick={handleMobileMenuToggle}>
@@ -374,6 +377,9 @@ function Navigation() {
         </MobileNavLink>
         <MobileNavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')} onClick={handleMobileLinkClick}>
           📱 Sitzungsablauf
+        </MobileNavLink>
+        <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
+          🛠️ Programm bearbeiten
         </MobileNavLink>
       </MobileNavLinks>
     </NavContainer>

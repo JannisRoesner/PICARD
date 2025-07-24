@@ -11,6 +11,7 @@ import TechnikerView from './components/TechnikerView';
 import ProgrammpunktEditor from './components/ProgrammpunktEditor';
 import Sitzungsablauf from './components/Sitzungsablauf';
 import Navigation from './components/Navigation';
+import ProgrammBearbeiten from './components/ProgrammBearbeiten';
 
 // Context
 import { SocketContext } from './context/SocketContext';
@@ -148,6 +149,7 @@ function App() {
                   <Route path="/moderator" element={<ModeratorView />} />
                   <Route path="/techniker" element={<TechnikerView />} />
                   <Route path="/editor" element={<ProgrammpunktEditor />} />
+                  <Route path="/programm-bearbeiten" element={<ProgrammBearbeiten />} />
                   <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
