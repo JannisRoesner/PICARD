@@ -118,6 +118,9 @@ app.post('/api/sitzung/:id/programmpunkt', (req, res) => {
     audioDateien: req.body.audioDateien || [],
     lichtStimmung: req.body.lichtStimmung || 'Standard',
     dauer: req.body.dauer || 0,
+    // NEU: Cues speichern
+    audioCues: req.body.audioCues || [],
+    lightCues: req.body.lightCues || [],
     erstellt: new Date().toISOString()
   };
 

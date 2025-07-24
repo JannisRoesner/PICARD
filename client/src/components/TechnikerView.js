@@ -371,13 +371,20 @@ function TechnikerView() {
     };
   }, [socket, aktiveSitzung]);
 
+  useEffect(() => {
+    if (sitzung && sitzung.programmpunkte.length > 0 && !selectedProgrammpunkt) {
+      setSelectedProgrammpunkt(sitzung.programmpunkte[0]);
+    }
+  }, [sitzung, selectedProgrammpunkt]);
+
   const loadSitzung = async () => {
     try {
       const response = await axios.get(`/api/sitzung/${aktiveSitzung}`);
       setSitzung(response.data);
-      if (response.data.programmpunkte.length > 0) {
-        setSelectedProgrammpunkt(response.data.programmpunkte[0]);
-      }
+      // Nur beim initialen Laden setzen, nicht bei jedem Update
+      // if (response.data.programmpunkte.length > 0) {
+      //   setSelectedProgrammpunkt(response.data.programmpunkte[0]);
+      // }
     } catch (error) {
       console.error('Fehler beim Laden der Sitzung:', error);
     }
@@ -404,6 +411,23 @@ function TechnikerView() {
       { time: formatDuration((programmpunkt.dauer || 0) - 15), description: 'Auszug-Licht vorbereiten' }
     ]);
   };
+
+  // NEU: Immer wenn selectedProgrammpunkt sich ändert, Cues laden
+  useEffect(() => {
+    if (selectedProgrammpunkt) {
+      setAudioCues(selectedProgrammpunkt.audioCues || [
+        { time: '00:00', description: 'Einzug starten' },
+        { time: '00:30', description: 'Hauptmusik starten' },
+        { time: formatDuration((selectedProgrammpunkt.dauer || 0) - 30), description: 'Auszug vorbereiten' }
+      ]);
+      setLightCues(selectedProgrammpunkt.lightCues || [
+        { time: '00:00', description: 'Einzug-Licht aktivieren' },
+        { time: '00:05', description: 'Hauptlicht auf 80%' },
+        { time: '00:45', description: 'Spotlight auf Hauptperson' },
+        { time: formatDuration((selectedProgrammpunkt.dauer || 0) - 15), description: 'Auszug-Licht vorbereiten' }
+      ]);
+    }
+  }, [selectedProgrammpunkt]);
 
   // Automatisches Speichern der Cues (debounced)
   useEffect(() => {

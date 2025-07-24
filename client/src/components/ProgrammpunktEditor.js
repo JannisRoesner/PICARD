@@ -405,7 +405,9 @@ function ProgrammpunktEditor() {
       const programmpunktData = {
         ...formData,
         namensliste: namensListe,
-        dauer: parseInt(formData.dauer) || 0
+        dauer: parseInt(formData.dauer) || 0,
+        audioCues: [],
+        lightCues: []
       };
 
       await axios.post(`/api/sitzung/${aktiveSitzung}/programmpunkt`, programmpunktData);
