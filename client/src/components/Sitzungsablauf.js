@@ -49,9 +49,11 @@ const ProgramItem = styled.div`
   }};
   border-radius: 8px;
   padding: 15px;
+  padding-bottom: 50px; // Platz für Button unten
   position: relative;
   transition: all 0.2s ease;
   animation: ${props => props.isActive ? 'blink 1s infinite' : 'none'};
+  color: ${props => props.isActive ? '#181818' : '#fff'};
 
   @keyframes blink {
     0%, 50% { opacity: 1; }
@@ -64,7 +66,7 @@ const ProgramNumber = styled.div`
   top: -8px;
   left: 15px;
   background: ${props => props.theme?.colors?.primary || '#fbbf24'};
-  color: white;
+  color: #181818;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -80,42 +82,42 @@ const ProgramContent = styled.div`
 `;
 
 const ProgramName = styled.div`
-  color: #fff;
+  color: ${props => props.isActive ? '#181818' : '#fff'};
   font-weight: bold;
   font-size: 1.1rem;
   margin-bottom: 5px;
 `;
 
 const ProgramType = styled.div`
-  color: #ccc;
+  color: ${props => props.isActive ? '#181818' : '#ccc'};
   font-size: 0.9rem;
   margin-bottom: 5px;
 `;
 
 const ProgramDuration = styled.div`
-  color: #888;
+  color: ${props => props.isActive ? '#181818' : '#888'};
   font-size: 0.8rem;
 `;
 
 const AddButton = styled.button`
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: ${props => props.theme?.colors?.primary || '#fbbf24'};
-  color: white;
+  color: #181818;
   border: none;
-  font-size: 2rem;
+  font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '30' : 'rgba(251,191,36,0.3)')};
+  box-shadow: 0 2px 6px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '30' : 'rgba(251,191,36,0.3)')};
   transition: all 0.2s ease;
-  z-index: 1000;
+  z-index: 10;
 
   &:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 16px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.4)')};
+    box-shadow: 0 4px 12px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.4)')};
   }
 `;
 
@@ -458,20 +460,12 @@ function Sitzungsablauf() {
           >
             <ProgramNumber>{programmpunkt.nummer}</ProgramNumber>
             <ProgramContent>
-              <ProgramName>{programmpunkt.name}</ProgramName>
-              <ProgramType>{programmpunkt.typ}</ProgramType>
-              <ProgramDuration>{formatDuration(programmpunkt.dauer)}</ProgramDuration>
+              <ProgramName isActive={activeProgrammpunkt?.id === programmpunkt.id}>{programmpunkt.name}</ProgramName>
+              <ProgramType isActive={activeProgrammpunkt?.id === programmpunkt.id}>{programmpunkt.typ}</ProgramType>
+              <ProgramDuration isActive={activeProgrammpunkt?.id === programmpunkt.id}>{formatDuration(programmpunkt.dauer)}</ProgramDuration>
             </ProgramContent>
             <AddButton 
               onClick={() => handleAddProgrammpunkt(sitzung.programmpunkte.indexOf(programmpunkt))}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                width: '30px',
-                height: '30px',
-                fontSize: '1rem'
-              }}
             >
               +
             </AddButton>
