@@ -1,35 +1,20 @@
-# Multi-stage build für optimierte Docker-Image-Größe
-
-# Stage 1: Build der React-Anwendung
-FROM node:18-alpine AS client-builder
-
-WORKDIR /app/client
-
-# Client Dependencies installieren
-COPY client/package*.json ./
-RUN npm install --production=false
-
-# Client Source Code kopieren und builden
-COPY client/ ./
-RUN npm run build
-
-# Stage 2: Production Server
-FROM node:18-alpine AS production
+# Vereinfachte Dockerfile für bessere Kompatibilität
+FROM node:18-alpine
 
 # Installiere curl für Health Checks
 RUN apk add --no-cache curl
 
 WORKDIR /app
 
-# Server Dependencies installieren
-COPY package*.json ./
-RUN npm install --production=false
+# Alle Dateien kopieren
+COPY . .
 
-# Server Source Code kopieren
-COPY server.js ./
+# Dependencies installieren
+RUN npm install
+RUN cd client && npm install
 
-# Gebaute React-App aus Stage 1 kopieren
-COPY --from=client-builder /app/client/build ./client/build
+# React-App builden
+RUN cd client && npm run build
 
 # Port freigeben
 EXPOSE 5000

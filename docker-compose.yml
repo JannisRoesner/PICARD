@@ -3,7 +3,7 @@ services:
   sitzungsmaster:
     build:
       context: .
-      dockerfile: Dockerfile.simple
+      dockerfile: Dockerfile
     container_name: sitzungsmaster-web
     ports:
       - "5000:5000"
