@@ -671,8 +671,8 @@ function TechnikerView() {
               isActive={activeProgrammpunkt?.id === programmpunkt.id}
               onClick={() => handleProgrammpunktSelect(programmpunkt)}
             >
-              <ProgramName>{programmpunkt.nummer}</ProgramName> <ProgramType isActive={selectedProgrammpunkt?.id === programmpunkt.id}>{programmpunkt.typ}</ProgramType> <ProgramName>{programmpunkt.name}</ProgramName>
-              <ProgramDuration isActive={selectedProgrammpunkt?.id === programmpunkt.id}>{formatDuration(programmpunkt.dauer)}</ProgramDuration>
+              <ProgramName>{programmpunkt.nummer}</ProgramName> <ProgramType isActive={activeProgrammpunkt?.id === programmpunkt.id}>{programmpunkt.typ}</ProgramType> <ProgramName>{programmpunkt.name}</ProgramName>
+              <ProgramDuration isActive={activeProgrammpunkt?.id === programmpunkt.id}>{formatDuration(programmpunkt.dauer)}</ProgramDuration>
             </ProgramItem>
           ))}
         </ProgramList>

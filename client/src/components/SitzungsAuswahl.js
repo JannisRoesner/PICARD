@@ -90,7 +90,7 @@ const SitzungStats = styled.div`
 
 const CreateButton = styled.button`
   background: linear-gradient(135deg, ${props => props.theme?.colors?.primary || '#fbbf24'} 0%, #f7931e 100%);
-  color: white;
+  color: #181818;
   border: none;
   padding: 16px 32px;
   border-radius: 8px;
