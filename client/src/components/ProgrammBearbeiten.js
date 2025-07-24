@@ -3,6 +3,55 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { SitzungContext } from '../context/SitzungContext';
 
+const PageContainer = styled.div`
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 12px;
+`;
+
+const ProgrammlistePanel = styled.div`
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 18px 10px 18px 18px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ProgrammlisteTitle = styled.h3`
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+`;
+
+const Programmliste = styled.div`
+  flex: 1;
+  overflow-y: auto;
+`;
+
+const ProgrammpunktItem = styled.div`
+  padding: 10px 8px;
+  margin-bottom: 8px;
+  background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') : '#232323'};
+  color: ${props => props.active ? '#181818' : '#fff'};
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: ${props => props.active ? 'bold' : 'normal'};
+  border: 1.5px solid transparent;
+  transition: all 0.2s;
+  &:hover {
+    border: 1.5px solid ${props => props.theme?.colors?.primary || '#fbbf24'};
+    background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') : '#2d2d2d'};
+    color: #181818;
+  }
+`;
+
 const Container = styled.div`
   max-width: 600px;
   margin: 0 auto;
@@ -119,8 +168,11 @@ const Message = styled.div`
   font-weight: bold;
 `;
 
-function ProgrammBearbeiten({ programmpunkt, onSaved }) {
+function ProgrammBearbeiten() {
+  const { aktiveSitzung } = useContext(SitzungContext);
   const [typen, setTypen] = useState([]);
+  const [programmpunkte, setProgrammpunkte] = useState([]);
+  const [selected, setSelected] = useState(null); // aktuell ausgewählter Programmpunkt
   const [formData, setFormData] = useState({
     name: '',
     typ: '',
@@ -134,24 +186,29 @@ function ProgrammBearbeiten({ programmpunkt, onSaved }) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
-  const { aktiveSitzung } = useContext(SitzungContext);
 
   useEffect(() => {
     loadTypen();
-    if (programmpunkt) {
+    loadProgrammpunkte();
+  }, [aktiveSitzung]);
+
+  useEffect(() => {
+    if (selected) {
       setFormData({
-        name: programmpunkt.name || '',
-        typ: programmpunkt.typ || '',
-        dauer: programmpunkt.dauer?.toString() || '',
-        trainer: programmpunkt.trainer || '',
-        betreuer: programmpunkt.betreuer || '',
-        einzugCD: !!programmpunkt.einzugCD,
-        auszugCD: !!programmpunkt.auszugCD,
-        namensliste: programmpunkt.namensliste || [],
+        name: selected.name || '',
+        typ: selected.typ || '',
+        dauer: selected.dauer?.toString() || '',
+        trainer: selected.trainer || '',
+        betreuer: selected.betreuer || '',
+        einzugCD: !!selected.einzugCD,
+        auszugCD: !!selected.auszugCD,
+        namensliste: selected.namensliste || [],
         namensInput: ''
       });
+    } else {
+      resetForm();
     }
-  }, [programmpunkt]);
+  }, [selected]);
 
   const loadTypen = async () => {
     try {
@@ -159,6 +216,16 @@ function ProgrammBearbeiten({ programmpunkt, onSaved }) {
       setTypen(response.data);
     } catch (error) {
       setTypen(['SHOWTANZ', 'BÜTTENREDE', 'MARSCH', 'PAUSE']);
+    }
+  };
+
+  const loadProgrammpunkte = async () => {
+    if (!aktiveSitzung) return;
+    try {
+      const response = await axios.get(`/api/sitzung/${aktiveSitzung}`);
+      setProgrammpunkte(response.data.programmpunkte || []);
+    } catch (error) {
+      setProgrammpunkte([]);
     }
   };
 
@@ -200,6 +267,7 @@ function ProgrammBearbeiten({ programmpunkt, onSaved }) {
       namensliste: [],
       namensInput: ''
     });
+    setSelected(null);
     setMessage('');
   };
 
@@ -226,17 +294,15 @@ function ProgrammBearbeiten({ programmpunkt, onSaved }) {
         auszugCD: formData.auszugCD,
         namensliste: formData.namensliste
       };
-      if (programmpunkt && programmpunkt.id) {
-        // Update
-        await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${programmpunkt.id}`, payload);
+      if (selected && selected.id) {
+        await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selected.id}`, payload);
         setMessage('Programmpunkt aktualisiert!');
       } else {
-        // Neu
         await axios.post(`/api/sitzung/${aktiveSitzung}/programmpunkt`, payload);
         setMessage('Programmpunkt hinzugefügt!');
         resetForm();
       }
-      if (onSaved) onSaved();
+      await loadProgrammpunkte();
     } catch (err) {
       setMessage('Fehler beim Speichern!');
     } finally {
@@ -244,71 +310,111 @@ function ProgrammBearbeiten({ programmpunkt, onSaved }) {
     }
   };
 
+  const handleDelete = async () => {
+    if (selected && selected.id) {
+      if (window.confirm('Diesen Programmpunkt wirklich löschen?')) {
+        try {
+          await axios.delete(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selected.id}`);
+          setMessage('Programmpunkt gelöscht!');
+          await loadProgrammpunkte();
+          resetForm();
+        } catch (err) {
+          setMessage('Fehler beim Löschen!');
+        }
+      }
+    } else {
+      resetForm();
+    }
+  };
+
   return (
-    <Container>
-      <Title>Programm bearbeiten</Title>
-      {message && <Message error={message.startsWith('Fehler')}>{message}</Message>}
-      <Form onSubmit={handleSubmit}>
-        <Label>Name *</Label>
-        <Input name="name" value={formData.name} onChange={handleInputChange} required />
-
-        <Label>Typ *</Label>
-        <Select name="typ" value={formData.typ} onChange={handleInputChange} required>
-          <option value="">Typ wählen</option>
-          {typen.map(typ => <option key={typ} value={typ}>{typ}</option>)}
-        </Select>
-
-        <Label>Dauer (Sekunden)</Label>
-        <Input name="dauer" type="number" min="0" value={formData.dauer} onChange={handleInputChange} />
-
-        <Label>Trainer</Label>
-        <Input name="trainer" value={formData.trainer} onChange={handleInputChange} />
-
-        <Label>Betreuer</Label>
-        <Input name="betreuer" value={formData.betreuer} onChange={handleInputChange} />
-
-        <CheckboxRow>
-          <label>
-            <input type="checkbox" name="einzugCD" checked={formData.einzugCD} onChange={handleInputChange} /> Einzug von CD
-          </label>
-          <label>
-            <input type="checkbox" name="auszugCD" checked={formData.auszugCD} onChange={handleInputChange} /> Auszug von CD
-          </label>
-        </CheckboxRow>
-
-        <Label>Namensliste (Komma oder Semikolon getrennt)</Label>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <Input
-            name="namensInput"
-            value={formData.namensInput}
-            onChange={handleInputChange}
-            placeholder="z.B. Max, Anna; Peter"
-            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addName())}
-          />
-          <Button type="button" className="yellow" style={{ minWidth: 90 }} onClick={addName}>
-            Hinzufügen
-          </Button>
-        </div>
-        <NamensListeBox>
-          {formData.namensliste.length === 0 && <span style={{ color: '#888' }}>Keine Namen hinzugefügt</span>}
-          {formData.namensliste.map((name, idx) => (
-            <NamensItem key={idx}>
-              {name}
-              <RemoveName type="button" onClick={() => removeName(idx)}>×</RemoveName>
-            </NamensItem>
+    <PageContainer>
+      <ProgrammlistePanel>
+        <ProgrammlisteTitle>Programmablauf</ProgrammlisteTitle>
+        <Programmliste>
+          {programmpunkte.length === 0 && <div style={{ color: '#888' }}>Keine Programmpunkte vorhanden</div>}
+          {programmpunkte.map(pp => (
+            <ProgrammpunktItem
+              key={pp.id}
+              active={selected && selected.id === pp.id}
+              onClick={() => setSelected(pp)}
+            >
+              <div style={{ fontWeight: 'bold' }}>{pp.name}</div>
+              <div style={{ fontSize: '0.95em', color: '#888' }}>{pp.typ} &bull; {pp.dauer ? pp.dauer + 's' : ''}</div>
+            </ProgrammpunktItem>
           ))}
-        </NamensListeBox>
+        </Programmliste>
+        <button style={{marginTop:16, background:'#444', color:'#fff', border:'none', borderRadius:6, padding:'10px 18px', fontWeight:'bold', cursor:'pointer'}} onClick={resetForm}>
+          + Neuer Programmpunkt
+        </button>
+      </ProgrammlistePanel>
+      <div>
+        <Container>
+          <Title>Programm bearbeiten</Title>
+          {message && <Message error={message.startsWith('Fehler')}>{message}</Message>}
+          <Form onSubmit={handleSubmit}>
+            <Label>Name *</Label>
+            <Input name="name" value={formData.name} onChange={handleInputChange} required />
 
-        <ButtonRow>
-          <Button type="button" className="gray" onClick={resetForm}>
-            Formular leeren
-          </Button>
-          <Button type="submit" className="yellow" disabled={isSubmitting}>
-            {programmpunkt ? 'Änderungen speichern' : 'Programmpunkt hinzufügen'}
-          </Button>
-        </ButtonRow>
-      </Form>
-    </Container>
+            <Label>Typ *</Label>
+            <Select name="typ" value={formData.typ} onChange={handleInputChange} required>
+              <option value="">Typ wählen</option>
+              {typen.map(typ => <option key={typ} value={typ}>{typ}</option>)}
+            </Select>
+
+            <Label>Dauer (Sekunden)</Label>
+            <Input name="dauer" type="number" min="0" value={formData.dauer} onChange={handleInputChange} />
+
+            <Label>Trainer</Label>
+            <Input name="trainer" value={formData.trainer} onChange={handleInputChange} />
+
+            <Label>Betreuer</Label>
+            <Input name="betreuer" value={formData.betreuer} onChange={handleInputChange} />
+
+            <CheckboxRow>
+              <label>
+                <input type="checkbox" name="einzugCD" checked={formData.einzugCD} onChange={handleInputChange} /> Einzug von CD
+              </label>
+              <label>
+                <input type="checkbox" name="auszugCD" checked={formData.auszugCD} onChange={handleInputChange} /> Auszug von CD
+              </label>
+            </CheckboxRow>
+
+            <Label>Namensliste (Komma oder Semikolon getrennt)</Label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Input
+                name="namensInput"
+                value={formData.namensInput}
+                onChange={handleInputChange}
+                placeholder="z.B. Max, Anna; Peter"
+                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addName())}
+              />
+              <Button type="button" className="yellow" style={{ minWidth: 90 }} onClick={addName}>
+                Hinzufügen
+              </Button>
+            </div>
+            <NamensListeBox>
+              {formData.namensliste.length === 0 && <span style={{ color: '#888' }}>Keine Namen hinzugefügt</span>}
+              {formData.namensliste.map((name, idx) => (
+                <NamensItem key={idx}>
+                  {name}
+                  <RemoveName type="button" onClick={() => removeName(idx)}>×</RemoveName>
+                </NamensItem>
+              ))}
+            </NamensListeBox>
+
+            <ButtonRow>
+              <Button type="button" className="gray" onClick={handleDelete}>
+                Löschen
+              </Button>
+              <Button type="submit" className="yellow" disabled={isSubmitting}>
+                Änderungen speichern
+              </Button>
+            </ButtonRow>
+          </Form>
+        </Container>
+      </div>
+    </PageContainer>
   );
 }
 
