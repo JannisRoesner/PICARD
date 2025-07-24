@@ -189,12 +189,6 @@ docker build -t sitzungsmaster-web .
 docker run -p 5000:5000 sitzungsmaster-web
 ```
 
-#### Docker Compose Services
-- **sitzungsmaster**: Hauptanwendung mit React-Frontend und Express-Backend
-- **Port**: 5000 (http://localhost:5000)
-- **Health Check**: Automatische Überprüfung der Anwendung
-- **Restart Policy**: Automatischer Neustart bei Fehlern
-
 ## 📝 Changelog
 
 ### Version 1.0.0
@@ -205,13 +199,6 @@ docker run -p 5000:5000 sitzungsmaster-web
 - Echtzeit-Updates
 - Responsive Design
 
-## 🤝 Beitragen
-
-1. Fork das Repository
-2. Erstellen Sie einen Feature-Branch (`git checkout -b feature/AmazingFeature`)
-3. Committen Sie Ihre Änderungen (`git commit -m 'Add some AmazingFeature'`)
-4. Pushen Sie zum Branch (`git push origin feature/AmazingFeature`)
-5. Öffnen Sie einen Pull Request
 
 ## 📄 Lizenz
 
