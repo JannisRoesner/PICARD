@@ -552,6 +552,12 @@ function TechnikerView() {
             {selectedProgrammpunkt?.einzugCD ? 'CD' : 'Kapelle'}
           </StatusValue>
         </StatusItem>
+        <StatusItem>
+          <StatusLabel>Auszug:</StatusLabel>
+          <StatusValue type="auszug">
+            {selectedProgrammpunkt?.auszugCD ? 'CD' : 'Kapelle'}
+          </StatusValue>
+        </StatusItem>
         {activeProgrammpunkt && timerState.isRunning && (
           <StatusItem>
             <ModeratorTimerContainer>
