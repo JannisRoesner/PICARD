@@ -445,8 +445,8 @@ function Sitzungsablauf() {
   return (
     <Container>
       <Header>
-        <Title>📱 Sitzungsablauf</Title>
-        <Subtitle>Programmpunkte anzeigen und hinzufügen</Subtitle>
+        <Title>Sitzungsablauf</Title>
+        {/* Untertitel und Icon entfernt */}
       </Header>
 
       <ProgramList>
@@ -477,26 +477,6 @@ function Sitzungsablauf() {
             </AddButton>
           </ProgramItem>
         ))}
-        
-        {/* Button am Ende der Liste */}
-        <ProgramItem style={{ borderStyle: 'dashed', borderColor: '#666' }}>
-          <ProgramContent style={{ textAlign: 'center', padding: '20px' }}>
-            <ProgramName style={{ color: '#888' }}>Programmpunkt hinzufügen</ProgramName>
-          </ProgramContent>
-          <AddButton 
-            onClick={() => handleAddProgrammpunkt(sitzung.programmpunkte.length)}
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              width: '30px',
-              height: '30px',
-              fontSize: '1rem'
-            }}
-          >
-            +
-          </AddButton>
-        </ProgramItem>
       </ProgramList>
 
       {showModal && (
