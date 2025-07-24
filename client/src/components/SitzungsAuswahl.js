@@ -20,7 +20,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme?.colors?.primary || '#ff6b35'};
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin-bottom: 10px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 `;
@@ -40,7 +40,7 @@ const Grid = styled.div`
 
 const SitzungCard = styled.div`
   background: ${props => props.theme?.gradients?.card || 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)'};
-  border: 2px solid ${props => props.active ? (props.theme?.colors?.primary || '#ff6b35') : (props.theme?.colors?.border || '#333')};
+  border: 2px solid ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') : (props.theme?.colors?.border || '#333')};
   border-radius: 12px;
   padding: 24px;
   cursor: pointer;
@@ -49,8 +49,8 @@ const SitzungCard = styled.div`
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px ${props => props.theme?.colors?.primary || '#ff6b35'}20;
-    border-color: ${props => props.theme?.colors?.primary || '#ff6b35'};
+    box-shadow: 0 8px 25px ${props => props.theme?.colors?.primary || '#fbbf24'}20;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -89,7 +89,7 @@ const SitzungStats = styled.div`
 `;
 
 const CreateButton = styled.button`
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  background: linear-gradient(135deg, ${props => props.theme?.colors?.primary || '#fbbf24'} 0%, #f7931e 100%);
   color: white;
   border: none;
   padding: 16px 32px;
@@ -105,7 +105,7 @@ const CreateButton = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 6px 20px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '30' : 'rgba(251,191,36,0.3)')};
   }
 `;
 
@@ -129,7 +129,7 @@ const ErrorMessage = styled.div`
 `;
 
 const RetryButton = styled.button`
-  background: #ff6b35;
+  background: ${props => props.theme?.colors?.primary || '#fbbf24'};
   color: white;
   border: none;
   padding: 8px 16px;
@@ -139,7 +139,7 @@ const RetryButton = styled.button`
   margin-top: 10px;
 
   &:hover {
-    background: #e55a2b;
+    background: ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + 'cc' : '#fbbf24cc')};
   }
 `;
 
@@ -166,7 +166,7 @@ const ModalContent = styled.div`
 `;
 
 const ModalTitle = styled.h2`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin-bottom: 20px;
   text-align: center;
 `;
@@ -183,7 +183,7 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -202,11 +202,11 @@ const Button = styled.button`
   transition: all 0.2s ease;
 
   &.primary {
-    background: ${props => props.theme?.colors?.primary || '#ff6b35'};
+    background: ${props => props.theme?.colors?.primary || '#fbbf24'};
     color: white;
 
     &:hover {
-      background: ${props => props.theme?.colors?.primary || '#ff6b35'}dd;
+      background: ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + 'cc' : '#fbbf24cc')};
     }
   }
 

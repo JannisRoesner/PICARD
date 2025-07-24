@@ -16,7 +16,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin-bottom: 10px;
   font-size: 2rem;
 `;
@@ -65,7 +65,7 @@ const FormInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -81,7 +81,7 @@ const FormSelect = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -98,7 +98,7 @@ const FormTextarea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -139,7 +139,7 @@ const NamensInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -209,11 +209,11 @@ const Button = styled.button`
   transition: all 0.2s ease;
 
   &.primary {
-    background: #ff6b35;
+    background: ${props => props.theme?.colors?.primary || '#fbbf24'};
     color: white;
 
     &:hover {
-      background: #e55a2b;
+      background: ${props => props.theme?.colors?.primary || '#fbbf24'}cc;
       transform: translateY(-2px);
     }
   }
@@ -279,8 +279,8 @@ const QuickActionButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: #ff6b35;
-    border-color: #ff6b35;
+    background: ${props => props.theme?.colors?.primary || '#fbbf24'};
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 

@@ -20,7 +20,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin-bottom: 5px;
   font-size: 1.5rem;
 `;
@@ -38,12 +38,12 @@ const ProgramList = styled.div`
 
 const ProgramItem = styled.div`
   background: ${props => {
-    if (props.isActive) return '#ff6b35';
+    if (props.isActive) return props.theme?.colors?.primary || '#fbbf24';
     if (props.active) return '#2d2d2d';
     return '#1a1a1a';
   }};
   border: 2px solid ${props => {
-    if (props.isActive) return '#ff6b35';
+    if (props.isActive) return props.theme?.colors?.primary || '#fbbf24';
     if (props.active) return '#666';
     return '#333';
   }};
@@ -63,7 +63,7 @@ const ProgramNumber = styled.div`
   position: absolute;
   top: -8px;
   left: 15px;
-  background: #ff6b35;
+  background: ${props => props.theme?.colors?.primary || '#fbbf24'};
   color: white;
   width: 24px;
   height: 24px;
@@ -104,18 +104,18 @@ const AddButton = styled.button`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #ff6b35;
+  background: ${props => props.theme?.colors?.primary || '#fbbf24'};
   color: white;
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4px 12px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '30' : 'rgba(251,191,36,0.3)')};
   transition: all 0.2s ease;
   z-index: 1000;
 
   &:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+    box-shadow: 0 6px 16px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.4)')};
   }
 `;
 
@@ -145,7 +145,7 @@ const ModalContent = styled.div`
 `;
 
 const ModalTitle = styled.h2`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin-bottom: 15px;
   text-align: center;
   font-size: 1.3rem;
@@ -171,7 +171,7 @@ const FormInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -189,7 +189,7 @@ const FormTextarea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -209,11 +209,11 @@ const Button = styled.button`
   transition: all 0.2s ease;
 
   &.primary {
-    background: #ff6b35;
+    background: ${props => props.theme?.colors?.primary || '#fbbf24'};
     color: white;
 
     &:hover {
-      background: #e55a2b;
+      background: ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + 'cc' : '#fbbf24cc')};
     }
   }
 

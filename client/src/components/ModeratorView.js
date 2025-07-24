@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
@@ -61,7 +61,7 @@ const Panel = styled.div`
 `;
 
 const PanelTitle = styled.h3`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin: 0 0 16px 0;
   font-size: 1.2rem;
   border-bottom: 1px solid #333;
@@ -76,7 +76,7 @@ const ProgramList = styled.div`
 const ProgramItem = styled.div`
   padding: 12px;
   margin-bottom: 8px;
-  background: ${props => props.active ? '#ff6b35' : '#2d2d2d'};
+  background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') : '#2d2d2d'};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -84,7 +84,7 @@ const ProgramItem = styled.div`
   font-weight: ${props => props.active ? 'bold' : 'normal'};
 
   &:hover {
-    background: ${props => props.active ? '#e55a2b' : '#3d3d3d'};
+    background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') + 'cc' : '#3d3d3d'};
   }
 `;
 
@@ -102,8 +102,8 @@ const TextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
-    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.25);
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
+    box-shadow: 0 0 0 2px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.25)')};
   }
 
   &:hover {
@@ -143,7 +143,7 @@ const TimerSection = styled.div`
 `;
 
 const TimerTitle = styled.h3`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin-bottom: 12px;
   font-size: 1.1rem;
 `;
@@ -197,7 +197,7 @@ const DurationInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -251,10 +251,10 @@ const ModeratorTimerContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 107, 53, 0.1);
+  background: ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '20' : 'rgba(251,191,36,0.1)')};
   padding: 4px 8px;
   border-radius: 4px;
-  border: 1px solid rgba(255, 107, 53, 0.3);
+  border: 1px solid ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '50' : 'rgba(251,191,36,0.3)')};
 `;
 
 const ModeratorTimerDisplay = styled.div`
@@ -293,6 +293,8 @@ function ModeratorView() {
     abmoderation: ''
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(''); // '' | 'saving' | 'saved' | 'error'
+  const saveTimeout = useRef(null);
   const { aktiveSitzung } = useContext(SitzungContext);
   const socket = useContext(SocketContext);
   const { 
@@ -366,11 +368,16 @@ function ModeratorView() {
       ...prev,
       [field]: value
     }));
+    // Automatisches Speichern nach kurzer Verzögerung
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    setSaveStatus('saving');
+    saveTimeout.current = setTimeout(() => {
+      autoSaveTexts();
+    }, 1000); // 1 Sekunde nach letzter Eingabe
   };
 
-  const handleSaveTexts = async () => {
+  const autoSaveTexts = async () => {
     if (!selectedProgrammpunkt) return;
-
     setIsSaving(true);
     try {
       await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selectedProgrammpunkt.id}`, {
@@ -378,7 +385,11 @@ function ModeratorView() {
         notizen: editingTexts.notizen,
         abmoderation: editingTexts.abmoderation
       });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(''), 1200);
     } catch (error) {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus(''), 2000);
       console.error('Fehler beim Speichern:', error);
     } finally {
       setIsSaving(false);
@@ -520,9 +531,16 @@ function ModeratorView() {
           />
         </Panel>
 
-        <SaveButton onClick={handleSaveTexts} disabled={isSaving}>
-          {isSaving ? 'Speichern...' : 'Änderungen speichern'}
-        </SaveButton>
+        {/* Statusanzeige für automatisches Speichern */}
+        {saveStatus === 'saving' && (
+          <div style={{ color: '#888', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Speichern...</div>
+        )}
+        {saveStatus === 'saved' && (
+          <div style={{ color: '#28a745', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Gespeichert</div>
+        )}
+        {saveStatus === 'error' && (
+          <div style={{ color: '#dc3545', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Fehler beim Speichern</div>
+        )}
       </div>
 
       {/* Rechts - Namensliste, Trainer, Betreuer */}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
@@ -60,7 +60,7 @@ const Panel = styled.div`
 `;
 
 const PanelTitle = styled.h3`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin: 0 0 16px 0;
   font-size: 1.2rem;
   border-bottom: 1px solid #333;
@@ -76,12 +76,12 @@ const ProgramItem = styled.div`
   padding: 12px;
   margin-bottom: 8px;
   background: ${props => {
-    if (props.isActive) return '#ff6b35';
+    if (props.isActive) return props.theme?.colors?.primary || '#fbbf24';
     if (props.active) return '#2d2d2d';
     return '#1a1a1a';
   }};
   border: 2px solid ${props => {
-    if (props.isActive) return '#ff6b35';
+    if (props.isActive) return props.theme?.colors?.primary || '#fbbf24';
     if (props.active) return '#666';
     return '#333';
   }};
@@ -94,7 +94,7 @@ const ProgramItem = styled.div`
 
   &:hover {
     background: ${props => {
-      if (props.isActive) return '#ff6b35';
+      if (props.isActive) return (props.theme?.colors?.primary || '#fbbf24') + 'cc';
       if (props.active) return '#3d3d3d';
       return '#2d2d2d';
     }};
@@ -128,7 +128,7 @@ const TechCard = styled.div`
 `;
 
 const TechCardTitle = styled.h4`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   margin: 0 0 12px 0;
   font-size: 1.1rem;
 `;
@@ -199,10 +199,10 @@ const ModeratorTimerContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 107, 53, 0.1);
+  background: ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '20' : 'rgba(251,191,36,0.1)')};
   padding: 4px 8px;
   border-radius: 4px;
-  border: 1px solid rgba(255, 107, 53, 0.3);
+  border: 1px solid ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '50' : 'rgba(251,191,36,0.3)')};
 `;
 
 const ModeratorTimerDisplay = styled.div`
@@ -251,7 +251,7 @@ const CueItem = styled.div`
 `;
 
 const CueTime = styled.div`
-  color: #ff6b35;
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   font-weight: bold;
   font-size: 0.9rem;
   margin-bottom: 4px;
@@ -282,7 +282,7 @@ const CueInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -299,7 +299,7 @@ const CueTextarea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
   }
 `;
 
@@ -341,6 +341,8 @@ function TechnikerView() {
     getProgressPercentage, 
     getTimerColor 
   } = useTimer();
+  const [saveStatus, setSaveStatus] = useState(''); // '' | 'saving' | 'saved' | 'error'
+  const saveTimeout = useRef(null);
 
   useEffect(() => {
     if (aktiveSitzung) {
@@ -387,20 +389,47 @@ function TechnikerView() {
     }
   };
 
+  // Lade Cues aus dem Programmpunkt (falls vorhanden), sonst Standardwerte
   const handleProgrammpunktSelect = (programmpunkt) => {
     setSelectedProgrammpunkt(programmpunkt);
-    // Standard-Cues laden
-    setAudioCues([
+    setAudioCues(programmpunkt.audioCues || [
       { time: '00:00', description: 'Einzug starten' },
       { time: '00:30', description: 'Hauptmusik starten' },
       { time: formatDuration((programmpunkt.dauer || 0) - 30), description: 'Auszug vorbereiten' }
     ]);
-    setLightCues([
+    setLightCues(programmpunkt.lightCues || [
       { time: '00:00', description: 'Einzug-Licht aktivieren' },
       { time: '00:05', description: 'Hauptlicht auf 80%' },
       { time: '00:45', description: 'Spotlight auf Hauptperson' },
       { time: formatDuration((programmpunkt.dauer || 0) - 15), description: 'Auszug-Licht vorbereiten' }
     ]);
+  };
+
+  // Automatisches Speichern der Cues (debounced)
+  useEffect(() => {
+    if (!selectedProgrammpunkt) return;
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    setSaveStatus('saving');
+    saveTimeout.current = setTimeout(() => {
+      autoSaveCues();
+    }, 1000);
+    // eslint-disable-next-line
+  }, [audioCues, lightCues, selectedProgrammpunkt?.id]);
+
+  const autoSaveCues = async () => {
+    if (!selectedProgrammpunkt) return;
+    try {
+      await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selectedProgrammpunkt.id}`, {
+        audioCues,
+        lightCues
+      });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(''), 1200);
+    } catch (error) {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus(''), 2000);
+      console.error('Fehler beim Speichern der Cues:', error);
+    }
   };
 
   const addCue = (type) => {
@@ -591,6 +620,16 @@ function TechnikerView() {
                   + Audio-Cue hinzufügen
                 </CueButton>
               </CueList>
+              {/* Statusanzeige für automatisches Speichern */}
+              {saveStatus === 'saving' && (
+                <div style={{ color: '#888', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Speichern...</div>
+              )}
+              {saveStatus === 'saved' && (
+                <div style={{ color: '#28a745', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Gespeichert</div>
+              )}
+              {saveStatus === 'error' && (
+                <div style={{ color: '#dc3545', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Fehler beim Speichern</div>
+              )}
             </TechCard>
           </TechSection>
 
@@ -631,6 +670,16 @@ function TechnikerView() {
                   + Licht-Cue hinzufügen
                 </CueButton>
               </CueList>
+              {/* Statusanzeige für automatisches Speichern */}
+              {saveStatus === 'saving' && (
+                <div style={{ color: '#888', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Speichern...</div>
+              )}
+              {saveStatus === 'saved' && (
+                <div style={{ color: '#28a745', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Gespeichert</div>
+              )}
+              {saveStatus === 'error' && (
+                <div style={{ color: '#dc3545', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Fehler beim Speichern</div>
+              )}
             </TechCard>
           </TechSection>
         </TechInfoGrid>
