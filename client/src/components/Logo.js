@@ -7,6 +7,7 @@ const LogoContainer = styled.div`
   align-items: center;
   gap: 12px;
   font-family: ${props => props.theme.fonts.primary};
+  min-width: 320px; // sorgt für mehr Platz für den Slogan
 `;
 
 const LogoImage = styled.img`

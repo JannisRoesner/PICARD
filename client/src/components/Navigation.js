@@ -330,10 +330,8 @@ function Navigation() {
             </span>
           </SessionInfo>
 
-
-
-          {aktiveSitzung && (
-            <ActionButtons>
+          <ActionButtons>
+            {aktiveSitzung && (
               <ActionButton 
                 variant="export" 
                 onClick={exportSitzung}
@@ -342,15 +340,15 @@ function Navigation() {
               >
                 {exporting ? '...' : '💾'}
               </ActionButton>
-              <ActionButton 
-                variant="import" 
-                onClick={() => fileInputRef.current?.click()}
-                title="Sitzung importieren"
-              >
-                📂
-              </ActionButton>
-            </ActionButtons>
-          )}
+            )}
+            <ActionButton 
+              variant="import" 
+              onClick={() => fileInputRef.current?.click()}
+              title="Sitzung importieren"
+            >
+              📂
+            </ActionButton>
+          </ActionButtons>
 
           <input
             ref={fileInputRef}
