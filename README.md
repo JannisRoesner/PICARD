@@ -9,7 +9,7 @@ Eine moderne Webanwendung für digitale Moderationskarten bei Karnevalssitzungen
 - **Anmoderation**: Direkte Bearbeitung der Anmoderation (oben Mitte)
 - **Notizen**: Bearbeitbare Notizen (Mitte)
 - **Abmoderation**: Direkte Bearbeitung der Abmoderation (unten Mitte)
-- **Namensliste**: Personen die auftreten (rechts)
+- **Namensliste**: Personen, die auftreten (rechts)
 - **Statusleiste**: Aktiver Programmpunkt, Einzug/Auszug (CD/Kapelle)
 - **Trainer/Betreuer**: Zuständige Personen (rechts unten)
 - **Live-Bearbeitung**: Texte können während der Sitzung angepasst werden
@@ -52,15 +52,22 @@ Eine moderne Webanwendung für digitale Moderationskarten bei Karnevalssitzungen
 - **Multi-User**: Mehrere Benutzer können gleichzeitig arbeiten
 - **Aktive Sitzung**: Zentrale Verwaltung der aktiven Sitzung
 
-## 🚀 Installation
+## 🗄️ Datenhaltung
 
-### Option 1: Docker (Empfohlen)
+**Wichtig:** Aktuell werden alle Daten ausschließlich im Arbeitsspeicher (In-Memory) des Servers gehalten. Das bedeutet:
+- **Daten gehen beim Neustart des Servers verloren!**
+- Es ist keine externe Datenbank angebunden.
+- Für produktive Nutzung oder dauerhafte Speicherung sollte eine echte Datenbank (z.B. MongoDB oder PostgreSQL) ergänzt werden.
+
+## 🚀 Installation & Betrieb
+
+### Option 1: Docker (empfohlen)
 
 #### Voraussetzungen
 - Docker Desktop für Windows installiert
 - Docker Compose verfügbar
 
-#### Schnellstart mit Docker
+#### Schnellstart
 ```bash
 # Container starten
 docker-compose up -d
@@ -69,41 +76,8 @@ docker-compose up -d
 # http://localhost:5000
 ```
 
-#### Docker Management Script (Windows)
+#### Wichtige Docker-Befehle
 ```bash
-# Verwenden Sie das mitgelieferte Script
-docker-run.bat
-```
-
-#### Manuelle Docker-Befehle
-```bash
-# Container starten
-docker-compose up -d
-
-# Container stoppen
-docker-compose down
-
-# Logs anzeigen
-docker-compose logs -f
-
-# Container neu starten
-docker-compose restart
-
-# Container und Images löschen
-docker-compose down --rmi all --volumes
-```
-
-#### Docker Management Script (Windows)
-```bash
-# Verwenden Sie das mitgelieferte Script
-docker-run.bat
-```
-
-#### Manuelle Docker-Befehle
-```bash
-# Container starten
-docker-compose up -d
-
 # Container stoppen
 docker-compose down
 
@@ -122,12 +96,6 @@ docker-compose down --rmi all --volumes
 #### Voraussetzungen
 - Node.js (Version 14 oder höher)
 - npm oder yarn
-
-#### Automatisches Setup (Windows)
-```bash
-# Verwenden Sie das Build-Script
-build-frontend.bat
-```
 
 #### Manuelles Setup
 ```bash
@@ -154,49 +122,22 @@ cd client
 npm start
 ```
 
-**Hinweis**: Im Entwicklungsmodus läuft das Frontend auf `http://localhost:3000` und das Backend auf `http://localhost:5000`. Der React Development Server leitet API-Aufrufe automatisch an das Backend weiter.
 
-#### Vollständige Installation
-```bash
-# Alle Dependencies installieren
-npm install
-npm run install-client
-
-# Entwicklungsserver starten
-npm run dev
-```
 
 ## 📱 Verwendung
 
-### 1. Sitzung erstellen
-- Öffnen Sie die Anwendung im Browser
-- Klicken Sie auf "Neue Sitzung erstellen"
-- Geben Sie einen Namen für die Sitzung ein
-
-### 2. Sitzung aktivieren
-- Wählen Sie eine Sitzung aus der Liste aus
-- Die Sitzung wird automatisch aktiviert
-
-### 3. Moderator-Ansicht
-- Navigieren Sie zur "Moderator"-Ansicht
-- Wählen Sie einen Programmpunkt aus der linken Liste
-- Alle Informationen werden in Echtzeit angezeigt
-
-### 4. Techniker-Ansicht
-- Navigieren Sie zur "Techniker"-Ansicht
-- Technische Details werden für den ausgewählten Programmpunkt angezeigt
-
-### 5. Mobile Eingabe
-- Öffnen Sie die "Mobile Input"-Ansicht auf einem Smartphone
-- Füllen Sie das Formular aus
-- Der neue Programmpunkt wird sofort allen Ansichten hinzugefügt
+1. Anwendung im Browser öffnen (`http://localhost:5000`)
+2. "Neue Sitzung erstellen" klicken und Namen vergeben
+3. Sitzung aktivieren und Programmpunkte verwalten
+4. Moderator- oder Techniker-Ansicht nutzen
+5. Mobile Ansicht für schnelle Eingaben verwenden
 
 ## 🏗️ Architektur
 
 ### Backend (Node.js/Express)
 - **Express.js**: Web-Framework
 - **Socket.IO**: Echtzeit-Kommunikation
-- **In-Memory Storage**: Für Entwicklung (kann durch echte DB ersetzt werden)
+- **In-Memory Storage**: Für Entwicklung (Datenverlust bei Neustart)
 
 ### Frontend (React)
 - **React 18**: UI-Framework
@@ -218,7 +159,6 @@ npm run dev
 
 ## 🎨 Design
 
-Das Design orientiert sich am ursprünglichen Java-Programm:
 - **Dunkles Theme**: Schwarzer Hintergrund für bessere Lesbarkeit
 - **Farbkodierung**: Verschiedene Farben für verschiedene Informationstypen
 - **Responsive**: Funktioniert auf Desktop und Mobile
@@ -238,15 +178,6 @@ NODE_ENV=development         # Umgebung (development/production)
 - **Styling**: Über `styled-components` in den jeweiligen Komponenten
 
 ## 🚀 Deployment
-
-### Heroku
-```bash
-# Heroku-App erstellen
-heroku create sitzungsmaster-web
-
-# Deploy
-git push heroku main
-```
 
 ### Docker
 ```bash
@@ -284,15 +215,6 @@ docker run -p 5000:5000 sitzungsmaster-web
 
 ## 📄 Lizenz
 
-Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe [LICENSE](LICENSE) Datei für Details.
+Dieses Projekt ist unter der MIT-Lizenz lizenziert.
 
-## 👨‍💻 Autor
 
-**Jannis Rösner** - *Ursprünglicher Java-Entwickler*
-- Web-Implementierung basierend auf dem ursprünglichen Java-Programm
-
-## 🙏 Danksagungen
-
-- Basierend auf dem ursprünglichen Java-Programm "Sitzungsmaster"
-- Inspiriert von der Notwendigkeit für moderne Web-Technologien
-- Unterstützt durch die Karnevals-Community 
