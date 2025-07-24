@@ -1,0 +1,185 @@
+{
+  "name": "Karnevalssitzung 2024 - Beispiel",
+  "programmpunkte": [
+    {
+      "nummer": 1,
+      "name": "Eröffnungsmarsch",
+      "typ": "MARSCH",
+      "einzugCD": true,
+      "auszugCD": true,
+      "trainer": "Max Mustermann",
+      "betreuer": "Anna Schmidt",
+      "namensliste": [
+        "Tanzgruppe Rot",
+        "Tanzgruppe Blau",
+        "Tanzgruppe Grün"
+      ],
+      "anmoderation": "Meine Damen und Herren, willkommen zur Karnevalssitzung 2024! Den Auftakt macht unser traditioneller Eröffnungsmarsch mit allen Tanzgruppen.",
+      "abmoderation": "Ein wunderbarer Auftakt! Vielen Dank an alle Tanzgruppen für diesen schwungvollen Eröffnungsmarsch.",
+      "notizen": "Alle Tanzgruppen sind pünktlich um 19:30 Uhr bereit. Mikrofone für Anmoderation testen.",
+      "audioDateien": [
+        {
+          "name": "eröffnungsmarsch.mp3",
+          "duration": 180
+        }
+      ],
+      "lichtStimmung": "Festlich",
+      "dauer": 180
+    },
+    {
+      "nummer": 2,
+      "name": "Büttenrede - Der Bürgermeister",
+      "typ": "BÜTTENREDE",
+      "einzugCD": false,
+      "auszugCD": false,
+      "trainer": "",
+      "betreuer": "",
+      "namensliste": [
+        "Bürgermeister Peter Müller"
+      ],
+      "anmoderation": "Es betritt die Bühne ein Mann, der in unserer Stadt die Fäden zieht. Geben Sie einen herzlichen Applaus für unseren Bürgermeister!",
+      "abmoderation": "Vielen Dank für diese köstliche Büttenrede! So macht Politik Spaß!",
+      "notizen": "Bürgermeister kommt von rechts. Mikrofon 2 bereitstellen. Humorvolle Anmoderation wichtig.",
+      "audioDateien": [],
+      "lichtStimmung": "Warm",
+      "dauer": 300
+    },
+    {
+      "nummer": 3,
+      "name": "Showtanz - Feuerwerk der Sinne",
+      "typ": "SHOWTANZ",
+      "einzugCD": true,
+      "auszugCD": true,
+      "trainer": "Maria Weber",
+      "betreuer": "Thomas Klein",
+      "namensliste": [
+        "Showtanzgruppe Feuerwerk",
+        "Solistin Lisa Schmidt",
+        "Solist Michael Bauer"
+      ],
+      "anmoderation": "Jetzt wird es heiß! Unsere Showtanzgruppe präsentiert ein Feuerwerk der Sinne mit atemberaubenden Choreographien.",
+      "abmoderation": "Was für eine atemberaubende Darbietung! Vielen Dank für dieses Feuerwerk der Sinne!",
+      "notizen": "Rauchmaschine vorbereiten. Lichteffekte: Rot, Orange, Gelb. Kostüme sind sehr aufwendig.",
+      "audioDateien": [
+        {
+          "name": "feuerwerk-der-sinne.mp3",
+          "duration": 240
+        },
+        {
+          "name": "feuerwerk-effekte.mp3",
+          "duration": 240
+        }
+      ],
+      "lichtStimmung": "Dramatisch",
+      "dauer": 240
+    },
+    {
+      "nummer": 4,
+      "name": "Pause",
+      "typ": "PAUSE",
+      "einzugCD": false,
+      "auszugCD": false,
+      "trainer": "",
+      "betreuer": "",
+      "namensliste": [],
+      "anmoderation": "Meine Damen und Herren, wir machen eine kurze Pause. In 15 Minuten geht es weiter mit unserem Programm.",
+      "abmoderation": "Willkommen zurück! Das Programm geht weiter.",
+      "notizen": "15 Minuten Pause. Bar ist geöffnet. Toiletten sind im Untergeschoss.",
+      "audioDateien": [],
+      "lichtStimmung": "Standard",
+      "dauer": 900
+    },
+    {
+      "nummer": 5,
+      "name": "Gardetanz - Prinzengarde",
+      "typ": "GARDETANZ",
+      "einzugCD": true,
+      "auszugCD": true,
+      "trainer": "Claudia Fischer",
+      "betreuer": "Hans Müller",
+      "namensliste": [
+        "Prinzengarde 2024",
+        "Gardechef Sarah Weber",
+        "Tanzmariechen Julia Klein"
+      ],
+      "anmoderation": "Jetzt kommt die Crème de la Crème! Unsere Prinzengarde zeigt, was echte Gardetänzer können.",
+      "abmoderation": "Was für eine präzise und elegante Darbietung! Vielen Dank an unsere Prinzengarde!",
+      "notizen": "Kostüme sind sehr teuer - vorsichtig behandeln. Tanzmariechen hat spezielle Beleuchtung.",
+      "audioDateien": [
+        {
+          "name": "prinzengarde-marsch.mp3",
+          "duration": 200
+        }
+      ],
+      "lichtStimmung": "Elegant",
+      "dauer": 200
+    },
+    {
+      "nummer": 6,
+      "name": "Büttenrede - Die Lehrerin",
+      "typ": "BÜTTENREDE",
+      "einzugCD": false,
+      "auszugCD": false,
+      "trainer": "",
+      "betreuer": "",
+      "namensliste": [
+        "Lehrerin Dr. Petra Schmidt"
+      ],
+      "anmoderation": "Jetzt kommt jemand, der weiß, wie man mit schwierigen Schülern umgeht. Geben Sie einen Applaus für unsere Lehrerin!",
+      "abmoderation": "Vielen Dank für diese humorvolle Sicht auf den Schulalltag!",
+      "notizen": "Lehrerin hat eigene Requisiten dabei. Mikrofon 1 verwenden.",
+      "audioDateien": [],
+      "lichtStimmung": "Warm",
+      "dauer": 300
+    },
+    {
+      "nummer": 7,
+      "name": "Funkenmariechen - Solo",
+      "typ": "FUNKENMARIECHEN",
+      "einzugCD": true,
+      "auszugCD": true,
+      "trainer": "Eva Wagner",
+      "betreuer": "Klaus Fischer",
+      "namensliste": [
+        "Funkenmariechen Lisa Weber"
+      ],
+      "anmoderation": "Jetzt wird es magisch! Unser Funkenmariechen zeigt eine atemberaubende Solo-Darbietung.",
+      "abmoderation": "Was für eine magische Darbietung! Vielen Dank für diese zauberhafte Show!",
+      "notizen": "Spezielle Beleuchtung für Funkenmariechen. Kostüm ist sehr aufwendig.",
+      "audioDateien": [
+        {
+          "name": "funkenmariechen-solo.mp3",
+          "duration": 180
+        }
+      ],
+      "lichtStimmung": "Magisch",
+      "dauer": 180
+    },
+    {
+      "nummer": 8,
+      "name": "Schlussmarsch - Alle zusammen",
+      "typ": "MARSCH",
+      "einzugCD": true,
+      "auszugCD": true,
+      "trainer": "Max Mustermann",
+      "betreuer": "Anna Schmidt",
+      "namensliste": [
+        "Alle Tanzgruppen",
+        "Prinzengarde",
+        "Funkenmariechen",
+        "Showtanzgruppe"
+      ],
+      "anmoderation": "Meine Damen und Herren, zum Abschluss unserer wunderbaren Karnevalssitzung treten alle noch einmal gemeinsam auf!",
+      "abmoderation": "Vielen Dank für einen wunderbaren Abend! Helau und Alaaf!",
+      "notizen": "Alle Gruppen sind beteiligt. Großer Finale-Effekt mit Konfetti.",
+      "audioDateien": [
+        {
+          "name": "schlussmarsch.mp3",
+          "duration": 240
+        }
+      ],
+      "lichtStimmung": "Festlich",
+      "dauer": 240
+    }
+  ]
+} 
