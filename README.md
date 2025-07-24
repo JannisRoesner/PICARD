@@ -1,6 +1,6 @@
 # Sitzungsmaster Web
 
-Eine moderne Webanwendung für digitale Moderationskarten bei Karnevalssitzungen. Diese Anwendung ersetzt das ursprüngliche Java-Desktop-Programm und bietet erweiterte Funktionen für Echtzeit-Kollaboration.
+Eine moderne Webanwendung für digitale Moderationskarten bei Karnevalssitzungen mit erweiterten Funktionen für Echtzeit-Kollaboration.
 
 ## 🎯 Features
 
