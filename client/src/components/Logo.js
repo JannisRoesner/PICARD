@@ -38,7 +38,7 @@ function Logo() {
         <LogoImage src={theme.logo.src} alt={theme.logo.alt} />
         <div>
           <LogoText>Sitzungsmaster</LogoText>
-          <LogoSubtext>Digitale Moderationskarten</LogoSubtext>
+          <LogoSubtext>Mehr Überblick, weniger Chaos.</LogoSubtext>
         </div>
       </LogoContainer>
     );
