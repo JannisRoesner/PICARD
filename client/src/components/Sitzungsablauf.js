@@ -447,7 +447,7 @@ function Sitzungsablauf() {
   return (
     <Container>
       <Header>
-        <Title>Sitzungsablauf</Title>
+        <Title>{`Programm${sitzung?.name ? ' ' + sitzung.name : ''} ${new Date().getFullYear()}`}</Title>
         {/* Untertitel und Icon entfernt */}
       </Header>
 

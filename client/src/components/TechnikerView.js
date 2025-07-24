@@ -45,6 +45,7 @@ const StatusValue = styled.span`
     if (props.type === 'typ') return '#1e90ff';
     if (props.type === 'dauer') return '#32cd32';
     if (props.type === 'einzug') return '#32cd32';
+    if (props.type === 'auszug') return '#ff0000';
     return '#fff';
   }};
 `;
