@@ -518,6 +518,67 @@ function TechnikerView() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Audio-Dateien bearbeiten
+  const updateAudioFile = (index, field, value) => {
+    if (!selectedProgrammpunkt) return;
+    const updated = [...(selectedProgrammpunkt.audioDateien || [])];
+    updated[index] = { ...updated[index], [field]: value };
+    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, audioDateien: updated });
+    autoSaveAudioFiles(updated);
+  };
+
+  const deleteAudioFile = (index) => {
+    if (!selectedProgrammpunkt) return;
+    const updated = [...(selectedProgrammpunkt.audioDateien || [])];
+    updated.splice(index, 1);
+    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, audioDateien: updated });
+    autoSaveAudioFiles(updated);
+  };
+
+  const addAudioFile = () => {
+    if (!selectedProgrammpunkt) return;
+    const updated = [...(selectedProgrammpunkt.audioDateien || []), { name: '', duration: '' }];
+    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, audioDateien: updated });
+    autoSaveAudioFiles(updated);
+  };
+
+  const autoSaveAudioFiles = async (audioDateien) => {
+    if (!selectedProgrammpunkt) return;
+    try {
+      await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selectedProgrammpunkt.id}`, {
+        audioDateien
+      });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(''), 1200);
+    } catch (error) {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus(''), 2000);
+      console.error('Fehler beim Speichern der Audio-Dateien:', error);
+    }
+  };
+
+  // Lichtstimmung bearbeiten
+  const updateLichtStimmung = (value) => {
+    if (!selectedProgrammpunkt) return;
+    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, lichtStimmung: value });
+    autoSaveLichtStimmung(value);
+  };
+
+  const autoSaveLichtStimmung = async (lichtStimmung) => {
+    if (!selectedProgrammpunkt) return;
+    try {
+      await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selectedProgrammpunkt.id}`, {
+        lichtStimmung
+      });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(''), 1200);
+    } catch (error) {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus(''), 2000);
+      console.error('Fehler beim Speichern der Lichtstimmung:', error);
+    }
+  };
+
   if (!aktiveSitzung) {
     return (
       <NoSitzungMessage>
@@ -623,22 +684,6 @@ function TechnikerView() {
           {/* Audio Section */}
           <TechSection>
             <TechCard>
-              <TechCardTitle>🎵 Audio-Dateien</TechCardTitle>
-              {selectedProgrammpunkt?.audioDateien?.length > 0 ? (
-                selectedProgrammpunkt.audioDateien.map((audio, index) => (
-                  <AudioFile key={index}>
-                    <AudioFileName>{audio.name}</AudioFileName>
-                    <AudioFileDuration>{formatDuration(audio.duration)}</AudioFileDuration>
-                  </AudioFile>
-                ))
-              ) : (
-                <div style={{ color: '#888', fontStyle: 'italic' }}>
-                  Keine Audio-Dateien verfügbar
-                </div>
-              )}
-            </TechCard>
-
-            <TechCard>
               <TechCardTitle>🎚️ Audio-Cues</TechCardTitle>
               <CueList>
                 {audioCues.map((cue, index) => (
@@ -677,17 +722,41 @@ function TechnikerView() {
                 <div style={{ color: '#dc3545', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Fehler beim Speichern</div>
               )}
             </TechCard>
+            <TechCard>
+              <TechCardTitle>🎵 Audio-Dateien</TechCardTitle>
+              {selectedProgrammpunkt?.audioDateien?.length > 0 ? (
+                selectedProgrammpunkt.audioDateien.map((audio, index) => (
+                  <EditableCueItem key={index}>
+                    <CueInput
+                      type="text"
+                      value={audio.name}
+                      onChange={e => updateAudioFile(index, 'name', e.target.value)}
+                      placeholder="Dateiname"
+                    />
+                    <CueInput
+                      type="text"
+                      value={audio.duration}
+                      onChange={e => updateAudioFile(index, 'duration', e.target.value)}
+                      placeholder="Dauer (Sekunden)"
+                    />
+                    <CueButton className="delete" onClick={() => deleteAudioFile(index)}>
+                      Löschen
+                    </CueButton>
+                  </EditableCueItem>
+                ))
+              ) : (
+                <div style={{ color: '#888', fontStyle: 'italic' }}>
+                  Keine Audio-Dateien verfügbar
+                </div>
+              )}
+              <CueButton onClick={addAudioFile}>
+                + Audio-Datei hinzufügen
+              </CueButton>
+            </TechCard>
           </TechSection>
 
           {/* Light Section */}
           <TechSection>
-            <TechCard>
-              <TechCardTitle>💡 Lichtstimmung</TechCardTitle>
-              <LightPreset preset={selectedProgrammpunkt?.lichtStimmung || 'Standard'}>
-                {selectedProgrammpunkt?.lichtStimmung || 'Standard'}
-              </LightPreset>
-            </TechCard>
-
             <TechCard>
               <TechCardTitle>🎭 Licht-Cues</TechCardTitle>
               <CueList>
@@ -726,6 +795,17 @@ function TechnikerView() {
               {saveStatus === 'error' && (
                 <div style={{ color: '#dc3545', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Fehler beim Speichern</div>
               )}
+            </TechCard>
+            <TechCard>
+              <TechCardTitle>💡 Lichtstimmung</TechCardTitle>
+              <EditableCueItem>
+                <CueInput
+                  type="text"
+                  value={selectedProgrammpunkt?.lichtStimmung || ''}
+                  onChange={e => updateLichtStimmung(e.target.value)}
+                  placeholder="Lichtstimmung"
+                />
+              </EditableCueItem>
             </TechCard>
           </TechSection>
         </TechInfoGrid>
