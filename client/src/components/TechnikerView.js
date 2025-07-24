@@ -91,6 +91,7 @@ const ProgramItem = styled.div`
   font-size: 1.1rem;
   font-weight: ${props => (props.active || props.isActive) ? 'bold' : 'normal'};
   animation: ${props => props.isActive ? 'blink 1s infinite' : 'none'};
+  color: ${props => props.isActive ? '#181818' : '#fff'};
 
   &:hover {
     background: ${props => {
@@ -104,6 +105,19 @@ const ProgramItem = styled.div`
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.7; }
   }
+`;
+
+const ProgramName = styled.span`
+  color: inherit;
+  font-weight: bold;
+`;
+const ProgramType = styled.span`
+  color: ${props => props.isActive ? '#181818' : '#ccc'};
+  margin-left: 8px;
+`;
+const ProgramDuration = styled.span`
+  color: ${props => props.isActive ? '#181818' : '#888'};
+  margin-left: 8px;
 `;
 
 const TechInfoGrid = styled.div`
@@ -541,12 +555,6 @@ function TechnikerView() {
           </StatusValue>
         </StatusItem>
         <StatusItem>
-          <StatusLabel>Dauer:</StatusLabel>
-          <StatusValue type="dauer">
-            {formatDuration(selectedProgrammpunkt?.dauer)}
-          </StatusValue>
-        </StatusItem>
-        <StatusItem>
           <StatusLabel>Einzug:</StatusLabel>
           <StatusValue type="einzug">
             {selectedProgrammpunkt?.einzugCD ? 'CD' : 'Kapelle'}
@@ -556,6 +564,12 @@ function TechnikerView() {
           <StatusLabel>Auszug:</StatusLabel>
           <StatusValue type="auszug">
             {selectedProgrammpunkt?.auszugCD ? 'CD' : 'Kapelle'}
+          </StatusValue>
+        </StatusItem>
+        <StatusItem>
+          <StatusLabel>Dauer:</StatusLabel>
+          <StatusValue type="dauer">
+            {formatDuration(selectedProgrammpunkt?.dauer)}
           </StatusValue>
         </StatusItem>
         {activeProgrammpunkt && timerState.isRunning && (
@@ -595,7 +609,8 @@ function TechnikerView() {
               isActive={activeProgrammpunkt?.id === programmpunkt.id}
               onClick={() => handleProgrammpunktSelect(programmpunkt)}
             >
-              {programmpunkt.nummer} {programmpunkt.typ} {programmpunkt.name}
+              <ProgramName>{programmpunkt.nummer}</ProgramName> <ProgramType isActive={selectedProgrammpunkt?.id === programmpunkt.id}>{programmpunkt.typ}</ProgramType> <ProgramName>{programmpunkt.name}</ProgramName>
+              <ProgramDuration isActive={selectedProgrammpunkt?.id === programmpunkt.id}>{formatDuration(programmpunkt.dauer)}</ProgramDuration>
             </ProgramItem>
           ))}
         </ProgramList>

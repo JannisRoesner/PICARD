@@ -82,10 +82,24 @@ const ProgramItem = styled.div`
   transition: all 0.2s ease;
   font-size: 1.1rem;
   font-weight: ${props => props.active ? 'bold' : 'normal'};
+  color: ${props => props.active ? '#181818' : '#fff'};
 
   &:hover {
     background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') + 'cc' : '#3d3d3d'};
   }
+`;
+
+const ProgramName = styled.span`
+  color: inherit;
+  font-weight: bold;
+`;
+const ProgramType = styled.span`
+  color: ${props => props.active ? '#181818' : '#ccc'};
+  margin-left: 8px;
+`;
+const ProgramDuration = styled.span`
+  color: ${props => props.active ? '#181818' : '#888'};
+  margin-left: 8px;
 `;
 
 const TextArea = styled.textarea`
@@ -443,12 +457,6 @@ function ModeratorView() {
           </StatusValue>
         </StatusItem>
         <StatusItem>
-          <StatusLabel>Dauer:</StatusLabel>
-          <StatusValue type="dauer">
-            {formatDuration(selectedProgrammpunkt?.dauer)}
-          </StatusValue>
-        </StatusItem>
-        <StatusItem>
           <StatusLabel>Einzug:</StatusLabel>
           <StatusValue type="einzug">
             {selectedProgrammpunkt?.einzugCD ? 'CD' : 'Kapelle'}
@@ -458,6 +466,12 @@ function ModeratorView() {
           <StatusLabel>Auszug:</StatusLabel>
           <StatusValue type="auszug">
             {selectedProgrammpunkt?.auszugCD ? 'CD' : 'Kapelle'}
+          </StatusValue>
+        </StatusItem>
+        <StatusItem>
+          <StatusLabel>Dauer:</StatusLabel>
+          <StatusValue type="dauer">
+            {formatDuration(selectedProgrammpunkt?.dauer)}
           </StatusValue>
         </StatusItem>
         {activeProgrammpunkt && timerState.isRunning && (
