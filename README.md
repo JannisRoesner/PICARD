@@ -48,6 +48,9 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 ### Drucken
 - **Vier Druckoptionen**: Programmansicht, Kulissen, Moderator, Techniker
 - **Professionelle Layouts**: Optimiert für A4-Papier
+- **Querformat**: Kulissen, Moderator und Techniker im Landscape-Modus
+- **Jahreszahl**: Automatisch in alle Überschriften eingefügt
+- **Fußzeile**: Mit Server-URL und Hinweis auf Änderungen
 - **Spezielle Ansichten**: Jede Druckoption zeigt relevante Informationen
 - **PDF-Export**: "Als PDF speichern" für digitale Kopien
 
@@ -148,7 +151,14 @@ node server.js
 
 ## 📝 Changelog
 
-### Version 4.0.0 (Aktuell)
+### Version 4.1.0 (Aktuell)
+- **Erweiterte Drucken-Funktionalität**: Querformat für Kulissen, Moderator und Techniker
+- **Jahreszahl in Überschriften**: Automatische Einbindung des aktuellen Jahres
+- **Fußzeile mit Server-URL**: Professionelle Fußzeile mit Live-Programm-Hinweis
+- **Optimierte Layouts**: Bessere Platznutzung und professionelle Gestaltung
+- **Programmansicht ohne Untertitel**: Saubere Übersicht ohne zusätzliche Beschriftung
+
+### Version 4.0.0
 - **Drucken-Funktionalität**: Vier professionelle Drucklayouts für alle Ansichten
 - **Programmansicht-Druck**: Übersichtliches Layout ohne zusätzliche Details
 - **Kulissen-Druck**: Mit Einzug/Auszug und Bühneninformationen
