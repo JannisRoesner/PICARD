@@ -309,7 +309,7 @@ const CueTextarea = styled.textarea`
   padding: 6px 8px;
   font-size: 0.9rem;
   width: 100%;
-  min-height: 40px;
+  min-height: 80px;
   resize: vertical;
 
   &:focus {
