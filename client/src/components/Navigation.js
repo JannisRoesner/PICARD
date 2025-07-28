@@ -312,7 +312,7 @@ function Navigation() {
             Programmansicht
           </NavLink>
           <NavLink to="/kulissen" active={isActive('/kulissen')}>
-            🎭 Kulissen
+            Kulissen
           </NavLink>
           <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
             Programm bearbeiten
@@ -380,7 +380,7 @@ function Navigation() {
           📋 Programmansicht
         </MobileNavLink>
         <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
-          🎭 Kulissen
+          Kulissen
         </MobileNavLink>
         <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
           🛠️ Programm bearbeiten

@@ -266,13 +266,13 @@ function KulissenView() {
                   <KulissenItem>
                     <KulissenIcon>🎵</KulissenIcon>
                     <KulissenText isActive={activeProgrammpunkt?.id === programmpunkt.id}>
-                      Einzug: {programmpunkt.einzugCD ? 'Mit CD' : 'Ohne CD'}
+                      Einzug: {programmpunkt.einzugCD ? 'Von CD' : 'Von Kapelle'}
                     </KulissenText>
                   </KulissenItem>
                   <KulissenItem>
                     <KulissenIcon>🎵</KulissenIcon>
                     <KulissenText isActive={activeProgrammpunkt?.id === programmpunkt.id}>
-                      Auszug: {programmpunkt.auszugCD ? 'Mit CD' : 'Ohne CD'}
+                      Auszug: {programmpunkt.auszugCD ? 'Von CD' : 'Von Kapelle'}
                     </KulissenText>
                   </KulissenItem>
                   <KulissenItem>
