@@ -314,6 +314,9 @@ function Navigation() {
           <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
             Programmansicht
           </NavLink>
+          <NavLink to="/zettel-historie" active={isActive('/zettel-historie')}>
+            Zettel-Historie
+          </NavLink>
           <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
             Programm bearbeiten
           </NavLink>
@@ -381,6 +384,9 @@ function Navigation() {
         </MobileNavLink>
         <MobileNavLink to="/programmansicht" active={isActive('/programmansicht')} onClick={handleMobileLinkClick}>
           📋 Programmansicht
+        </MobileNavLink>
+        <MobileNavLink to="/zettel-historie" active={isActive('/zettel-historie')} onClick={handleMobileLinkClick}>
+          📋 Zettel-Historie
         </MobileNavLink>
         <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
           🛠️ Programm bearbeiten
