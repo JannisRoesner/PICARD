@@ -496,7 +496,7 @@ function Sitzungsablauf() {
         ))}
       </ProgramList>
 
-      <ZettelSystem viewType="programmansicht" />
+
 
 
 
