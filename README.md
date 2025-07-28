@@ -45,6 +45,12 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Namensliste-Management**: Einfaches Hinzufügen/Entfernen von Namen
 - **Bühneninformationen**: Spezielle Felder für Kulissen
 
+### Drucken
+- **Vier Druckoptionen**: Programmansicht, Kulissen, Moderator, Techniker
+- **Professionelle Layouts**: Optimiert für A4-Papier
+- **Spezielle Ansichten**: Jede Druckoption zeigt relevante Informationen
+- **PDF-Export**: "Als PDF speichern" für digitale Kopien
+
 ### Timer-Funktionen
 - **Automatischer Timer**: Startet automatisch bei Moderator-Auswahl
 - **Synchronisation**: Timer zwischen allen Ansichten synchronisiert
@@ -104,6 +110,7 @@ node server.js
    - **Kulissen**: Für Kulissenschieber
    - **Sitzungsablauf**: Für mobile Eingaben
    - **Programm bearbeiten**: Für die Bearbeitung bestehender Programmpunkte
+   - **Drucken**: Für professionelle Drucklayouts aller Ansichten
 
 ## 🏗️ Architektur
 
@@ -141,7 +148,15 @@ node server.js
 
 ## 📝 Changelog
 
-### Version 3.0.0 (Aktuell)
+### Version 4.0.0 (Aktuell)
+- **Drucken-Funktionalität**: Vier professionelle Drucklayouts für alle Ansichten
+- **Programmansicht-Druck**: Übersichtliches Layout ohne zusätzliche Details
+- **Kulissen-Druck**: Mit Einzug/Auszug und Bühneninformationen
+- **Moderator-Druck**: Mit allen Moderator-Informationen und Namenslisten
+- **Techniker-Druck**: Mit Audio- und Licht-Cues für die Technik
+- **PDF-Export**: Möglichkeit zum Speichern als PDF
+
+### Version 3.0.0
 - **Kulissen-Ansicht**: Neue Ansicht für Kulissenschieber mit Bühneninformationen
 - **Drag & Drop**: Reihenfolge-Änderung in "Programm bearbeiten"
 - **Zettel-Historie**: Alle vergangenen Zettel einsehbar
