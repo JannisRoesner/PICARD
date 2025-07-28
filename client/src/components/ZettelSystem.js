@@ -392,6 +392,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
   };
 
   const visibleZettel = getVisibleZettel();
+  const allZettel = zettel; // Alle Zettel für die Historie
 
   if (!aktiveSitzung) {
     return null;
@@ -515,13 +516,13 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
             <ModalTitle>📋 Zettel-Historie</ModalTitle>
             
             <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-              {zettel.length === 0 ? (
+              {allZettel.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#ccc', padding: '20px' }}>
                   Keine Zettel vorhanden.
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {zettel.map((zettelItem) => (
+                  {allZettel.map((zettelItem) => (
                     <div
                       key={zettelItem.id}
                       style={{
