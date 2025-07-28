@@ -294,11 +294,11 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
     if (!socket) return;
 
     socket.on('zettelHinzugefuegt', handleZettelUpdate);
-    socket.on('zettelGeloescht', handleZettelUpdate);
+    socket.on('zettelGeschlossen', handleZettelUpdate);
 
     return () => {
       socket.off('zettelHinzugefuegt', handleZettelUpdate);
-      socket.off('zettelGeloescht', handleZettelUpdate);
+      socket.off('zettelGeschlossen', handleZettelUpdate);
     };
   }, [socket, aktiveSitzung]);
 
@@ -353,7 +353,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
     try {
       await axios.delete(`/api/sitzung/${aktiveSitzung}/zettel/${zettelId}`);
     } catch (error) {
-      console.error('Fehler beim Löschen des Zettels:', error);
+      console.error('Fehler beim Schließen des Zettels:', error);
     }
   };
 
@@ -383,14 +383,17 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
 
   // Filtere Zettel basierend auf der Ansicht
   const getVisibleZettel = () => {
+    // Nur nicht-geschlossene Zettel anzeigen
+    const aktiveZettel = zettel.filter(z => !z.geschlossen);
+    
     if (viewType === 'moderator') {
-      return zettel.filter(z => z.type === 'anModeration' || z.type === 'anAlle');
+      return aktiveZettel.filter(z => (z.type === 'anModeration' || z.type === 'anAlle') && z.sender !== 'moderator');
     } else if (viewType === 'techniker') {
-      return zettel.filter(z => z.type === 'anTechnik' || z.type === 'anAlle');
-    } else if (viewType === 'kulissen') {
-      return zettel.filter(z => z.type === 'anModeration' || z.type === 'anTechnik' || z.type === 'anAlle');
+      return aktiveZettel.filter(z => (z.type === 'anTechnik' || z.type === 'anAlle') && z.sender !== 'techniker');
+    } else if (viewType === 'kulissen' || viewType === 'programmansicht') {
+      return aktiveZettel.filter(z => z.type === 'anAlle' && z.sender !== viewType);
     }
-    return zettel; // programmansicht zeigt alle
+    return [];
   };
 
   const visibleZettel = getVisibleZettel();
@@ -426,7 +429,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                     ➕
                   </ActionButton>
                 )}
-                <CloseButton onClick={() => handleDeleteZettel(zettelItem.id)}>
+                <CloseButton onClick={() => handleDeleteZettel(zettelItem.id)} title="Zettel schließen">
                   ✕
                 </CloseButton>
               </div>
@@ -545,9 +548,26 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                         borderColor: zettelItem.priority === 'dringend' ? '#c82333' :
                                     zettelItem.priority === 'wichtig' ? '#e55a2b' :
                                     zettelItem.type === 'anModeration' ? '#0056b3' :
-                                    zettelItem.type === 'anTechnik' ? '#1e7e34' : '#e0a800'
+                                    zettelItem.type === 'anTechnik' ? '#1e7e34' : '#e0a800',
+                        opacity: zettelItem.geschlossen ? '0.6' : '1',
+                        position: 'relative'
                       }}
                     >
+                      {zettelItem.geschlossen && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '8px',
+                          right: '8px',
+                          background: '#666',
+                          color: '#fff',
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          fontSize: '0.7rem',
+                          fontWeight: 'bold'
+                        }}>
+                          GESCHLOSSEN
+                        </div>
+                      )}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
                         <span>
                           {getZettelIcon(zettelItem.type)} {getPriorityIcon(zettelItem.priority)}
@@ -570,7 +590,8 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                         <span style={{ fontStyle: 'italic' }}>
                           Von: {zettelItem.sender === 'moderator' ? 'Moderation' : 
                                 zettelItem.sender === 'techniker' ? 'Technik' : 
-                                zettelItem.sender === 'programmansicht' ? 'Programmansicht' : zettelItem.sender}
+                                zettelItem.sender === 'programmansicht' ? 'Programmansicht' :
+                                zettelItem.sender === 'kulissen' ? 'Kulissen' : zettelItem.sender}
                         </span>
                       </div>
                     </div>

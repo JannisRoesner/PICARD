@@ -225,7 +225,8 @@ app.post('/api/sitzung/:id/zettel', (req, res) => {
     priority: priority, // 'normal', 'wichtig', 'dringend'
     sender: sender, // 'moderator', 'techniker', 'programmansicht'
     timestamp: new Date().toISOString(),
-    sitzungId: sitzungId
+    sitzungId: sitzungId,
+    geschlossen: false // NEU: Status für geschlossene Zettel
   };
 
   // Zettel zur Sitzung hinzufügen
@@ -254,10 +255,11 @@ app.delete('/api/sitzung/:id/zettel/:zettelId', (req, res) => {
     return res.status(404).json({ error: 'Zettel nicht gefunden' });
   }
 
-  zettelListe.splice(zettelIndex, 1);
+  // Zettel als geschlossen markieren statt löschen
+  zettelListe[zettelIndex].geschlossen = true;
 
   // Echtzeit-Update
-  io.emit('zettelGeloescht', { sitzungId, zettelId });
+  io.emit('zettelGeschlossen', { sitzungId, zettelId });
   
   res.json({ success: true });
 });
