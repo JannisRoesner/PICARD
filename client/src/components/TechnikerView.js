@@ -723,7 +723,7 @@ function TechnikerView() {
               )}
             </TechCard>
             <TechCard>
-              <TechCardTitle>🎵 Audio-Dateien</TechCardTitle>
+              <TechCardTitle>🎵 Audio-Informationen</TechCardTitle>
               {selectedProgrammpunkt?.audioDateien?.length > 0 ? (
                 selectedProgrammpunkt.audioDateien.map((audio, index) => (
                   <EditableCueItem key={index}>
@@ -750,7 +750,7 @@ function TechnikerView() {
                 </div>
               )}
               <CueButton onClick={addAudioFile}>
-                + Audio-Datei hinzufügen
+                + Audioinformationen hinzufügen
               </CueButton>
             </TechCard>
           </TechSection>
@@ -797,13 +797,12 @@ function TechnikerView() {
               )}
             </TechCard>
             <TechCard>
-              <TechCardTitle>💡 Lichtstimmung</TechCardTitle>
+              <TechCardTitle>💡 Licht-Informationen</TechCardTitle>
               <EditableCueItem>
-                <CueInput
-                  type="text"
+                <CueTextarea
                   value={selectedProgrammpunkt?.lichtStimmung || ''}
                   onChange={e => updateLichtStimmung(e.target.value)}
-                  placeholder="Lichtstimmung"
+                  placeholder="Licht-Infos eingeben..."
                 />
               </EditableCueItem>
             </TechCard>

@@ -350,8 +350,7 @@ function SitzungsAuswahl() {
     return (
       <Container>
         <Header>
-          <Title>Sitzungsmaster</Title>
-          <Subtitle>Digitale Moderationskarten für Karnevalssitzungen</Subtitle>
+          <Title>PICARD</Title>
         </Header>
         <LoadingMessage>Sitzungen werden geladen...</LoadingMessage>
       </Container>
@@ -362,8 +361,7 @@ function SitzungsAuswahl() {
     <Container>
       <ThemeToggle />
       <Header>
-        <Title>Sitzungsmaster</Title>
-        <Subtitle>Digitale Moderationskarten für Karnevalssitzungen</Subtitle>
+        <Title>PICARD</Title>
       </Header>
 
       {error && (

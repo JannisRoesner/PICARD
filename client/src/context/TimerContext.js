@@ -43,7 +43,7 @@ export const TimerProvider = ({ children }) => {
         if (remaining <= 0) {
           // Timer beendet - Browser-Benachrichtigung
           if (Notification.permission === 'granted') {
-            new Notification('Sitzungsmaster Timer', {
+            new Notification('PICARD Timer', {
               body: `Programmpunkt "${prev.currentProgrammpunkt?.name || 'Unbekannt'}" ist beendet!`,
               icon: '/favicon.ico'
             });
@@ -67,7 +67,7 @@ export const TimerProvider = ({ children }) => {
         // Warnung bei 75% und 90% der Zeit
         if (remaining === Math.floor(prev.totalTime * 0.25) || remaining === Math.floor(prev.totalTime * 0.1)) {
           if (Notification.permission === 'granted') {
-            new Notification('Sitzungsmaster Timer', {
+            new Notification('PICARD Timer', {
               body: `Programmpunkt "${prev.currentProgrammpunkt?.name || 'Unbekannt'}" läuft in ${Math.floor(remaining / 60)}:${(remaining % 60).toString().padStart(2, '0')} ab!`,
               icon: '/favicon.ico'
             });

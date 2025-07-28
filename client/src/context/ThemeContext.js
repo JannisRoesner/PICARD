@@ -32,7 +32,7 @@ const oldTheme = {
   },
   logo: {
     src: null, // Kein Logo im alten Design
-    alt: 'Sitzungsmaster'
+    alt: 'PICARD'
   }
 };
 
@@ -68,7 +68,7 @@ const newTheme = {
   },
   logo: {
     src: '/bildmarke.png', // Nur die Bildmarke
-    alt: 'Sitzungsmaster Bildmarke'
+    alt: 'PICARD Bildmarke'
   }
 };
 

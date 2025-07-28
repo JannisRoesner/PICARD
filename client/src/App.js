@@ -131,7 +131,7 @@ function App() {
   if (loading) {
     return (
       <LoadingScreen>
-        <div>Sitzungsmaster wird geladen...</div>
+        <div>PICARD wird geladen...</div>
       </LoadingScreen>
     );
   }

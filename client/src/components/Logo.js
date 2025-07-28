@@ -24,7 +24,7 @@ const LogoText = styled.div`
 `;
 
 const LogoSubtext = styled.div`
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: ${props => props.theme?.colors?.navText || props.theme?.colors?.textSecondary || '#fff'};
   font-weight: normal;
   margin-top: -2px;
@@ -38,8 +38,8 @@ function Logo() {
       <LogoContainer>
         <LogoImage src={theme.logo.src} alt={theme.logo.alt} />
         <div>
-          <LogoText>Sitzungsmaster</LogoText>
-          <LogoSubtext>Mehr Überblick, weniger Chaos.</LogoSubtext>
+          <LogoText>PICARD</LogoText>
+          <LogoSubtext>Programm- & Informations-Center für Ablauf-, Regie- & Moderation</LogoSubtext>
         </div>
       </LogoContainer>
     );
@@ -47,7 +47,10 @@ function Logo() {
 
   return (
     <LogoContainer>
-      <LogoText>Sitzungsmaster</LogoText>
+      <div>
+        <LogoText>PICARD</LogoText>
+        <LogoSubtext>Programm- & Informations-Center für Ablauf-, Regie- & Moderation</LogoSubtext>
+      </div>
     </LogoContainer>
   );
 }
