@@ -105,10 +105,17 @@ const ActionButton = styled.button`
   }
 `;
 
-const NewZettelButton = styled.button`
+const ZettelButtonContainer = styled.div`
   position: fixed;
   bottom: 20px;
   right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+`;
+
+const ZettelButton = styled.button`
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -119,11 +126,28 @@ const NewZettelButton = styled.button`
   cursor: pointer;
   box-shadow: 0 4px 12px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.4)')};
   transition: all 0.2s ease;
-  z-index: 1000;
 
   &:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 16px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '50' : 'rgba(251,191,36,0.5)')};
+  }
+`;
+
+const HistorieButton = styled.button`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #007bff;
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.5);
   }
 `;
 
@@ -243,6 +267,7 @@ const Button = styled.button`
 function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
   const [zettel, setZettel] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showHistorie, setShowHistorie] = useState(false);
   const [formData, setFormData] = useState({
     text: '',
     type: viewType === 'moderator' ? 'anTechnik' : viewType === 'techniker' ? 'anModeration' : 'anModeration',
@@ -410,9 +435,14 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
         </ZettelContainer>
       )}
 
-      <NewZettelButton onClick={() => setShowModal(true)} title="Neuen Zettel erstellen">
-        📝
-      </NewZettelButton>
+      <ZettelButtonContainer>
+        <ZettelButton onClick={() => setShowModal(true)} title="Neuen Zettel erstellen">
+          📝
+        </ZettelButton>
+        <HistorieButton onClick={() => setShowHistorie(true)} title="Zettel-Historie anzeigen">
+          📋
+        </HistorieButton>
+      </ZettelButtonContainer>
 
       {showModal && (
         <ZettelModal onClick={() => setShowModal(false)}>
@@ -475,6 +505,80 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                 </Button>
               </ButtonGroup>
             </form>
+          </ModalContent>
+        </ZettelModal>
+      )}
+
+      {showHistorie && (
+        <ZettelModal onClick={() => setShowHistorie(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>📋 Zettel-Historie</ModalTitle>
+            
+            <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+              {zettel.length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#ccc', padding: '20px' }}>
+                  Keine Zettel vorhanden.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {zettel.map((zettelItem) => (
+                    <div
+                      key={zettelItem.id}
+                      style={{
+                        background: zettelItem.priority === 'dringend' ? '#dc3545' : 
+                                   zettelItem.priority === 'wichtig' ? '#ff6b35' :
+                                   zettelItem.type === 'anModeration' ? '#007bff' :
+                                   zettelItem.type === 'anTechnik' ? '#28a745' : '#fbbf24',
+                        color: zettelItem.priority === 'dringend' || zettelItem.priority === 'wichtig' ? '#fff' : '#181818',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        border: '2px solid',
+                        borderColor: zettelItem.priority === 'dringend' ? '#c82333' :
+                                    zettelItem.priority === 'wichtig' ? '#e55a2b' :
+                                    zettelItem.type === 'anModeration' ? '#0056b3' :
+                                    zettelItem.type === 'anTechnik' ? '#1e7e34' : '#e0a800'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                        <span>
+                          {getZettelIcon(zettelItem.type)} {getPriorityIcon(zettelItem.priority)}
+                          {zettelItem.type === 'anModeration' ? 'An Moderation' : 
+                           zettelItem.type === 'anTechnik' ? 'An Technik' : 'An Alle'}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '1rem', lineHeight: '1.4', wordWrap: 'break-word', marginBottom: '8px' }}>
+                        {zettelItem.text}
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', opacity: '0.8' }}>
+                        <span style={{ fontWeight: 'bold' }}>
+                          {new Date(zettelItem.timestamp).toLocaleString('de-DE', { 
+                            day: '2-digit',
+                            month: '2-digit',
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </span>
+                        <span style={{ fontStyle: 'italic' }}>
+                          Von: {zettelItem.sender === 'moderator' ? 'Moderation' : 
+                                zettelItem.sender === 'techniker' ? 'Technik' : 
+                                zettelItem.sender === 'programmansicht' ? 'Programmansicht' : zettelItem.sender}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <ButtonGroup>
+              <Button 
+                type="button" 
+                className="secondary" 
+                onClick={() => setShowHistorie(false)}
+              >
+                Schließen
+              </Button>
+            </ButtonGroup>
           </ModalContent>
         </ZettelModal>
       )}
