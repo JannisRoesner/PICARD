@@ -8,9 +8,9 @@ import styled from 'styled-components';
 import SitzungsAuswahl from './components/SitzungsAuswahl';
 import ModeratorView from './components/ModeratorView';
 import TechnikerView from './components/TechnikerView';
-import ProgrammpunktEditor from './components/ProgrammpunktEditor';
 import Sitzungsablauf from './components/Sitzungsablauf';
 import Programmansicht from './components/Programmansicht';
+import KulissenView from './components/KulissenView';
 import Navigation from './components/Navigation';
 import ProgrammBearbeiten from './components/ProgrammBearbeiten';
 
@@ -149,10 +149,10 @@ function App() {
                   <Route path="/" element={<SitzungsAuswahl />} />
                   <Route path="/moderator" element={<ModeratorView />} />
                   <Route path="/techniker" element={<TechnikerView />} />
-                  <Route path="/editor" element={<ProgrammpunktEditor />} />
                   <Route path="/programm-bearbeiten" element={<ProgrammBearbeiten />} />
                   <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
                   <Route path="/programmansicht" element={<Programmansicht />} />
+                  <Route path="/kulissen" element={<KulissenView />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </AppContainer>

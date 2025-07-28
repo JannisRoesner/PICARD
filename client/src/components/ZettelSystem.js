@@ -387,6 +387,8 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
       return zettel.filter(z => z.type === 'anModeration' || z.type === 'anAlle');
     } else if (viewType === 'techniker') {
       return zettel.filter(z => z.type === 'anTechnik' || z.type === 'anAlle');
+    } else if (viewType === 'kulissen') {
+      return zettel.filter(z => z.type === 'anModeration' || z.type === 'anTechnik' || z.type === 'anAlle');
     }
     return zettel; // programmansicht zeigt alle
   };
@@ -463,6 +465,12 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                   <option value="anModeration">An Moderation</option>
                 )}
                 {viewType === 'programmansicht' && (
+                  <>
+                    <option value="anModeration">An Moderation</option>
+                    <option value="anTechnik">An Technik</option>
+                  </>
+                )}
+                {viewType === 'kulissen' && (
                   <>
                     <option value="anModeration">An Moderation</option>
                     <option value="anTechnik">An Technik</option>

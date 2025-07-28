@@ -305,14 +305,14 @@ function Navigation() {
           <NavLink to="/techniker" active={isActive('/techniker')}>
             Techniker
           </NavLink>
-          <NavLink to="/editor" active={isActive('/editor')}>
-            Programmpunkt Editor
-          </NavLink>
           <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
             Sitzungsablauf
           </NavLink>
           <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
             Programmansicht
+          </NavLink>
+          <NavLink to="/kulissen" active={isActive('/kulissen')}>
+            🎭 Kulissen
           </NavLink>
           <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
             Programm bearbeiten
@@ -373,14 +373,14 @@ function Navigation() {
         <MobileNavLink to="/techniker" active={isActive('/techniker')} onClick={handleMobileLinkClick}>
           🎛️ Techniker
         </MobileNavLink>
-        <MobileNavLink to="/editor" active={isActive('/editor')} onClick={handleMobileLinkClick}>
-          ✏️ Programmpunkt Editor
-        </MobileNavLink>
         <MobileNavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')} onClick={handleMobileLinkClick}>
           📱 Sitzungsablauf
         </MobileNavLink>
         <MobileNavLink to="/programmansicht" active={isActive('/programmansicht')} onClick={handleMobileLinkClick}>
           📋 Programmansicht
+        </MobileNavLink>
+        <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
+          🎭 Kulissen
         </MobileNavLink>
         <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
           🛠️ Programm bearbeiten

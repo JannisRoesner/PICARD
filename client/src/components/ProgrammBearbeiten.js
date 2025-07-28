@@ -179,6 +179,7 @@ function ProgrammBearbeiten() {
     dauer: '',
     trainer: '',
     betreuer: '',
+    buehne: '',
     einzugCD: false,
     auszugCD: false,
     namensliste: [],
@@ -200,6 +201,7 @@ function ProgrammBearbeiten() {
         dauer: selected.dauer?.toString() || '',
         trainer: selected.trainer || '',
         betreuer: selected.betreuer || '',
+        buehne: selected.buehne || '',
         einzugCD: !!selected.einzugCD,
         auszugCD: !!selected.auszugCD,
         namensliste: selected.namensliste || [],
@@ -262,6 +264,7 @@ function ProgrammBearbeiten() {
       dauer: '',
       trainer: '',
       betreuer: '',
+      buehne: '',
       einzugCD: false,
       auszugCD: false,
       namensliste: [],
@@ -290,6 +293,7 @@ function ProgrammBearbeiten() {
         dauer: parseInt(formData.dauer) || 0,
         trainer: formData.trainer,
         betreuer: formData.betreuer,
+        buehne: formData.buehne,
         einzugCD: formData.einzugCD,
         auszugCD: formData.auszugCD,
         namensliste: formData.namensliste
@@ -370,6 +374,14 @@ function ProgrammBearbeiten() {
 
             <Label>Betreuer</Label>
             <Input name="betreuer" value={formData.betreuer} onChange={handleInputChange} />
+
+            <Label>Bühne</Label>
+            <Input 
+              name="buehne" 
+              value={formData.buehne} 
+              onChange={handleInputChange} 
+              placeholder="z.B. Bütt, Notenständer, frei"
+            />
 
             <CheckboxRow>
               <label>
