@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTheme } from '../context/ThemeContext';
-import ThemeToggle from './ThemeToggle';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -359,7 +358,6 @@ function SitzungsAuswahl() {
 
   return (
     <Container>
-      <ThemeToggle />
       <Header>
         <Title>PICARD</Title>
       </Header>
