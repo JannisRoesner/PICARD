@@ -4,6 +4,7 @@ import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTimer } from '../context/TimerContext';
+import ZettelSystem from './ZettelSystem';
 
 const Container = styled.div`
   display: grid;
@@ -597,6 +598,7 @@ function TechnikerView() {
 
   return (
     <Container>
+      <ZettelSystem viewType="techniker" />
       <StatusBar>
         <StatusItem>
           <StatusLabel>Nummer:</StatusLabel>

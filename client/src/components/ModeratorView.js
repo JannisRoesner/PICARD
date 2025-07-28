@@ -4,6 +4,7 @@ import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTimer } from '../context/TimerContext';
+import ZettelSystem from './ZettelSystem';
 
 const Container = styled.div`
   display: grid;
@@ -417,6 +418,36 @@ function ModeratorView() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const handleZettelToProgrammpunkt = async (zettel) => {
+    try {
+      const programmpunktData = {
+        name: zettel.text,
+        typ: 'MODERATION',
+        einzugCD: false,
+        auszugCD: false,
+        trainer: '',
+        betreuer: '',
+        anmoderation: '',
+        abmoderation: '',
+        notizen: `Erstellt aus Zettel: ${zettel.text}`,
+        dauer: 300, // 5 Minuten Standard
+        lichtStimmung: 'Standard',
+        audioDateien: [],
+        namensliste: []
+      };
+
+      await axios.post(`/api/sitzung/${aktiveSitzung}/programmpunkt`, programmpunktData);
+      
+      // Zettel löschen nach erfolgreicher Erstellung
+      await axios.delete(`/api/sitzung/${aktiveSitzung}/zettel/${zettel.id}`);
+      
+      alert('Programmpunkt erfolgreich aus Zettel erstellt!');
+    } catch (error) {
+      console.error('Fehler beim Erstellen des Programmpunkts aus Zettel:', error);
+      alert('Fehler beim Erstellen des Programmpunkts');
+    }
+  };
+
 
 
   if (!aktiveSitzung) {
@@ -437,6 +468,7 @@ function ModeratorView() {
 
   return (
     <Container>
+      <ZettelSystem viewType="moderator" onZettelToProgrammpunkt={handleZettelToProgrammpunkt} />
       <StatusBar>
         <StatusItem>
           <StatusLabel>Nummer:</StatusLabel>

@@ -51,6 +51,9 @@ if (buildExists) {
 let sitzungen = new Map();
 let aktiveSitzung = null;
 
+// Zettel-System
+let zettel = new Map(); // sitzungId -> Array von Zetteln
+
 // Programmpunkt-Typen
 const TYPEN = {
   BUETTENREDE: 'BÜTTENREDE',
@@ -195,6 +198,65 @@ app.delete('/api/sitzung/:id/programmpunkt/:punktId', (req, res) => {
     programmpunkte: sitzung.programmpunkte 
   });
 
+  res.json({ success: true });
+});
+
+// Zettel API Routes
+app.get('/api/sitzung/:id/zettel', (req, res) => {
+  const sitzungId = req.params.id;
+  const zettelListe = zettel.get(sitzungId) || [];
+  res.json(zettelListe);
+});
+
+app.post('/api/sitzung/:id/zettel', (req, res) => {
+  const sitzungId = req.params.id;
+  const { text, type, priority, sender } = req.body;
+  
+  if (!sitzungId || !text || !type || !priority || !sender) {
+    return res.status(400).json({ error: 'Alle Felder sind erforderlich' });
+  }
+
+  const neuerZettel = {
+    id: uuidv4(),
+    text: text,
+    type: type, // 'anModeration', 'anTechnik', 'anAlle'
+    priority: priority, // 'normal', 'wichtig', 'dringend'
+    sender: sender, // 'moderator', 'techniker', 'programmansicht'
+    timestamp: new Date().toISOString(),
+    sitzungId: sitzungId
+  };
+
+  // Zettel zur Sitzung hinzufügen
+  if (!zettel.has(sitzungId)) {
+    zettel.set(sitzungId, []);
+  }
+  zettel.get(sitzungId).push(neuerZettel);
+
+  // Echtzeit-Update an alle verbundenen Clients
+  io.emit('zettelHinzugefuegt', { sitzungId, zettel: neuerZettel });
+  
+  res.json(neuerZettel);
+});
+
+app.delete('/api/sitzung/:id/zettel/:zettelId', (req, res) => {
+  const sitzungId = req.params.id;
+  const zettelId = req.params.zettelId;
+  
+  const zettelListe = zettel.get(sitzungId);
+  if (!zettelListe) {
+    return res.status(404).json({ error: 'Sitzung nicht gefunden' });
+  }
+
+  const zettelIndex = zettelListe.findIndex(z => z.id === zettelId);
+  if (zettelIndex === -1) {
+    return res.status(404).json({ error: 'Zettel nicht gefunden' });
+  }
+
+  zettelListe.splice(zettelIndex, 1);
+
+  // Echtzeit-Update
+  io.emit('zettelGeloescht', { sitzungId, zettelId });
+  
   res.json({ success: true });
 });
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTimer } from '../context/TimerContext';
+import ZettelSystem from './ZettelSystem';
 
 const Container = styled.div`
   max-width: 100%;
@@ -118,6 +119,28 @@ const AddButton = styled.button`
   &:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 12px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.4)')};
+  }
+`;
+
+const ZettelButton = styled.button`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: ${props => props.theme?.colors?.primary || '#fbbf24'};
+  color: #181818;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.4)')};
+  transition: all 0.2s ease;
+  z-index: 1000;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '50' : 'rgba(251,191,36,0.5)')};
   }
 `;
 
@@ -472,6 +495,12 @@ function Sitzungsablauf() {
           </ProgramItem>
         ))}
       </ProgramList>
+
+      <ZettelSystem viewType="programmansicht" />
+
+      <ZettelButton onClick={() => setShowModal(true)} title="Zettel erstellen">
+        📝
+      </ZettelButton>
 
       {showModal && (
         <Modal onClick={() => setShowModal(false)}>
