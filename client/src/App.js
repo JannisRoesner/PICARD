@@ -11,6 +11,7 @@ import TechnikerView from './components/TechnikerView';
 import Sitzungsablauf from './components/Sitzungsablauf';
 import Programmansicht from './components/Programmansicht';
 import KulissenView from './components/KulissenView';
+import DruckenView from './components/DruckenView';
 import Navigation from './components/Navigation';
 import ProgrammBearbeiten from './components/ProgrammBearbeiten';
 
@@ -149,11 +150,12 @@ function App() {
                   <Route path="/" element={<SitzungsAuswahl />} />
                   <Route path="/moderator" element={<ModeratorView />} />
                   <Route path="/techniker" element={<TechnikerView />} />
-                  <Route path="/programm-bearbeiten" element={<ProgrammBearbeiten />} />
-                  <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
-                  <Route path="/programmansicht" element={<Programmansicht />} />
-                  <Route path="/kulissen" element={<KulissenView />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
+                                      <Route path="/programm-bearbeiten" element={<ProgrammBearbeiten />} />
+                    <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
+                    <Route path="/programmansicht" element={<Programmansicht />} />
+                    <Route path="/kulissen" element={<KulissenView />} />
+                    <Route path="/drucken" element={<DruckenView />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </AppContainer>
             </Router>

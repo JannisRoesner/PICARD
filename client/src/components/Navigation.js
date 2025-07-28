@@ -311,12 +311,15 @@ function Navigation() {
           <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
             Programmansicht
           </NavLink>
-          <NavLink to="/kulissen" active={isActive('/kulissen')}>
-            Kulissen
-          </NavLink>
-          <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
-            Programm bearbeiten
-          </NavLink>
+                                      <NavLink to="/kulissen" active={isActive('/kulissen')}>
+                              Kulissen
+                            </NavLink>
+                            <NavLink to="/drucken" active={isActive('/drucken')}>
+                              Drucken
+                            </NavLink>
+                            <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
+                              Programm bearbeiten
+                            </NavLink>
         </NavLinks>
 
         <HamburgerButton onClick={handleMobileMenuToggle}>
@@ -379,12 +382,15 @@ function Navigation() {
         <MobileNavLink to="/programmansicht" active={isActive('/programmansicht')} onClick={handleMobileLinkClick}>
           📋 Programmansicht
         </MobileNavLink>
-        <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
-          Kulissen
-        </MobileNavLink>
-        <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
-          🛠️ Programm bearbeiten
-        </MobileNavLink>
+                                  <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
+                            Kulissen
+                          </MobileNavLink>
+                          <MobileNavLink to="/drucken" active={isActive('/drucken')} onClick={handleMobileLinkClick}>
+                            🖨️ Drucken
+                          </MobileNavLink>
+                          <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
+                            🛠️ Programm bearbeiten
+                          </MobileNavLink>
       </MobileNavLinks>
     </NavContainer>
   );
