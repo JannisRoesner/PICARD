@@ -572,6 +572,8 @@ function Sitzungsablauf() {
           </ModalContent>
         </Modal>
       )}
+
+      <ZettelSystem viewType="programmansicht" />
     </Container>
   );
 }
