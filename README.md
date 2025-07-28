@@ -1,39 +1,45 @@
-# Sitzungsmaster Web
+# PICARD - Programm- & Informations-Center für Ablauf-, Regie- & Moderation
 
-Eine moderne Webanwendung für digitale Moderationskarten bei Karnevalssitzungen mit erweiterten Funktionen für Echtzeit-Kollaboration.
+Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssitzungen und Veranstaltungen mit erweiterten Funktionen für Echtzeit-Kollaboration zwischen Moderation und Technik.
 
 ## 🎯 Features
 
 ### Moderator-Ansicht
-- **Programmablauf**: Übersicht aller Programmpunkte (links)
-- **Anmoderation**: Direkte Bearbeitung der Anmoderation (oben Mitte)
-- **Notizen**: Bearbeitbare Notizen (Mitte)
-- **Abmoderation**: Direkte Bearbeitung der Abmoderation (unten Mitte)
+- **Programmablauf**: Übersicht aller Programmpunkte mit Nummerierung (links)
+- **Live-Textbearbeitung**: Direkte Bearbeitung von Anmoderation, Notizen und Abmoderation
 - **Namensliste**: Personen, die auftreten (rechts)
-- **Statusleiste**: Aktiver Programmpunkt, Einzug/Auszug (CD/Kapelle)
+- **Statusleiste**: Aktiver Programmpunkt, Einzug/Auszug (CD/Kapelle), Timer
 - **Trainer/Betreuer**: Zuständige Personen (rechts unten)
-- **Live-Bearbeitung**: Texte können während der Sitzung angepasst werden
+- **Live-Zettel**: Kommunikation mit Technik und Programmansicht
+- **Zettel zu Programmpunkt**: Direkte Umwandlung von Zetteln in Programmpunkte
 
 ### Techniker-Ansicht
-- **Audio-Dateien**: Welche Dateien abzuspielen sind
-- **Lichtstimmung**: Gewünschte Lichtstimmung (Standard, Warm, Kalt, Dramatisch, Party)
+- **Programmablauf**: Übersicht aller Programmpunkte (links)
+- **Audio-Informationen**: Welche Dateien abzuspielen sind
+- **Licht-Informationen**: Mehrzeilige Eingabe für Lichtdetails
 - **Audio-Cues**: Bearbeitbare, zeitgesteuerte Audio-Events
 - **Licht-Cues**: Bearbeitbare, zeitgesteuerte Licht-Events
-- **Dauer-Anzeige**: Geschätzte Dauer des Programmpunkts
-- **Live-Cue-Management**: Cues können während der Sitzung hinzugefügt/geändert werden
+- **Statusleiste**: Aktiver Programmpunkt, Timer, technische Details
+- **Live-Zettel**: Kommunikation mit Moderation
+
+### Programmansicht (Mobile)
+- **Mobile-optimiert**: Übersichtliche Darstellung des Programmablaufs
+- **Live-Zettel**: Erstellung von Zetteln für Moderation und Technik
+- **Schwebender Button**: Einfacher Zugang zu Zettel-Funktionen
+- **Echtzeit-Updates**: Sofortige Anzeige von Änderungen
 
 ### Programmpunkt Editor (Desktop)
 - **Vollständige Eingabe**: Alle Felder für komplette Programmpunkte
-- **Quick-Actions**: Vorlagen für häufige Programmpunkt-Typen (Büttenrede, Marsch, etc.)
 - **Namensliste-Management**: Einfaches Hinzufügen/Entfernen von Namen
 - **Benutzerfreundlich**: Übersichtliches Formular mit Validierung
 
-### Sitzungsablauf (Smartphone)
+### Sitzungsablauf (Mobile Input)
 - **Mobile-optimiert**: Übersichtliche Darstellung des Programmablaufs
 - **Live-Einfügung**: Neue Programmpunkte an beliebigen Positionen
 - **Moderation-Typ**: Standardmäßig vom Typ "Moderation" mit 5 Minuten Dauer
 - **Einfache Eingabe**: Nur Name, Dauer und Notizen bearbeitbar
 - **Positionierung**: Einfügen vor/nach beliebigen Programmpunkten
+- **Live-Zettel**: Erstellung von Zetteln für alle Beteiligten
 
 ### Timer-Funktionen
 - **Automatischer Timer**: Startet automatisch bei Moderator-Auswahl eines Programmpunkts
@@ -41,16 +47,23 @@ Eine moderne Webanwendung für digitale Moderationskarten bei Karnevalssitzungen
 - **Live-Timer**: Countdown für Programmpunkte mit Start/Stop/Pause
 - **Aktuelle Uhrzeit**: Echtzeit-Anzeige in der Navigation
 - **Fortschrittsbalken**: Visueller Fortschritt des Timers
-- **Browser-Benachrichtigungen**: Warnungen bei 75% und 90% der Zeit
-- **Audio-Benachrichtigungen**: Signalton beim Ablaufen des Timers
 - **Farbkodierung**: Grün → Gelb → Rot je nach verbleibender Zeit
 - **Aktiver Programmpunkt**: Blinkende Markierung des aktuellen Programmpunkts
-- **Mobile Filterung**: Zeigt nur aktuelle und zukünftige Programmpunkte
+
+### Live-Zettel-System
+- **Bidirektionale Kommunikation**: Zwischen Moderation und Technik
+- **Prioritätsstufen**: Normal, Wichtig, Dringend mit Farbkodierung
+- **Zettel-Typen**: An Moderation, An Technik, An Alle
+- **Echtzeit-Updates**: Sofortige Anzeige neuer Zettel
+- **Zettel zu Programmpunkt**: Direkte Umwandlung in der Moderator-Ansicht
+- **Zeitstempel**: Automatische Zeitmarkierung aller Zettel
+- **Blink-Animation**: Für neue Zettel zur besseren Aufmerksamkeit
 
 ### Echtzeit-Funktionen
 - **Socket.IO**: Live-Updates zwischen allen verbundenen Clients
 - **Multi-User**: Mehrere Benutzer können gleichzeitig arbeiten
 - **Aktive Sitzung**: Zentrale Verwaltung der aktiven Sitzung
+- **Automatisches Speichern**: Änderungen werden automatisch gespeichert
 
 ## 🗄️ Datenhaltung
 
@@ -122,15 +135,17 @@ cd client
 npm start
 ```
 
-
-
 ## 📱 Verwendung
 
 1. Anwendung im Browser öffnen (`http://localhost:5000`)
 2. "Neue Sitzung erstellen" klicken und Namen vergeben
 3. Sitzung aktivieren und Programmpunkte verwalten
-4. Moderator- oder Techniker-Ansicht nutzen
-5. Mobile Ansicht für schnelle Eingaben verwenden
+4. Verschiedene Ansichten nutzen:
+   - **Moderator**: Für die Moderation während der Sitzung
+   - **Techniker**: Für die Bühnentechnik
+   - **Programmansicht**: Für Zuschauer und schnelle Zettel
+   - **Sitzungsablauf**: Für mobile Eingaben
+   - **Programmpunkt Editor**: Für detaillierte Programmpunkt-Erstellung
 
 ## 🏗️ Architektur
 
@@ -156,6 +171,9 @@ npm start
 - `DELETE /api/sitzung/:id/programmpunkt/:punktId` - Programmpunkt löschen
 - `POST /api/sitzung/:id/aktiv` - Sitzung aktivieren
 - `GET /api/aktive-sitzung` - Aktive Sitzung abrufen
+- `GET /api/sitzung/:id/zettel` - Zettel abrufen
+- `POST /api/sitzung/:id/zettel` - Zettel erstellen
+- `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel löschen
 
 ## 🎨 Design
 
@@ -163,6 +181,7 @@ npm start
 - **Farbkodierung**: Verschiedene Farben für verschiedene Informationstypen
 - **Responsive**: Funktioniert auf Desktop und Mobile
 - **Intuitive Navigation**: Klare Struktur und einfache Bedienung
+- **Live-Zettel**: Auffällige Darstellung mit Prioritätsfarben
 
 ## 🔧 Konfiguration
 
@@ -174,7 +193,7 @@ NODE_ENV=development         # Umgebung (development/production)
 
 ### Anpassungen
 - **Programmpunkt-Typen**: In `server.js` unter `TYPEN` anpassen
-- **Lichtstimmungen**: In `TechnikerView.js` unter `LightPreset` erweitern
+- **Licht-Informationen**: In `TechnikerView.js` unter `CueTextarea` erweitern
 - **Styling**: Über `styled-components` in den jeweiligen Komponenten
 
 ## 🚀 Deployment
@@ -185,11 +204,19 @@ NODE_ENV=development         # Umgebung (development/production)
 docker-compose up -d
 
 # Oder manuell mit Dockerfile
-docker build -t sitzungsmaster-web .
-docker run -p 5000:5000 sitzungsmaster-web
+docker build -t picard-web .
+docker run -p 5000:5000 picard-web
 ```
 
 ## 📝 Changelog
+
+### Version 2.0.0 (Aktuell)
+- **Live-Zettel-System**: Bidirektionale Kommunikation zwischen Moderation und Technik
+- **Programmansicht**: Neue Ansicht für Zuschauer und Zettel-Erstellung
+- **Verbesserte Techniker-Ansicht**: Mehrzeilige Licht-Informationen
+- **Zettel zu Programmpunkt**: Direkte Umwandlung in der Moderator-Ansicht
+- **Erweiterte Navigation**: Neue Menüpunkte und bessere Struktur
+- **Verbesserte UI**: Kleinere Schriftgrößen und optimierte Layouts
 
 ### Version 1.0.0
 - Initiale Web-Implementierung
@@ -198,7 +225,6 @@ docker run -p 5000:5000 sitzungsmaster-web
 - Mobile Input
 - Echtzeit-Updates
 - Responsive Design
-
 
 ## 📄 Lizenz
 
