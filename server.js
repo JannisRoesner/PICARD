@@ -124,6 +124,8 @@ app.post('/api/sitzung/:id/programmpunkt', (req, res) => {
     // NEU: Cues speichern
     audioCues: req.body.audioCues || [],
     lightCues: req.body.lightCues || [],
+    // NEU: Bühneninformationen für Kulissenschieber
+    buehne: req.body.buehne || 'Bühne: frei',
     erstellt: new Date().toISOString()
   };
 
