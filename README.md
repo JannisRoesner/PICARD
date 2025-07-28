@@ -22,19 +22,20 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Statusleiste**: Aktiver Programmpunkt, Timer, technische Details
 - **Live-Zettel**: Kommunikation mit Moderation
 
-### Programmansicht (Mobile)
-- **Mobile-optimiert**: Übersichtliche Darstellung des Programmablaufs
+### Programmansicht (Desktop)
+- **Übersichtliche Darstellung**: Reine Anzeige des Programmablaufs ohne Bearbeitung
 - **Live-Zettel**: Erstellung von Zetteln für Moderation und Technik
 - **Schwebender Button**: Einfacher Zugang zu Zettel-Funktionen
 - **Echtzeit-Updates**: Sofortige Anzeige von Änderungen
 
 ### Programmpunkt Editor (Desktop)
 - **Vollständige Eingabe**: Alle Felder für komplette Programmpunkte
+- **Quick-Actions**: Vorlagen für häufige Programmpunkt-Typen (Büttenrede, Marsch, etc.)
 - **Namensliste-Management**: Einfaches Hinzufügen/Entfernen von Namen
 - **Benutzerfreundlich**: Übersichtliches Formular mit Validierung
 
-### Sitzungsablauf (Mobile Input)
-- **Mobile-optimiert**: Übersichtliche Darstellung des Programmablaufs
+### Sitzungsablauf (Mobile)
+- **Mobile-optimiert**: Übersichtliche Darstellung des Programmablaufs für Smartphones
 - **Live-Einfügung**: Neue Programmpunkte an beliebigen Positionen
 - **Moderation-Typ**: Standardmäßig vom Typ "Moderation" mit 5 Minuten Dauer
 - **Einfache Eingabe**: Nur Name, Dauer und Notizen bearbeitbar
@@ -143,9 +144,10 @@ npm start
 4. Verschiedene Ansichten nutzen:
    - **Moderator**: Für die Moderation während der Sitzung
    - **Techniker**: Für die Bühnentechnik
-   - **Programmansicht**: Für Zuschauer und schnelle Zettel
-   - **Sitzungsablauf**: Für mobile Eingaben
+   - **Programmansicht**: Für Zuschauer und Übersicht (ohne Bearbeitung)
+   - **Sitzungsablauf**: Für mobile Eingaben auf Smartphones
    - **Programmpunkt Editor**: Für detaillierte Programmpunkt-Erstellung
+   - **Programm bearbeiten**: Für die Bearbeitung bestehender Programmpunkte
 
 ## 🏗️ Architektur
 

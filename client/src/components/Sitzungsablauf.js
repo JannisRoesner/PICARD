@@ -498,9 +498,7 @@ function Sitzungsablauf() {
 
       <ZettelSystem viewType="programmansicht" />
 
-      <ZettelButton onClick={() => setShowModal(true)} title="Zettel erstellen">
-        📝
-      </ZettelButton>
+
 
       {showModal && (
         <Modal onClick={() => setShowModal(false)}>

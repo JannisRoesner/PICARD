@@ -105,6 +105,28 @@ const ActionButton = styled.button`
   }
 `;
 
+const NewZettelButton = styled.button`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: ${props => props.theme?.colors?.primary || '#fbbf24'};
+  color: #181818;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '40' : 'rgba(251,191,36,0.4)')};
+  transition: all 0.2s ease;
+  z-index: 1000;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '50' : 'rgba(251,191,36,0.5)')};
+  }
+`;
+
 const ZettelModal = styled.div`
   position: fixed;
   top: 0;
@@ -223,7 +245,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     text: '',
-    type: 'anModeration',
+    type: viewType === 'moderator' ? 'anTechnik' : viewType === 'techniker' ? 'anModeration' : 'anModeration',
     priority: 'normal'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -289,7 +311,11 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
       });
       
       setShowModal(false);
-      setFormData({ text: '', type: 'anModeration', priority: 'normal' });
+      setFormData({ 
+        text: '', 
+        type: viewType === 'moderator' ? 'anTechnik' : viewType === 'techniker' ? 'anModeration' : 'anModeration', 
+        priority: 'normal' 
+      });
     } catch (error) {
       console.error('Fehler beim Erstellen des Zettels:', error);
       alert('Fehler beim Erstellen des Zettels');
@@ -342,14 +368,15 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
 
   const visibleZettel = getVisibleZettel();
 
-  if (!aktiveSitzung || visibleZettel.length === 0) {
+  if (!aktiveSitzung) {
     return null;
   }
 
   return (
     <>
-      <ZettelContainer>
-        {visibleZettel.map((zettelItem) => (
+      {visibleZettel.length > 0 && (
+        <ZettelContainer>
+          {visibleZettel.map((zettelItem) => (
           <ZettelCard 
             key={zettelItem.id}
             type={zettelItem.type}
@@ -378,9 +405,14 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
             </ZettelHeader>
             <ZettelText>{zettelItem.text}</ZettelText>
             <ZettelTimestamp>{formatTimestamp(zettelItem.timestamp)}</ZettelTimestamp>
-          </ZettelCard>
-        ))}
-      </ZettelContainer>
+                      </ZettelCard>
+          ))}
+        </ZettelContainer>
+      )}
+
+      <NewZettelButton onClick={() => setShowModal(true)} title="Neuen Zettel erstellen">
+        📝
+      </NewZettelButton>
 
       {showModal && (
         <ZettelModal onClick={() => setShowModal(false)}>
@@ -398,6 +430,12 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                 )}
                 {viewType === 'techniker' && (
                   <option value="anModeration">An Moderation</option>
+                )}
+                {viewType === 'programmansicht' && (
+                  <>
+                    <option value="anModeration">An Moderation</option>
+                    <option value="anTechnik">An Technik</option>
+                  </>
                 )}
                 <option value="anAlle">An Alle</option>
               </FormSelect>
