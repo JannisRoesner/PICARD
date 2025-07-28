@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { SitzungContext } from '../context/SitzungContext';
@@ -41,15 +41,42 @@ const ProgrammpunktItem = styled.div`
   background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') : '#232323'};
   color: ${props => props.active ? '#181818' : '#fff'};
   border-radius: 6px;
-  cursor: pointer;
+  cursor: ${props => props.isDragging ? 'grabbing' : 'grab'};
   font-weight: ${props => props.active ? 'bold' : 'normal'};
-  border: 1.5px solid transparent;
+  border: 1.5px solid ${props => {
+    if (props.isDragging) return props.theme?.colors?.primary || '#fbbf24';
+    if (props.active) return props.theme?.colors?.primary || '#fbbf24';
+    return 'transparent';
+  }};
   transition: all 0.2s;
+  transform: ${props => props.isDragging ? 'rotate(2deg) scale(1.02)' : 'none'};
+  box-shadow: ${props => props.isDragging ? '0 8px 25px rgba(0,0,0,0.3)' : 'none'};
+  user-select: none;
+  
   &:hover {
     border: 1.5px solid ${props => props.theme?.colors?.primary || '#fbbf24'};
     background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') : '#2d2d2d'};
     color: #181818;
   }
+`;
+
+const DragHandle = styled.div`
+  display: inline-block;
+  margin-right: 8px;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: grab;
+  
+  &:active {
+    cursor: grabbing;
+  }
+`;
+
+const ReorderInfo = styled.div`
+  color: #888;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+  font-style: italic;
 `;
 
 const Container = styled.div`
@@ -187,6 +214,10 @@ function ProgrammBearbeiten() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  
+  // Drag & Drop States
+  const [draggedItem, setDraggedItem] = useState(null);
+  const [dragOverItem, setDragOverItem] = useState(null);
 
   useEffect(() => {
     loadTypen();
@@ -331,18 +362,80 @@ function ProgrammBearbeiten() {
     }
   };
 
+  // Drag & Drop Funktionen
+  const handleDragStart = (e, index) => {
+    setDraggedItem(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    setDragOverItem(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverItem(null);
+  };
+
+  const handleDrop = async (e, dropIndex) => {
+    e.preventDefault();
+    if (draggedItem === null || draggedItem === dropIndex) {
+      setDraggedItem(null);
+      setDragOverItem(null);
+      return;
+    }
+
+    try {
+      const newProgrammpunkte = [...programmpunkte];
+      const draggedProgrammpunkt = newProgrammpunkte[draggedItem];
+      
+      // Entferne das gedraggte Element
+      newProgrammpunkte.splice(draggedItem, 1);
+      
+      // Füge es an der neuen Position ein
+      newProgrammpunkte.splice(dropIndex, 0, draggedProgrammpunkt);
+      
+      // Aktualisiere die Nummern
+      newProgrammpunkte.forEach((punkt, index) => {
+        punkt.nummer = index + 1;
+      });
+
+      // Sende die neue Reihenfolge an den Server
+      await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkte/reorder`, {
+        programmpunkte: newProgrammpunkte
+      });
+
+      setMessage('Reihenfolge erfolgreich geändert!');
+      await loadProgrammpunkte();
+    } catch (err) {
+      setMessage('Fehler beim Ändern der Reihenfolge!');
+      console.error('Fehler beim Reorder:', err);
+    }
+
+    setDraggedItem(null);
+    setDragOverItem(null);
+  };
+
   return (
     <PageContainer>
       <ProgrammlistePanel>
         <ProgrammlisteTitle>Programmablauf</ProgrammlisteTitle>
+        <ReorderInfo>💡 Ziehen Sie die Programmpunkte, um die Reihenfolge zu ändern</ReorderInfo>
         <Programmliste>
           {programmpunkte.length === 0 && <div style={{ color: '#888' }}>Keine Programmpunkte vorhanden</div>}
-          {programmpunkte.map(pp => (
+          {programmpunkte.map((pp, index) => (
             <ProgrammpunktItem
               key={pp.id}
               active={selected && selected.id === pp.id}
+              isDragging={draggedItem === index}
+              draggable
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, index)}
               onClick={() => setSelected(pp)}
             >
+              <DragHandle>⋮⋮</DragHandle>
               <div style={{ fontWeight: 'bold' }}>{pp.name}</div>
               <div style={{ fontSize: '0.95em', color: '#888' }}>{pp.typ} &bull; {pp.dauer ? pp.dauer + 's' : ''}</div>
             </ProgrammpunktItem>

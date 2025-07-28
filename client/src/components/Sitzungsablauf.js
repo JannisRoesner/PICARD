@@ -336,14 +336,16 @@ function Sitzungsablauf() {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
-    socket.on('programmpunktAktualisiert', handleProgrammpunktUpdate);
-    socket.on('programmpunktGeloescht', handleProgrammpunktUpdate);
+          socket.on('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
+      socket.on('programmpunktAktualisiert', handleProgrammpunktUpdate);
+      socket.on('programmpunktGeloescht', handleProgrammpunktUpdate);
+      socket.on('programmpunkteReordered', handleProgrammpunktUpdate);
 
     return () => {
-      socket.off('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
-      socket.off('programmpunktAktualisiert', handleProgrammpunktUpdate);
-      socket.off('programmpunktGeloescht', handleProgrammpunktUpdate);
+              socket.off('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
+        socket.off('programmpunktAktualisiert', handleProgrammpunktUpdate);
+        socket.off('programmpunktGeloescht', handleProgrammpunktUpdate);
+        socket.off('programmpunkteReordered', handleProgrammpunktUpdate);
     };
   }, [socket, aktiveSitzung]);
 

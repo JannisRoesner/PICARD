@@ -1,20 +1,20 @@
 # PICARD - Programm- & Informations-Center für Ablauf-, Regie- & Moderation
 
-Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssitzungen und Veranstaltungen mit erweiterten Funktionen für Echtzeit-Kollaboration zwischen Moderation und Technik.
+Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssitzungen mit Echtzeit-Kollaboration zwischen Moderation, Technik und Kulissen.
 
 ## 🎯 Features
 
 ### Moderator-Ansicht
-- **Programmablauf**: Übersicht aller Programmpunkte mit Nummerierung (links)
+- **Programmablauf**: Übersicht aller Programmpunkte mit Nummerierung
 - **Live-Textbearbeitung**: Direkte Bearbeitung von Anmoderation, Notizen und Abmoderation
-- **Namensliste**: Personen, die auftreten (rechts)
+- **Namensliste**: Personen, die auftreten
 - **Statusleiste**: Aktiver Programmpunkt, Einzug/Auszug (CD/Kapelle), Timer
-- **Trainer/Betreuer**: Zuständige Personen (rechts unten)
-- **Live-Zettel**: Kommunikation mit Technik und Programmansicht
+- **Trainer/Betreuer**: Zuständige Personen
+- **Live-Zettel**: Kommunikation mit Technik und anderen Ansichten
 - **Zettel zu Programmpunkt**: Direkte Umwandlung von Zetteln in Programmpunkte
 
 ### Techniker-Ansicht
-- **Programmablauf**: Übersicht aller Programmpunkte (links)
+- **Programmablauf**: Übersicht aller Programmpunkte
 - **Audio-Informationen**: Welche Dateien abzuspielen sind
 - **Licht-Informationen**: Mehrzeilige Eingabe für Lichtdetails
 - **Audio-Cues**: Bearbeitbare, zeitgesteuerte Audio-Events
@@ -22,66 +22,58 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Statusleiste**: Aktiver Programmpunkt, Timer, technische Details
 - **Live-Zettel**: Kommunikation mit Moderation
 
-### Programmansicht (Desktop)
+### Programmansicht
 - **Übersichtliche Darstellung**: Reine Anzeige des Programmablaufs ohne Bearbeitung
 - **Live-Zettel**: Erstellung von Zetteln für Moderation und Technik
-- **Schwebender Button**: Einfacher Zugang zu Zettel-Funktionen
-- **Echtzeit-Updates**: Sofortige Anzeige von Änderungen
+- **Schwebender Button**: Einfacher Zugang zu Zettel-Funktionen und Historie
 
-### Programmpunkt Editor (Desktop)
-- **Vollständige Eingabe**: Alle Felder für komplette Programmpunkte
-- **Quick-Actions**: Vorlagen für häufige Programmpunkt-Typen (Büttenrede, Marsch, etc.)
-- **Namensliste-Management**: Einfaches Hinzufügen/Entfernen von Namen
-- **Benutzerfreundlich**: Übersichtliches Formular mit Validierung
+### Kulissen-Ansicht
+- **Kulissen-Informationen**: Einzug/Auszug von CD oder Kapelle
+- **Bühnenaufbau**: Details zu Bütt, Notenständer oder anderen Bühnenrequisiten
+- **Live-Zettel**: Kommunikation mit anderen Ansichten
+- **Spezielle Anzeige**: Optimiert für Kulissenschieber
 
 ### Sitzungsablauf (Mobile)
-- **Mobile-optimiert**: Übersichtliche Darstellung des Programmablaufs für Smartphones
+- **Mobile-optimiert**: Übersichtliche Darstellung für Smartphones
 - **Live-Einfügung**: Neue Programmpunkte an beliebigen Positionen
-- **Moderation-Typ**: Standardmäßig vom Typ "Moderation" mit 5 Minuten Dauer
 - **Einfache Eingabe**: Nur Name, Dauer und Notizen bearbeitbar
-- **Positionierung**: Einfügen vor/nach beliebigen Programmpunkten
 - **Live-Zettel**: Erstellung von Zetteln für alle Beteiligten
 
+### Programm bearbeiten
+- **Vollständige Bearbeitung**: Alle Felder für komplette Programmpunkte
+- **Drag & Drop**: Reihenfolge durch Ziehen ändern
+- **Namensliste-Management**: Einfaches Hinzufügen/Entfernen von Namen
+- **Bühneninformationen**: Spezielle Felder für Kulissen
+
 ### Timer-Funktionen
-- **Automatischer Timer**: Startet automatisch bei Moderator-Auswahl eines Programmpunkts
-- **Synchronisation**: Timer ist zwischen Moderator und Techniker synchronisiert
+- **Automatischer Timer**: Startet automatisch bei Moderator-Auswahl
+- **Synchronisation**: Timer zwischen allen Ansichten synchronisiert
 - **Live-Timer**: Countdown für Programmpunkte mit Start/Stop/Pause
-- **Aktuelle Uhrzeit**: Echtzeit-Anzeige in der Navigation
-- **Fortschrittsbalken**: Visueller Fortschritt des Timers
 - **Farbkodierung**: Grün → Gelb → Rot je nach verbleibender Zeit
-- **Aktiver Programmpunkt**: Blinkende Markierung des aktuellen Programmpunkts
+- **Aktiver Programmpunkt**: Blinkende Markierung
 
 ### Live-Zettel-System
-- **Bidirektionale Kommunikation**: Zwischen Moderation und Technik
+- **Bidirektionale Kommunikation**: Zwischen allen Ansichten
 - **Prioritätsstufen**: Normal, Wichtig, Dringend mit Farbkodierung
 - **Zettel-Typen**: An Moderation, An Technik, An Alle
+- **Zettel-Historie**: Alle vergangenen Zettel einsehbar
+- **Zettel schließen**: Statt löschen werden Zettel als "geschlossen" markiert
 - **Echtzeit-Updates**: Sofortige Anzeige neuer Zettel
-- **Zettel zu Programmpunkt**: Direkte Umwandlung in der Moderator-Ansicht
-- **Zeitstempel**: Automatische Zeitmarkierung aller Zettel
-- **Blink-Animation**: Für neue Zettel zur besseren Aufmerksamkeit
 
 ### Echtzeit-Funktionen
 - **Socket.IO**: Live-Updates zwischen allen verbundenen Clients
 - **Multi-User**: Mehrere Benutzer können gleichzeitig arbeiten
-- **Aktive Sitzung**: Zentrale Verwaltung der aktiven Sitzung
 - **Automatisches Speichern**: Änderungen werden automatisch gespeichert
 
 ## 🗄️ Datenhaltung
 
-**Wichtig:** Aktuell werden alle Daten ausschließlich im Arbeitsspeicher (In-Memory) des Servers gehalten. Das bedeutet:
+**Wichtig:** Aktuell werden alle Daten im Arbeitsspeicher (In-Memory) gehalten. Das bedeutet:
 - **Daten gehen beim Neustart des Servers verloren!**
-- Es ist keine externe Datenbank angebunden.
-- Für produktive Nutzung oder dauerhafte Speicherung sollte eine echte Datenbank (z.B. MongoDB oder PostgreSQL) ergänzt werden.
+- Für produktive Nutzung sollte eine echte Datenbank ergänzt werden.
 
 ## 🚀 Installation & Betrieb
 
-### Option 1: Docker (empfohlen)
-
-#### Voraussetzungen
-- Docker Desktop für Windows installiert
-- Docker Compose verfügbar
-
-#### Schnellstart
+### Docker (empfohlen)
 ```bash
 # Container starten
 docker-compose up -d
@@ -90,50 +82,14 @@ docker-compose up -d
 # http://localhost:5000
 ```
 
-#### Wichtige Docker-Befehle
+### Lokale Installation
 ```bash
-# Container stoppen
-docker-compose down
-
-# Logs anzeigen
-docker-compose logs -f
-
-# Container neu starten
-docker-compose restart
-
-# Container und Images löschen
-docker-compose down --rmi all --volumes
-```
-
-### Option 2: Lokale Installation
-
-#### Voraussetzungen
-- Node.js (Version 14 oder höher)
-- npm oder yarn
-
-#### Manuelles Setup
-```bash
-# Backend Dependencies installieren
+# Dependencies installieren
 npm install
-
-# Frontend Dependencies installieren und bauen
-cd client
-npm install
-npm run build
-cd ..
+cd client && npm install && cd ..
 
 # Server starten
 node server.js
-```
-
-#### Entwicklungsserver (Alternative)
-```bash
-# Backend starten
-node server.js
-
-# In einem neuen Terminal: Frontend starten
-cd client
-npm start
 ```
 
 ## 📱 Verwendung
@@ -144,9 +100,9 @@ npm start
 4. Verschiedene Ansichten nutzen:
    - **Moderator**: Für die Moderation während der Sitzung
    - **Techniker**: Für die Bühnentechnik
-   - **Programmansicht**: Für Zuschauer und Übersicht (ohne Bearbeitung)
-   - **Sitzungsablauf**: Für mobile Eingaben auf Smartphones
-   - **Programmpunkt Editor**: Für detaillierte Programmpunkt-Erstellung
+   - **Programmansicht**: Für Zuschauer und Übersicht
+   - **Kulissen**: Für Kulissenschieber
+   - **Sitzungsablauf**: Für mobile Eingaben
    - **Programm bearbeiten**: Für die Bearbeitung bestehender Programmpunkte
 
 ## 🏗️ Architektur
@@ -154,7 +110,7 @@ npm start
 ### Backend (Node.js/Express)
 - **Express.js**: Web-Framework
 - **Socket.IO**: Echtzeit-Kommunikation
-- **In-Memory Storage**: Für Entwicklung (Datenverlust bei Neustart)
+- **In-Memory Storage**: Für Entwicklung
 
 ### Frontend (React)
 - **React 18**: UI-Framework
@@ -171,11 +127,10 @@ npm start
 - `POST /api/sitzung/:id/programmpunkt` - Programmpunkt hinzufügen
 - `PUT /api/sitzung/:id/programmpunkt/:punktId` - Programmpunkt aktualisieren
 - `DELETE /api/sitzung/:id/programmpunkt/:punktId` - Programmpunkt löschen
-- `POST /api/sitzung/:id/aktiv` - Sitzung aktivieren
-- `GET /api/aktive-sitzung` - Aktive Sitzung abrufen
+- `PUT /api/sitzung/:id/programmpunkte/reorder` - Reihenfolge ändern
 - `GET /api/sitzung/:id/zettel` - Zettel abrufen
 - `POST /api/sitzung/:id/zettel` - Zettel erstellen
-- `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel löschen
+- `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel schließen
 
 ## 🎨 Design
 
@@ -183,50 +138,21 @@ npm start
 - **Farbkodierung**: Verschiedene Farben für verschiedene Informationstypen
 - **Responsive**: Funktioniert auf Desktop und Mobile
 - **Intuitive Navigation**: Klare Struktur und einfache Bedienung
-- **Live-Zettel**: Auffällige Darstellung mit Prioritätsfarben
-
-## 🔧 Konfiguration
-
-### Umgebungsvariablen
-```bash
-PORT=5000                    # Server-Port (Standard: 5000)
-NODE_ENV=development         # Umgebung (development/production)
-```
-
-### Anpassungen
-- **Programmpunkt-Typen**: In `server.js` unter `TYPEN` anpassen
-- **Licht-Informationen**: In `TechnikerView.js` unter `CueTextarea` erweitern
-- **Styling**: Über `styled-components` in den jeweiligen Komponenten
-
-## 🚀 Deployment
-
-### Docker
-```bash
-# Mit Docker Compose (empfohlen)
-docker-compose up -d
-
-# Oder manuell mit Dockerfile
-docker build -t picard-web .
-docker run -p 5000:5000 picard-web
-```
 
 ## 📝 Changelog
 
-### Version 2.0.0 (Aktuell)
-- **Live-Zettel-System**: Bidirektionale Kommunikation zwischen Moderation und Technik
-- **Programmansicht**: Neue Ansicht für Zuschauer und Zettel-Erstellung
-- **Verbesserte Techniker-Ansicht**: Mehrzeilige Licht-Informationen
-- **Zettel zu Programmpunkt**: Direkte Umwandlung in der Moderator-Ansicht
-- **Erweiterte Navigation**: Neue Menüpunkte und bessere Struktur
-- **Verbesserte UI**: Kleinere Schriftgrößen und optimierte Layouts
+### Version 3.0.0 (Aktuell)
+- **Kulissen-Ansicht**: Neue Ansicht für Kulissenschieber mit Bühneninformationen
+- **Drag & Drop**: Reihenfolge-Änderung in "Programm bearbeiten"
+- **Zettel-Historie**: Alle vergangenen Zettel einsehbar
+- **Verbesserte Zettel-Logik**: Korrekte Filterung und Sichtbarkeit
+- **Bühneninformationen**: Neues Feld für Bühnenaufbau
+- **Einzug/Auszug-Anzeige**: "Von CD" vs "Von Kapelle"
 
-### Version 1.0.0
-- Initiale Web-Implementierung
-- Moderator-Ansicht
-- Techniker-Ansicht
-- Mobile Input
-- Echtzeit-Updates
-- Responsive Design
+### Version 2.0.0
+- **Live-Zettel-System**: Bidirektionale Kommunikation
+- **Programmansicht**: Neue Ansicht für Zuschauer
+- **Verbesserte Techniker-Ansicht**: Mehrzeilige Licht-Informationen
 
 ## 📄 Lizenz
 

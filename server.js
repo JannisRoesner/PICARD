@@ -203,6 +203,30 @@ app.delete('/api/sitzung/:id/programmpunkt/:punktId', (req, res) => {
   res.json({ success: true });
 });
 
+// Reorder Programmpunkte
+app.put('/api/sitzung/:id/programmpunkte/reorder', (req, res) => {
+  const sitzung = sitzungen.get(req.params.id);
+  if (!sitzung) {
+    return res.status(404).json({ error: 'Sitzung nicht gefunden' });
+  }
+
+  const { programmpunkte: neueReihenfolge } = req.body;
+  if (!neueReihenfolge || !Array.isArray(neueReihenfolge)) {
+    return res.status(400).json({ error: 'Ungültige Daten' });
+  }
+
+  // Aktualisiere die Reihenfolge
+  sitzung.programmpunkte = neueReihenfolge;
+
+  // Echtzeit-Update an alle verbundenen Clients
+  io.emit('programmpunkteReordered', { 
+    sitzungId: req.params.id, 
+    programmpunkte: sitzung.programmpunkte 
+  });
+
+  res.json({ success: true, programmpunkte: sitzung.programmpunkte });
+});
+
 // Zettel API Routes
 app.get('/api/sitzung/:id/zettel', (req, res) => {
   const sitzungId = req.params.id;
