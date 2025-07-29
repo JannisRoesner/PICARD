@@ -13,12 +13,16 @@ RUN apt-get update \
 
 WORKDIR /app
 
-# Alle Dateien kopieren
-COPY . .
+# Package.json-Dateien zuerst kopieren (für besseres Caching)
+COPY package*.json ./
+COPY client/package*.json ./client/
 
-# Dependencies installieren
-RUN npm install
-RUN cd client && npm install
+# Dependencies installieren (mit reduzierten Warnungen)
+RUN npm install --omit=dev --no-audit --no-fund --silent
+RUN cd client && npm install --omit=dev --no-audit --no-fund --silent
+
+# Alle anderen Dateien kopieren
+COPY . .
 
 # React-App builden
 RUN cd client && npm run build

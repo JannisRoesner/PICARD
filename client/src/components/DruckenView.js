@@ -143,118 +143,364 @@ function DruckenView() {
     }
   };
 
-  const printProgrammansicht = async () => {
-    try {
-      const response = await fetch(`/api/sitzung/${aktiveSitzung}/pdf/programmansicht`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('PDF-Generierung fehlgeschlagen');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `programmansicht-${sitzung.name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Fehler beim PDF-Download:', error);
-      alert('Fehler beim PDF-Download: ' + error.message);
-    }
+  // Lokale Druckfunktionen (wie vorher)
+  const printProgrammansicht = () => {
+    const currentYear = new Date().getFullYear();
+    const serverUrl = window.location.origin;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Programm - ${sitzung.name}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+            .programm-item { 
+              border: 1px solid #ccc; 
+              margin-bottom: 15px; 
+              padding: 15px; 
+              page-break-inside: avoid;
+            }
+            .nummer { 
+              background: #fbbf24; 
+              color: #000; 
+              width: 30px; 
+              height: 30px; 
+              border-radius: 50%; 
+              display: inline-flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-weight: bold;
+              margin-right: 10px;
+            }
+            .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+            .typ { color: #666; font-size: 14px; }
+            .dauer { color: #666; font-size: 14px; }
+            .footer {
+              position: fixed;
+              bottom: 10px;
+              left: 0;
+              right: 0;
+              text-align: center;
+              font-size: 8px;
+              color: #666;
+              border-top: 1px solid #ccc;
+              padding-top: 5px;
+            }
+            @media print {
+              body { margin: 0; }
+              .programm-item { border: 1px solid #000; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="title">${sitzung.name} ${currentYear}</div>
+          </div>
+          ${sitzung.programmpunkte.map(pp => `
+            <div class="programm-item">
+              <div>
+                <span class="nummer">${pp.nummer}</span>
+                <span class="name">${pp.name}</span>
+              </div>
+              <div class="typ">${pp.typ}</div>
+              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+            </div>
+          `).join('')}
+          <div class="footer">
+            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+          </div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
   };
 
-  const printKulissenView = async () => {
-    try {
-      const response = await fetch(`/api/sitzung/${aktiveSitzung}/pdf/kulissen`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('PDF-Generierung fehlgeschlagen');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `kulissen-${sitzung.name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Fehler beim PDF-Download:', error);
-      alert('Fehler beim PDF-Download: ' + error.message);
-    }
+  const printKulissenView = () => {
+    const currentYear = new Date().getFullYear();
+    const serverUrl = window.location.origin;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Kulissen - ${sitzung.name}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+            .programm-item { 
+              border: 1px solid #ccc; 
+              margin-bottom: 15px; 
+              padding: 15px; 
+              page-break-inside: avoid;
+            }
+            .nummer { 
+              background: #fbbf24; 
+              color: #000; 
+              width: 30px; 
+              height: 30px; 
+              border-radius: 50%; 
+              display: inline-flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-weight: bold;
+              margin-right: 10px;
+            }
+            .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+            .typ { color: #666; font-size: 14px; }
+            .dauer { color: #666; font-size: 14px; }
+            .kulissen-info { 
+              background: #f8f9fa; 
+              padding: 10px; 
+              border-radius: 5px; 
+              margin-top: 10px;
+            }
+            .kulissen-title { font-weight: bold; margin-bottom: 8px; }
+            .kulissen-item { margin-bottom: 5px; }
+            .footer {
+              position: fixed;
+              bottom: 10px;
+              left: 0;
+              right: 0;
+              text-align: center;
+              font-size: 8px;
+              color: #666;
+              border-top: 1px solid #ccc;
+              padding-top: 5px;
+            }
+            @media print {
+              body { margin: 0; }
+              .programm-item { border: 1px solid #000; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="title">${sitzung.name} ${currentYear} - Kulissen-Ansicht</div>
+          </div>
+          ${sitzung.programmpunkte.map(pp => `
+            <div class="programm-item">
+              <div>
+                <span class="nummer">${pp.nummer}</span>
+                <span class="name">${pp.name}</span>
+              </div>
+              <div class="typ">${pp.typ}</div>
+              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+              <div class="kulissen-info">
+                <div class="kulissen-title">🎭 Kulissen-Informationen</div>
+                <div class="kulissen-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                <div class="kulissen-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                <div class="kulissen-item">🎪 ${pp.buehne || 'Bühne: frei'}</div>
+              </div>
+            </div>
+          `).join('')}
+          <div class="footer">
+            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+          </div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
   };
 
-  const printModeratorView = async () => {
-    try {
-      const response = await fetch(`/api/sitzung/${aktiveSitzung}/pdf/moderator`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('PDF-Generierung fehlgeschlagen');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `moderator-${sitzung.name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Fehler beim PDF-Download:', error);
-      alert('Fehler beim PDF-Download: ' + error.message);
-    }
+  const printModeratorView = () => {
+    const currentYear = new Date().getFullYear();
+    const serverUrl = window.location.origin;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Moderator - ${sitzung.name}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+            .programm-item { 
+              border: 1px solid #ccc; 
+              margin-bottom: 15px; 
+              padding: 15px; 
+              page-break-inside: avoid;
+            }
+            .nummer { 
+              background: #fbbf24; 
+              color: #000; 
+              width: 30px; 
+              height: 30px; 
+              border-radius: 50%; 
+              display: inline-flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-weight: bold;
+              margin-right: 10px;
+            }
+            .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+            .typ { color: #666; font-size: 14px; }
+            .dauer { color: #666; font-size: 14px; }
+            .moderator-info { 
+              background: #f8f9fa; 
+              padding: 10px; 
+              border-radius: 5px; 
+              margin-top: 10px;
+            }
+            .moderator-title { font-weight: bold; margin-bottom: 8px; }
+            .moderator-item { margin-bottom: 5px; }
+            .footer {
+              position: fixed;
+              bottom: 10px;
+              left: 0;
+              right: 0;
+              text-align: center;
+              font-size: 8px;
+              color: #666;
+              border-top: 1px solid #ccc;
+              padding-top: 5px;
+            }
+            @media print {
+              body { margin: 0; }
+              .programm-item { border: 1px solid #000; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="title">${sitzung.name} ${currentYear} - Moderator-Ansicht</div>
+          </div>
+          ${sitzung.programmpunkte.map(pp => `
+            <div class="programm-item">
+              <div>
+                <span class="nummer">${pp.nummer}</span>
+                <span class="name">${pp.name}</span>
+              </div>
+              <div class="typ">${pp.typ}</div>
+              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+              <div class="moderator-info">
+                ${pp.anmoderation ? `<div class="moderator-item"><strong>Anmoderation:</strong> ${pp.anmoderation}</div>` : ''}
+                ${pp.abmoderation ? `<div class="moderator-item"><strong>Abmoderation:</strong> ${pp.abmoderation}</div>` : ''}
+                ${pp.notizen ? `<div class="moderator-item"><strong>Notizen:</strong> ${pp.notizen}</div>` : ''}
+                ${pp.trainer ? `<div class="moderator-item"><strong>Trainer:</strong> ${pp.trainer}</div>` : ''}
+                ${pp.betreuer ? `<div class="moderator-item"><strong>Betreuer:</strong> ${pp.betreuer}</div>` : ''}
+                ${pp.namensliste && pp.namensliste.length > 0 ? `<div class="moderator-item"><strong>Namensliste:</strong> ${pp.namensliste.join(', ')}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+          <div class="footer">
+            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+          </div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
   };
 
-  const printTechnikerView = async () => {
-    try {
-      const response = await fetch(`/api/sitzung/${aktiveSitzung}/pdf/techniker`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('PDF-Generierung fehlgeschlagen');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `techniker-${sitzung.name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Fehler beim PDF-Download:', error);
-      alert('Fehler beim PDF-Download: ' + error.message);
-    }
+  const printTechnikerView = () => {
+    const currentYear = new Date().getFullYear();
+    const serverUrl = window.location.origin;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Techniker - ${sitzung.name}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+            .programm-item { 
+              border: 1px solid #ccc; 
+              margin-bottom: 15px; 
+              padding: 15px; 
+              page-break-inside: avoid;
+            }
+            .nummer { 
+              background: #fbbf24; 
+              color: #000; 
+              width: 30px; 
+              height: 30px; 
+              border-radius: 50%; 
+              display: inline-flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-weight: bold;
+              margin-right: 10px;
+            }
+            .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+            .typ { color: #666; font-size: 14px; }
+            .dauer { color: #666; font-size: 14px; }
+            .techniker-info { 
+              background: #f8f9fa; 
+              padding: 10px; 
+              border-radius: 5px; 
+              margin-top: 10px;
+            }
+            .techniker-title { font-weight: bold; margin-bottom: 8px; }
+            .techniker-item { margin-bottom: 5px; }
+            .footer {
+              position: fixed;
+              bottom: 10px;
+              left: 0;
+              right: 0;
+              text-align: center;
+              font-size: 8px;
+              color: #666;
+              border-top: 1px solid #ccc;
+              padding-top: 5px;
+            }
+            @media print {
+              body { margin: 0; }
+              .programm-item { border: 1px solid #000; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="title">${sitzung.name} ${currentYear} - Techniker-Ansicht</div>
+          </div>
+          ${sitzung.programmpunkte.map(pp => `
+            <div class="programm-item">
+              <div>
+                <span class="nummer">${pp.nummer}</span>
+                <span class="name">${pp.name}</span>
+              </div>
+              <div class="typ">${pp.typ}</div>
+              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+              <div class="techniker-info">
+                ${pp.lichtStimmung ? `<div class="techniker-item"><strong>💡 Licht-Informationen:</strong> ${pp.lichtStimmung}</div>` : ''}
+                ${pp.audioDateien && pp.audioDateien.length > 0 ? `<div class="techniker-item"><strong>🎵 Audio-Informationen:</strong> ${pp.audioDateien.join(', ')}</div>` : ''}
+                ${pp.audioCues && pp.audioCues.length > 0 ? `<div class="techniker-item"><strong>🎵 Audio-Cues:</strong> ${pp.audioCues.map(cue => cue.text || cue).join(', ')}</div>` : ''}
+                ${pp.lightCues && pp.lightCues.length > 0 ? `<div class="techniker-item"><strong>💡 Licht-Cues:</strong> ${pp.lightCues.map(cue => cue.text || cue).join(', ')}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+          <div class="footer">
+            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+          </div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
   };
 
+  // Nur dieser Button läuft serverseitig
   const printAllViewsAsPDF = async () => {
     try {
       const response = await fetch(`/api/sitzung/${aktiveSitzung}/pdf/all`, {
@@ -272,7 +518,7 @@ function DruckenView() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `alle-ansichten-${sitzung.name}.pdf`;
+      a.download = `alle-ansichten-${sitzung.name}.zip`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

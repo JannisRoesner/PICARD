@@ -7,6 +7,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
+const archiver = require('archiver');
 
 const app = express();
 const server = http.createServer(app);
@@ -855,8 +856,17 @@ app.post('/api/sitzung/:id/pdf/all', async (req, res) => {
       { name: 'Techniker-Ansicht', html: generateTechnikerHTML(sitzung), landscape: true }
     ];
 
-    const pdfPages = [];
+    // ZIP-Archiv erstellen
+    const archive = archiver('zip', {
+      zlib: { level: 9 } // Maximale Kompression
+    });
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="alle-ansichten-${sitzung.name}.zip"`);
     
+    archive.pipe(res);
+
+    // Alle PDFs generieren und zum ZIP hinzufügen
     for (const view of views) {
       await page.setContent(view.html);
       const pdf = await page.pdf({
@@ -865,17 +875,13 @@ app.post('/api/sitzung/:id/pdf/all', async (req, res) => {
         landscape: view.landscape,
         margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
       });
-      pdfPages.push(pdf);
+      
+      // PDF zum ZIP hinzufügen
+      archive.append(pdf, { name: `${view.name.toLowerCase().replace(' ', '-')}-${sitzung.name}.pdf` });
     }
 
-    // PDFs zusammenführen (einfache Lösung: alle als separate Dateien)
-    // Für echte Zusammenführung würde man eine Bibliothek wie pdf-lib verwenden
-    
-    res.setHeader('Content-Type', 'application/zip');
-    res.setHeader('Content-Disposition', `attachment; filename="alle-ansichten-${sitzung.name}.zip"`);
-    
-    // Für jetzt: Erste PDF zurückgeben (später ZIP-Archiv)
-    res.send(pdfPages[0]);
+    await archive.finalize();
+    await browser.close();
   } catch (error) {
     console.error('PDF-Generierung Fehler:', error);
     res.status(500).json({ error: 'PDF-Generierung fehlgeschlagen' });
