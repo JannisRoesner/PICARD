@@ -5,77 +5,110 @@ import { useTheme } from '../context/ThemeContext';
 // Warp-Animation Keyframes
 const warpFly = keyframes`
   0% {
-    transform: translateX(0) scale(1);
+    transform: translateX(0) scale(1) rotate(0deg);
     opacity: 1;
+    filter: brightness(1);
   }
-  10% {
-    transform: translateX(10vw) scale(1.1);
+  15% {
+    transform: translateX(15vw) scale(1.2) rotate(5deg);
     opacity: 1;
-  }
-  20% {
-    transform: translateX(25vw) scale(1.2);
-    opacity: 0.9;
+    filter: brightness(1.2);
   }
   30% {
-    transform: translateX(40vw) scale(1.3);
+    transform: translateX(30vw) scale(1.4) rotate(10deg);
+    opacity: 0.9;
+    filter: brightness(1.4) hue-rotate(15deg);
+  }
+  45% {
+    transform: translateX(45vw) scale(1.6) rotate(15deg);
     opacity: 0.8;
-  }
-  40% {
-    transform: translateX(55vw) scale(1.4);
-    opacity: 0.7;
-  }
-  50% {
-    transform: translateX(70vw) scale(1.5);
-    opacity: 0.6;
+    filter: brightness(1.6) hue-rotate(30deg);
   }
   60% {
-    transform: translateX(85vw) scale(1.6);
-    opacity: 0.5;
+    transform: translateX(60vw) scale(1.8) rotate(20deg);
+    opacity: 0.7;
+    filter: brightness(1.8) hue-rotate(45deg);
   }
-  70% {
-    transform: translateX(100vw) scale(1.8);
-    opacity: 0.4;
-  }
-  80% {
-    transform: translateX(110vw) scale(2);
-    opacity: 0.3;
+  75% {
+    transform: translateX(75vw) scale(2) rotate(25deg);
+    opacity: 0.6;
+    filter: brightness(2) hue-rotate(60deg);
   }
   90% {
-    transform: translateX(120vw) scale(2.5);
-    opacity: 0.2;
+    transform: translateX(90vw) scale(2.2) rotate(30deg);
+    opacity: 0.5;
+    filter: brightness(2.2) hue-rotate(75deg);
   }
   100% {
-    transform: translateX(130vw) scale(3);
+    transform: translateX(100vw) scale(2.5) rotate(35deg);
     opacity: 0;
+    filter: brightness(2.5) hue-rotate(90deg);
   }
 `;
 
 const warpBlitz = keyframes`
   0% {
-    transform: translateX(130vw) scale(3);
+    transform: translateX(100vw) scale(2.5) rotate(35deg);
     opacity: 0;
-    filter: brightness(1);
+    filter: brightness(2.5) hue-rotate(90deg);
   }
-  50% {
-    transform: translateX(140vw) scale(4);
+  20% {
+    transform: translateX(110vw) scale(3) rotate(45deg);
     opacity: 1;
-    filter: brightness(3) hue-rotate(180deg);
+    filter: brightness(4) hue-rotate(180deg) saturate(2);
+  }
+  40% {
+    transform: translateX(120vw) scale(3.5) rotate(55deg);
+    opacity: 1;
+    filter: brightness(5) hue-rotate(270deg) saturate(3);
+  }
+  60% {
+    transform: translateX(130vw) scale(4) rotate(65deg);
+    opacity: 0.8;
+    filter: brightness(6) hue-rotate(360deg) saturate(4);
+  }
+  80% {
+    transform: translateX(140vw) scale(4.5) rotate(75deg);
+    opacity: 0.4;
+    filter: brightness(7) hue-rotate(450deg) saturate(5);
   }
   100% {
-    transform: translateX(150vw) scale(5);
+    transform: translateX(150vw) scale(5) rotate(90deg);
     opacity: 0;
-    filter: brightness(5) hue-rotate(360deg);
+    filter: brightness(8) hue-rotate(540deg) saturate(6);
   }
 `;
 
 const warpReturn = keyframes`
   0% {
-    transform: translateX(150vw) scale(5);
+    transform: translateX(-50vw) scale(0.5) rotate(-45deg);
     opacity: 0;
+    filter: brightness(2) hue-rotate(90deg);
+  }
+  20% {
+    transform: translateX(-40vw) scale(0.6) rotate(-36deg);
+    opacity: 0.2;
+    filter: brightness(1.8) hue-rotate(72deg);
+  }
+  40% {
+    transform: translateX(-30vw) scale(0.7) rotate(-27deg);
+    opacity: 0.4;
+    filter: brightness(1.6) hue-rotate(54deg);
+  }
+  60% {
+    transform: translateX(-20vw) scale(0.8) rotate(-18deg);
+    opacity: 0.6;
+    filter: brightness(1.4) hue-rotate(36deg);
+  }
+  80% {
+    transform: translateX(-10vw) scale(0.9) rotate(-9deg);
+    opacity: 0.8;
+    filter: brightness(1.2) hue-rotate(18deg);
   }
   100% {
-    transform: translateX(0) scale(1);
+    transform: translateX(0) scale(1) rotate(0deg);
     opacity: 1;
+    filter: brightness(1) hue-rotate(0deg);
   }
 `;
 
@@ -94,6 +127,7 @@ const LogoImage = styled.img`
   object-fit: contain;
   cursor: pointer;
   transition: all 0.3s ease;
+  transform-origin: center center;
   
   &:hover {
     transform: scale(1.1);
@@ -101,15 +135,15 @@ const LogoImage = styled.img`
   }
   
   &.warping {
-    animation: ${warpFly} 2s ease-in-out forwards;
+    animation: ${warpFly} 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
   
   &.warp-blixt {
-    animation: ${warpBlitz} 0.5s ease-out forwards;
+    animation: ${warpBlitz} 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
   
   &.warp-return {
-    animation: ${warpReturn} 0.3s ease-in forwards;
+    animation: ${warpReturn} 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 `;
 
@@ -133,29 +167,29 @@ function Logo() {
   const logoRef = useRef(null);
 
   const handleWarpClick = () => {
-    if (warpState !== 'idle') return; // Verhindert mehrfache Klicks
+    if (warpState !== 'idle') return;
     
     setWarpState('warping');
     
-    // Phase 1: Warp-Flug (2 Sekunden)
+    // Phase 1: Warp-Flug (1.5 Sekunden)
     setTimeout(() => {
       setWarpState('warp-blixt');
       
-      // Phase 2: Warp-Blitz (0.5 Sekunden)
+      // Phase 2: Warp-Blitz (0.8 Sekunden)
       setTimeout(() => {
         setWarpState('hidden');
         
-        // Phase 3: 5 Sekunden warten
+        // Phase 3: 3 Sekunden warten
         setTimeout(() => {
           setWarpState('warp-return');
           
-          // Phase 4: Zurückkehren (0.3 Sekunden)
+          // Phase 4: Zurückkehren (0.6 Sekunden)
           setTimeout(() => {
             setWarpState('idle');
-          }, 300);
-        }, 5000);
-      }, 500);
-    }, 2000);
+          }, 600);
+        }, 3000);
+      }, 800);
+    }, 1500);
   };
 
   if (isNewTheme && theme.logo.src) {

@@ -16,7 +16,8 @@
     "socket.io": "^4.7.2",
     "cors": "^2.8.5",
     "body-parser": "^1.20.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "puppeteer": "^21.5.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
