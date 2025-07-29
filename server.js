@@ -320,71 +320,48 @@ function generateProgrammansichtHTML(sitzung) {
   const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
   
   return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Programm - ${sitzung.name}</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .header { text-align: center; margin-bottom: 30px; }
-          .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-          .programm-item { 
-            border: 1px solid #ccc; 
-            margin-bottom: 15px; 
-            padding: 15px; 
-            page-break-inside: avoid;
-          }
-          .nummer { 
-            background: #fbbf24; 
-            color: #000; 
-            width: 30px; 
-            height: 30px; 
-            border-radius: 50%; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold;
-            margin-right: 10px;
-          }
-          .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
-          .typ { color: #666; font-size: 14px; }
-          .dauer { color: #666; font-size: 14px; }
-          .footer {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 8px;
-            color: #666;
-            border-top: 1px solid #ccc;
-            padding-top: 5px;
-          }
-          @media print {
-            body { margin: 0; }
-            .programm-item { border: 1px solid #000; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="title">${sitzung.name} ${currentYear}</div>
-        </div>
-        ${sitzung.programmpunkte.map(pp => `
-          <div class="programm-item">
-            <div>
-              <span class="nummer">${pp.nummer}</span>
-              <span class="name">${pp.name}</span>
-            </div>
-            <div class="typ">${pp.typ}</div>
-            <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+    <div class="page-break"></div>
+    <div class="header">
+      <div class="title">${sitzung.name} ${currentYear}</div>
+    </div>
+    <style>
+      .programmansicht .programm-item { 
+        border: 1px solid #ccc; 
+        margin-bottom: 15px; 
+        padding: 15px; 
+        page-break-inside: avoid;
+      }
+      .programmansicht .nummer { 
+        background: #fbbf24; 
+        color: #000; 
+        width: 30px; 
+        height: 30px; 
+        border-radius: 50%; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: bold;
+        margin-right: 10px;
+      }
+      .programmansicht .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+      .programmansicht .typ { color: #666; font-size: 14px; }
+      .programmansicht .dauer { color: #666; font-size: 14px; }
+    </style>
+    <div class="programmansicht">
+      ${sitzung.programmpunkte.map(pp => `
+        <div class="programm-item">
+          <div>
+            <span class="nummer">${pp.nummer}</span>
+            <span class="name">${pp.name}</span>
           </div>
-        `).join('')}
-        <div class="footer">
-          Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+          <div class="typ">${pp.typ}</div>
+          <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
         </div>
-      </body>
-    </html>
+      `).join('')}
+    </div>
+    <div class="footer">
+      Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+    </div>
   `;
 }
 
@@ -393,98 +370,74 @@ function generateKulissenHTML(sitzung) {
   const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
   
   return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Kulissen - ${sitzung.name}</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .header { text-align: center; margin-bottom: 30px; }
-          .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-          .programm-container { display: flex; }
-          .programm-left { flex: 1; }
-          .programm-right { flex: 1; margin-left: 20px; }
-          .programm-item { 
-            border: 1px solid #ccc; 
-            margin-bottom: 15px; 
-            padding: 15px; 
-            page-break-inside: avoid;
-          }
-          .nummer { 
-            background: #fbbf24; 
-            color: #000; 
-            width: 30px; 
-            height: 30px; 
-            border-radius: 50%; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold;
-            margin-right: 10px;
-          }
-          .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
-          .typ { color: #666; font-size: 14px; }
-          .dauer { color: #666; font-size: 14px; }
-          .kulissen-info { 
-            background: #f8f9fa; 
-            padding: 10px; 
-            border-radius: 5px; 
-            margin-top: 10px;
-          }
-          .kulissen-title { font-weight: bold; margin-bottom: 8px; }
-          .kulissen-item { margin-bottom: 5px; }
-          .footer {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 8px;
-            color: #666;
-            border-top: 1px solid #ccc;
-            padding-top: 5px;
-          }
-          @media print {
-            body { margin: 0; }
-            .programm-item { border: 1px solid #000; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="title">${sitzung.name} ${currentYear} - Kulissen-Ansicht</div>
-        </div>
-        <div class="programm-container">
+    <div class="page-break"></div>
+    <div class="header">
+      <div class="title">${sitzung.name} ${currentYear}</div>
+    </div>
+    <style>
+      @page { size: landscape; }
+      .kulissen-view .programm-item { 
+        border: 1px solid #ccc; 
+        margin-bottom: 12px; 
+        padding: 12px; 
+        page-break-inside: avoid;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .kulissen-view .programm-left {
+        flex: 1;
+        margin-right: 15px;
+      }
+      .kulissen-view .programm-right {
+        width: 200px;
+        background: #f5f5f5;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+      .kulissen-view .nummer { 
+        background: #fbbf24; 
+        color: #000; 
+        width: 25px; 
+        height: 25px; 
+        border-radius: 50%; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: bold;
+        margin-right: 8px;
+        font-size: 12px;
+      }
+      .kulissen-view .name { font-weight: bold; font-size: 16px; margin-bottom: 4px; }
+      .kulissen-view .typ { color: #666; font-size: 12px; margin-bottom: 4px; }
+      .kulissen-view .dauer { color: #666; font-size: 12px; }
+      .kulissen-view .kulissen-title { font-weight: bold; margin-bottom: 6px; font-size: 11px; }
+      .kulissen-view .kulissen-item { margin-bottom: 3px; }
+    </style>
+    <div class="kulissen-view">
+      ${sitzung.programmpunkte.map(pp => `
+        <div class="programm-item">
           <div class="programm-left">
-            ${sitzung.programmpunkte.map(pp => `
-              <div class="programm-item">
-                <div>
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
-                </div>
-                <div class="typ">${pp.typ}</div>
-                <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
-              </div>
-            `).join('')}
+            <div>
+              <span class="nummer">${pp.nummer}</span>
+              <span class="name">${pp.name}</span>
+            </div>
+            <div class="typ">${pp.typ}</div>
+            <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
           </div>
           <div class="programm-right">
-            ${sitzung.programmpunkte.map(pp => `
-              <div class="programm-item">
-                <div class="kulissen-info">
-                  <div class="kulissen-title">🎭 Kulissen-Informationen</div>
-                  <div class="kulissen-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                  <div class="kulissen-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                  <div class="kulissen-item">🎪 ${pp.buehne || 'Bühne: frei'}</div>
-                </div>
-              </div>
-            `).join('')}
+            <div class="kulissen-title">🎭 Kulissen-Info</div>
+            <div class="kulissen-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
+            <div class="kulissen-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
+            <div class="kulissen-item">🎪 ${pp.buehne || 'Bühne: frei'}</div>
           </div>
         </div>
-        <div class="footer">
-          Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
-        </div>
-      </body>
-    </html>
+      `).join('')}
+    </div>
+    <div class="footer">
+      Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+    </div>
   `;
 }
 
@@ -493,114 +446,98 @@ function generateModeratorHTML(sitzung) {
   const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
   
   return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Moderator - ${sitzung.name}</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .header { text-align: center; margin-bottom: 30px; }
-          .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-          .programm-container { display: flex; }
-          .programm-left { flex: 1; }
-          .programm-right { flex: 1; margin-left: 20px; }
-          .programm-item { 
-            border: 1px solid #ccc; 
-            margin-bottom: 15px; 
-            padding: 15px; 
-            page-break-inside: avoid;
-          }
-          .nummer { 
-            background: #fbbf24; 
-            color: #000; 
-            width: 30px; 
-            height: 30px; 
-            border-radius: 50%; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold;
-            margin-right: 10px;
-          }
-          .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
-          .typ { color: #666; font-size: 14px; }
-          .dauer { color: #666; font-size: 14px; }
-          .moderator-info { 
-            background: #f8f9fa; 
-            padding: 10px; 
-            border-radius: 5px; 
-            margin-top: 10px;
-          }
-          .moderator-title { font-weight: bold; margin-bottom: 8px; }
-          .moderator-item { margin-bottom: 5px; }
-          .right-title { font-weight: bold; margin-bottom: 10px; color: #fbbf24; }
-          .right-item { margin-bottom: 8px; }
-          .right-namensliste { margin-left: 10px; font-style: italic; }
-          .footer {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 8px;
-            color: #666;
-            border-top: 1px solid #ccc;
-            padding-top: 5px;
-          }
-          @media print {
-            body { margin: 0; }
-            .programm-item { border: 1px solid #000; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="title">${sitzung.name} ${currentYear} - Moderator-Ansicht</div>
-        </div>
-        <div class="programm-container">
-          <div class="programm-left">
-            ${sitzung.programmpunkte.map(pp => `
-              <div class="programm-item">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
-                  <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
-                  </span>
-                </div>
-                <div class="typ">${pp.typ}</div>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
-                </div>
-                <div class="moderator-info">
-                  ${pp.anmoderation ? `<div class="moderator-item"><strong>Anmoderation:</strong> ${pp.anmoderation}</div>` : ''}
-                  ${pp.abmoderation ? `<div class="moderator-item"><strong>Abmoderation:</strong> ${pp.abmoderation}</div>` : ''}
-                  ${pp.notizen ? `<div class="moderator-item"><strong>Notizen:</strong> ${pp.notizen}</div>` : ''}
-                </div>
-              </div>
-            `).join('')}
+    <div class="page-break"></div>
+    <div class="header">
+      <div class="title">${sitzung.name} ${currentYear}</div>
+    </div>
+    <style>
+      @page { size: landscape; }
+      .moderator-view .programm-item { 
+        border: 1px solid #ccc; 
+        margin-bottom: 15px; 
+        padding: 12px; 
+        page-break-inside: avoid;
+      }
+      .moderator-view .nummer { 
+        background: #fbbf24; 
+        color: #000; 
+        width: 25px; 
+        height: 25px; 
+        border-radius: 50%; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: bold;
+        margin-right: 8px;
+        font-size: 12px;
+      }
+      .moderator-view .name { font-weight: bold; font-size: 16px; margin-bottom: 6px; }
+      .moderator-view .typ { color: #666; font-size: 12px; margin-bottom: 6px; }
+      .moderator-view .dauer { color: #666; font-size: 12px; margin-bottom: 8px; }
+      .moderator-view .moderator-info { 
+        background: #f5f5f5; 
+        padding: 10px; 
+        border-radius: 5px; 
+        margin-top: 8px;
+      }
+      .moderator-view .moderator-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
+      .moderator-view .moderator-item { margin-bottom: 4px; font-size: 12px; }
+      .moderator-view .namensliste { 
+        background: #e8f4fd; 
+        padding: 6px; 
+        border-radius: 3px; 
+        margin-top: 4px;
+        font-size: 11px;
+      }
+      .moderator-view .moderation-text {
+        background: #fff3cd;
+        padding: 6px;
+        border-radius: 3px;
+        margin-top: 4px;
+        font-size: 11px;
+        border-left: 3px solid #ffc107;
+      }
+    </style>
+    <div class="moderator-view">
+      ${sitzung.programmpunkte.map(pp => `
+        <div class="programm-item">
+          <div>
+            <span class="nummer">${pp.nummer}</span>
+            <span class="name">${pp.name}</span>
           </div>
-          <div class="programm-right">
-            <div class="right-title">👥 Personen & Namenslisten</div>
-            ${sitzung.programmpunkte.map(pp => `
-              <div class="programm-item">
-                ${pp.trainer ? `<div class="right-item">👨‍🏫 Trainer: ${pp.trainer}</div>` : ''}
-                ${pp.betreuer ? `<div class="right-item">👨‍💼 Betreuer: ${pp.betreuer}</div>` : ''}
-                ${pp.namensliste && pp.namensliste.length > 0 ? `
-                  <div class="right-item">
-                    👥 Namensliste:
-                    <div class="right-namensliste">${pp.namensliste.join(', ')}</div>
-                  </div>
-                ` : ''}
+          <div class="typ">${pp.typ}</div>
+          <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+          <div class="moderator-info">
+            <div class="moderator-title">📝 Moderator-Informationen</div>
+            <div class="moderator-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
+            <div class="moderator-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
+            ${pp.trainer ? `<div class="moderator-item">👨‍🏫 Trainer: ${pp.trainer}</div>` : ''}
+            ${pp.betreuer ? `<div class="moderator-item">👨‍💼 Betreuer: ${pp.betreuer}</div>` : ''}
+            ${pp.namensliste && pp.namensliste.length > 0 ? `
+              <div class="moderator-item">
+                👥 Namensliste:
+                <div class="namensliste">${pp.namensliste.join(', ')}</div>
               </div>
-            `).join('')}
+            ` : ''}
+            <div class="moderator-item">
+              📝 Anmoderation:
+              <div class="moderation-text">${pp.anmoderation || 'Noch nicht erstellt'}</div>
+            </div>
+            <div class="moderator-item">
+              📝 Abmoderation:
+              <div class="moderation-text">${pp.abmoderation || 'Noch nicht erstellt'}</div>
+            </div>
+            <div class="moderator-item">
+              📝 Notizen:
+              <div class="moderation-text">${pp.notizen || 'Keine Notizen'}</div>
+            </div>
           </div>
         </div>
-        <div class="footer">
-          Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
-        </div>
-      </body>
-    </html>
+      `).join('')}
+    </div>
+    <div class="footer">
+      Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+    </div>
   `;
 }
 
@@ -609,121 +546,104 @@ function generateTechnikerHTML(sitzung) {
   const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
   
   return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Techniker - ${sitzung.name}</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .header { text-align: center; margin-bottom: 30px; }
-          .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-          .programm-container { display: flex; }
-          .programm-left { flex: 1; }
-          .programm-right { flex: 1; margin-left: 20px; }
-          .programm-item { 
-            border: 1px solid #ccc; 
-            margin-bottom: 15px; 
-            padding: 15px; 
-            page-break-inside: avoid;
-          }
-          .nummer { 
-            background: #fbbf24; 
-            color: #000; 
-            width: 30px; 
-            height: 30px; 
-            border-radius: 50%; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold;
-            margin-right: 10px;
-          }
-          .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
-          .typ { color: #666; font-size: 14px; }
-          .dauer { color: #666; font-size: 14px; }
-          .techniker-info { 
-            background: #f8f9fa; 
-            padding: 10px; 
-            border-radius: 5px; 
-            margin-top: 10px;
-          }
-          .techniker-title { font-weight: bold; margin-bottom: 8px; }
-          .techniker-item { margin-bottom: 5px; }
-          .right-title { font-weight: bold; margin-bottom: 10px; color: #fbbf24; }
-          .right-item { margin-bottom: 8px; }
-          .footer {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 8px;
-            color: #666;
-            border-top: 1px solid #ccc;
-            padding-top: 5px;
-          }
-          @media print {
-            body { margin: 0; }
-            .programm-item { border: 1px solid #000; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="title">${sitzung.name} ${currentYear} - Techniker-Ansicht</div>
-        </div>
-        <div class="programm-container">
-          <div class="programm-left">
-            ${sitzung.programmpunkte.map(pp => `
-              <div class="programm-item">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
-                  <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
-                  </span>
-                </div>
-                <div class="typ">${pp.typ}</div>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
-                </div>
-                <div class="techniker-info">
-                  ${pp.lichtStimmung ? `<div class="techniker-item"><strong>💡 Licht-Informationen:</strong> ${pp.lichtStimmung}</div>` : ''}
-                  ${pp.audioDateien && pp.audioDateien.length > 0 ? `<div class="techniker-item"><strong>🎵 Audio-Informationen:</strong> ${pp.audioDateien.join(', ')}</div>` : ''}
-                </div>
-              </div>
-            `).join('')}
+    <div class="page-break"></div>
+    <div class="header">
+      <div class="title">${sitzung.name} ${currentYear}</div>
+    </div>
+    <style>
+      @page { size: landscape; }
+      .techniker-view .programm-item { 
+        border: 1px solid #ccc; 
+        margin-bottom: 15px; 
+        padding: 12px; 
+        page-break-inside: avoid;
+      }
+      .techniker-view .nummer { 
+        background: #fbbf24; 
+        color: #000; 
+        width: 25px; 
+        height: 25px; 
+        border-radius: 50%; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: bold;
+        margin-right: 8px;
+        font-size: 12px;
+      }
+      .techniker-view .name { font-weight: bold; font-size: 16px; margin-bottom: 6px; }
+      .techniker-view .typ { color: #666; font-size: 12px; margin-bottom: 6px; }
+      .techniker-view .dauer { color: #666; font-size: 12px; margin-bottom: 8px; }
+      .techniker-view .techniker-info { 
+        background: #f5f5f5; 
+        padding: 10px; 
+        border-radius: 5px; 
+        margin-top: 8px;
+      }
+      .techniker-view .techniker-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
+      .techniker-view .techniker-item { margin-bottom: 4px; font-size: 12px; }
+      .techniker-view .audio-cues, .techniker-view .light-cues { 
+        background: #e8f4fd; 
+        padding: 6px; 
+        border-radius: 3px; 
+        margin-top: 4px;
+        font-family: monospace;
+        font-size: 11px;
+      }
+      .techniker-view .info-field {
+        background: #fff3cd;
+        padding: 6px;
+        border-radius: 3px;
+        margin-top: 4px;
+        font-size: 11px;
+        border-left: 3px solid #ffc107;
+      }
+    </style>
+    <div class="techniker-view">
+      ${sitzung.programmpunkte.map(pp => `
+        <div class="programm-item">
+          <div>
+            <span class="nummer">${pp.nummer}</span>
+            <span class="name">${pp.name}</span>
           </div>
-          <div class="programm-right">
-            <div class="right-title">🎛️ Technische Cues</div>
-            ${sitzung.programmpunkte.map(pp => `
-              <div class="programm-item">
-                ${pp.audioCues && pp.audioCues.length > 0 ? `
-                  <div class="right-item">
-                    <strong>🎵 Audio-Cues:</strong>
-                    <div style="margin-left: 10px;">${pp.audioCues.map(cue => cue.text || cue).join('<br>')}</div>
-                  </div>
-                ` : ''}
-                ${pp.lightCues && pp.lightCues.length > 0 ? `
-                  <div class="right-item">
-                    <strong>💡 Licht-Cues:</strong>
-                    <div style="margin-left: 10px;">${pp.lightCues.map(cue => cue.text || cue).join('<br>')}</div>
-                  </div>
-                ` : ''}
+          <div class="typ">${pp.typ}</div>
+          <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+          <div class="techniker-info">
+            <div class="techniker-title">🎛️ Techniker-Informationen</div>
+            <div class="techniker-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
+            <div class="techniker-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
+            <div class="techniker-item">
+              🔊 Audio-Informationen:
+              <div class="info-field">${pp.audioInfo || 'Keine Audio-Informationen'}</div>
+            </div>
+            <div class="techniker-item">
+              💡 Licht-Informationen:
+              <div class="info-field">${pp.lightInfo || 'Keine Licht-Informationen'}</div>
+            </div>
+            ${pp.audioCues && pp.audioCues.length > 0 ? `
+              <div class="techniker-item">
+                🔊 Audio-Cues:
+                <div class="audio-cues">${pp.audioCues.map(cue => cue.text || cue).join('<br>')}</div>
               </div>
-            `).join('')}
+            ` : ''}
+            ${pp.lightCues && pp.lightCues.length > 0 ? `
+              <div class="techniker-item">
+                💡 Licht-Cues:
+                <div class="light-cues">${pp.lightCues.map(cue => cue.text || cue).join('<br>')}</div>
+              </div>
+            ` : ''}
           </div>
         </div>
-        <div class="footer">
-          Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
-        </div>
-      </body>
-    </html>
+      `).join('')}
+    </div>
+    <div class="footer">
+      Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+    </div>
   `;
 }
 
 // PDF-Generierung Endpunkte
-app.post('/api/sitzung/:id/pdf/programmansicht', async (req, res) => {
+app.post('/api/sitzung/:id/pdf/all-in-one', async (req, res) => {
   try {
     const sitzung = sitzungen.get(req.params.id);
     if (!sitzung) {
@@ -733,8 +653,50 @@ app.post('/api/sitzung/:id/pdf/programmansicht', async (req, res) => {
     const browser = await initBrowser();
     const page = await browser.newPage();
     
-    const html = generateProgrammansichtHTML(sitzung);
-    await page.setContent(html);
+    const programmansichtHTML = generateProgrammansichtHTML(sitzung);
+    const kulissenHTML = generateKulissenHTML(sitzung);
+    const moderatorHTML = generateModeratorHTML(sitzung);
+    const technikerHTML = generateTechnikerHTML(sitzung);
+
+    const fullHtml = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Gesamtdokument - ${sitzung.name}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+            .footer {
+              position: fixed;
+              bottom: 10px;
+              left: 0;
+              right: 0;
+              text-align: center;
+              font-size: 8px;
+              color: #666;
+              border-top: 1px solid #ccc;
+              padding-top: 5px;
+            }
+            .page-break {
+              page-break-after: always;
+            }
+            @media print {
+              body { margin: 0; }
+              .programm-item { border: 1px solid #000 !important; }
+            }
+          </style>
+        </head>
+        <body>
+          ${programmansichtHTML}
+          ${kulissenHTML}
+          ${moderatorHTML}
+          ${technikerHTML}
+        </body>
+      </html>
+    `;
+    
+    await page.setContent(fullHtml);
     
     const pdf = await page.pdf({
       format: 'A4',
@@ -743,94 +705,7 @@ app.post('/api/sitzung/:id/pdf/programmansicht', async (req, res) => {
     });
 
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="programmansicht-${sitzung.name}.pdf"`);
-    res.send(pdf);
-  } catch (error) {
-    console.error('PDF-Generierung Fehler:', error);
-    res.status(500).json({ error: 'PDF-Generierung fehlgeschlagen' });
-  }
-});
-
-app.post('/api/sitzung/:id/pdf/kulissen', async (req, res) => {
-  try {
-    const sitzung = sitzungen.get(req.params.id);
-    if (!sitzung) {
-      return res.status(404).json({ error: 'Sitzung nicht gefunden' });
-    }
-
-    const browser = await initBrowser();
-    const page = await browser.newPage();
-    
-    const html = generateKulissenHTML(sitzung);
-    await page.setContent(html);
-    
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      landscape: true,
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
-    });
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="kulissen-${sitzung.name}.pdf"`);
-    res.send(pdf);
-  } catch (error) {
-    console.error('PDF-Generierung Fehler:', error);
-    res.status(500).json({ error: 'PDF-Generierung fehlgeschlagen' });
-  }
-});
-
-app.post('/api/sitzung/:id/pdf/moderator', async (req, res) => {
-  try {
-    const sitzung = sitzungen.get(req.params.id);
-    if (!sitzung) {
-      return res.status(404).json({ error: 'Sitzung nicht gefunden' });
-    }
-
-    const browser = await initBrowser();
-    const page = await browser.newPage();
-    
-    const html = generateModeratorHTML(sitzung);
-    await page.setContent(html);
-    
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      landscape: true,
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
-    });
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="moderator-${sitzung.name}.pdf"`);
-    res.send(pdf);
-  } catch (error) {
-    console.error('PDF-Generierung Fehler:', error);
-    res.status(500).json({ error: 'PDF-Generierung fehlgeschlagen' });
-  }
-});
-
-app.post('/api/sitzung/:id/pdf/techniker', async (req, res) => {
-  try {
-    const sitzung = sitzungen.get(req.params.id);
-    if (!sitzung) {
-      return res.status(404).json({ error: 'Sitzung nicht gefunden' });
-    }
-
-    const browser = await initBrowser();
-    const page = await browser.newPage();
-    
-    const html = generateTechnikerHTML(sitzung);
-    await page.setContent(html);
-    
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      landscape: true,
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
-    });
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="techniker-${sitzung.name}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="alle-ansichten-${sitzung.name}.pdf"`);
     res.send(pdf);
   } catch (error) {
     console.error('PDF-Generierung Fehler:', error);

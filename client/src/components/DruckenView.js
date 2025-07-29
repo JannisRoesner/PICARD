@@ -344,20 +344,6 @@ function DruckenView() {
               margin-bottom: 15px; 
               padding: 12px; 
               page-break-inside: avoid;
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-            }
-            .programm-left {
-              flex: 1;
-              margin-right: 15px;
-            }
-            .programm-right {
-              width: 250px;
-              background: #f5f5f5;
-              padding: 10px;
-              border-radius: 5px;
-              font-size: 12px;
             }
             .nummer { 
               background: #fbbf24; 
@@ -398,15 +384,6 @@ function DruckenView() {
               font-size: 11px;
               border-left: 3px solid #ffc107;
             }
-            .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
-            .right-item { margin-bottom: 6px; font-size: 11px; }
-            .right-namensliste { 
-              background: #e8f4fd; 
-              padding: 4px; 
-              border-radius: 3px; 
-              margin-top: 2px;
-              font-size: 10px;
-            }
             .footer {
               position: fixed;
               bottom: 10px;
@@ -430,42 +407,36 @@ function DruckenView() {
           </div>
           ${sitzung.programmpunkte.map(pp => `
             <div class="programm-item">
-              <div class="programm-left">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
-                  <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
-                  </span>
-                </div>
-                <div class="typ">${pp.typ}</div>
-                <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
-                <div class="moderator-info">
-                  <div class="moderator-title">📝 Moderator-Informationen</div>
-                  <div class="moderator-item">
-                    📝 Anmoderation:
-                    <div class="moderation-text">${pp.anmoderation || 'Noch nicht erstellt'}</div>
-                  </div>
-                  <div class="moderator-item">
-                    📝 Abmoderation:
-                    <div class="moderation-text">${pp.abmoderation || 'Noch nicht erstellt'}</div>
-                  </div>
-                  <div class="moderator-item">
-                    📝 Notizen:
-                    <div class="moderation-text">${pp.notizen || 'Keine Notizen'}</div>
-                  </div>
-                </div>
+              <div>
+                <span class="nummer">${pp.nummer}</span>
+                <span class="name">${pp.name}</span>
               </div>
-              <div class="programm-right">
-                <div class="right-title">👥 Personen & Namenslisten</div>
-                ${pp.trainer ? `<div class="right-item">👨‍🏫 Trainer: ${pp.trainer}</div>` : ''}
-                ${pp.betreuer ? `<div class="right-item">👨‍💼 Betreuer: ${pp.betreuer}</div>` : ''}
+              <div class="typ">${pp.typ}</div>
+              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+              <div class="moderator-info">
+                <div class="moderator-title">📝 Moderator-Informationen</div>
+                <div class="moderator-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                <div class="moderator-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                ${pp.trainer ? `<div class="moderator-item">👨‍🏫 Trainer: ${pp.trainer}</div>` : ''}
+                ${pp.betreuer ? `<div class="moderator-item">👨‍💼 Betreuer: ${pp.betreuer}</div>` : ''}
                 ${pp.namensliste && pp.namensliste.length > 0 ? `
-                  <div class="right-item">
+                  <div class="moderator-item">
                     👥 Namensliste:
-                    <div class="right-namensliste">${pp.namensliste.join(', ')}</div>
+                    <div class="namensliste">${pp.namensliste.join(', ')}</div>
                   </div>
                 ` : ''}
+                <div class="moderator-item">
+                  📝 Anmoderation:
+                  <div class="moderation-text">${pp.anmoderation || 'Noch nicht erstellt'}</div>
+                </div>
+                <div class="moderator-item">
+                  📝 Abmoderation:
+                  <div class="moderation-text">${pp.abmoderation || 'Noch nicht erstellt'}</div>
+                </div>
+                <div class="moderator-item">
+                  📝 Notizen:
+                  <div class="moderation-text">${pp.notizen || 'Keine Notizen'}</div>
+                </div>
               </div>
             </div>
           `).join('')}
@@ -498,20 +469,6 @@ function DruckenView() {
               margin-bottom: 15px; 
               padding: 12px; 
               page-break-inside: avoid;
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-            }
-            .programm-left {
-              flex: 1;
-              margin-right: 15px;
-            }
-            .programm-right {
-              width: 250px;
-              background: #f5f5f5;
-              padding: 10px;
-              border-radius: 5px;
-              font-size: 12px;
             }
             .nummer { 
               background: #fbbf24; 
@@ -545,16 +502,6 @@ function DruckenView() {
               font-family: monospace;
               font-size: 11px;
             }
-            .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
-            .right-item { margin-bottom: 6px; font-size: 11px; }
-            .right-cues { 
-              background: #e8f4fd; 
-              padding: 4px; 
-              border-radius: 3px; 
-              margin-top: 2px;
-              font-family: monospace;
-              font-size: 10px;
-            }
             .info-field {
               background: #fff3cd;
               padding: 6px;
@@ -563,142 +510,6 @@ function DruckenView() {
               font-size: 11px;
               border-left: 3px solid #ffc107;
             }
-            .footer {
-              position: fixed;
-              bottom: 10px;
-              left: 0;
-              right: 0;
-              text-align: center;
-              font-size: 8px;
-              color: #666;
-              border-top: 1px solid #ccc;
-              padding-top: 5px;
-            }
-            @media print {
-              body { margin: 0; }
-              .programm-item { border: 1px solid #000; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="title">${sitzung.name} ${currentYear}</div>
-          </div>
-          ${sitzung.programmpunkte.map(pp => `
-            <div class="programm-item">
-              <div class="programm-left">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
-                  <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
-                  </span>
-                </div>
-                <div class="typ">${pp.typ}</div>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
-                </div>
-                <div class="techniker-info">
-                  <div class="techniker-title">🎛️ Techniker-Informationen</div>
-                  <div class="techniker-item">
-                    🔊 Audio-Informationen:
-                    <div class="info-field">${pp.audioInfo || 'Keine Audio-Informationen'}</div>
-                  </div>
-                  <div class="techniker-item">
-                    💡 Licht-Informationen:
-                    <div class="info-field">${pp.lightInfo || 'Keine Licht-Informationen'}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="programm-right">
-                <div class="right-title">🎛️ Techniker-Cues</div>
-                ${pp.audioCues && pp.audioCues.length > 0 ? `
-                  <div class="right-item">
-                    🔊 Audio-Cues:
-                    <div class="right-cues">${pp.audioCues.map(cue => cue.text || cue).join('<br>')}</div>
-                  </div>
-                ` : ''}
-                ${pp.lightCues && pp.lightCues.length > 0 ? `
-                  <div class="right-item">
-                    💡 Licht-Cues:
-                    <div class="right-cues">${pp.lightCues.map(cue => cue.text || cue).join('<br>')}</div>
-                  </div>
-                ` : ''}
-              </div>
-            </div>
-          `).join('')}
-          <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
-          </div>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  };
-
-  const printAllViewsAsPDF = async () => {
-    const currentYear = new Date().getFullYear();
-    const serverUrl = window.location.origin;
-    
-    // Erstelle alle vier Ansichten nacheinander
-    const views = [
-      { name: 'Programmansicht', content: generateProgrammansichtHTML() },
-      { name: 'Kulissen-Ansicht', content: generateKulissenHTML() },
-      { name: 'Moderator-Ansicht', content: generateModeratorHTML() },
-      { name: 'Techniker-Ansicht', content: generateTechnikerHTML() }
-    ];
-
-    for (let i = 0; i < views.length; i++) {
-      const view = views[i];
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(view.content);
-      printWindow.document.close();
-      
-      // Warte kurz, dann drucke als PDF
-      setTimeout(() => {
-        printWindow.print();
-        // Schließe das Fenster nach dem Drucken
-        setTimeout(() => {
-          printWindow.close();
-        }, 1000);
-      }, 500);
-    }
-  };
-
-  const generateProgrammansichtHTML = () => {
-    const currentYear = new Date().getFullYear();
-    const serverUrl = window.location.origin;
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Programm - ${sitzung.name}</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .header { text-align: center; margin-bottom: 30px; }
-            .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-            .programm-item { 
-              border: 1px solid #ccc; 
-              margin-bottom: 15px; 
-              padding: 15px; 
-              page-break-inside: avoid;
-            }
-            .nummer { 
-              background: #fbbf24; 
-              color: #000; 
-              width: 30px; 
-              height: 30px; 
-              border-radius: 50%; 
-              display: inline-flex; 
-              align-items: center; 
-              justify-content: center; 
-              font-weight: bold;
-              margin-right: 10px;
-            }
-            .name { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
-            .typ { color: #666; font-size: 14px; }
-            .dauer { color: #666; font-size: 14px; }
             .footer {
               position: fixed;
               bottom: 10px;
@@ -728,394 +539,28 @@ function DruckenView() {
               </div>
               <div class="typ">${pp.typ}</div>
               <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
-            </div>
-          `).join('')}
-          <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
-          </div>
-        </body>
-      </html>
-    `;
-  };
-
-  const generateKulissenHTML = () => {
-    const currentYear = new Date().getFullYear();
-    const serverUrl = window.location.origin;
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Kulissen - ${sitzung.name}</title>
-          <style>
-            @page { size: landscape; }
-            body { font-family: Arial, sans-serif; margin: 15px; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-            .programm-item { 
-              border: 1px solid #ccc; 
-              margin-bottom: 12px; 
-              padding: 12px; 
-              page-break-inside: avoid;
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-            }
-            .programm-left {
-              flex: 1;
-              margin-right: 15px;
-            }
-            .programm-right {
-              width: 200px;
-              background: #f5f5f5;
-              padding: 8px;
-              border-radius: 4px;
-              font-size: 12px;
-            }
-            .nummer { 
-              background: #fbbf24; 
-              color: #000; 
-              width: 25px; 
-              height: 25px; 
-              border-radius: 50%; 
-              display: inline-flex; 
-              align-items: center; 
-              justify-content: center; 
-              font-weight: bold;
-              margin-right: 8px;
-              font-size: 12px;
-            }
-            .name { font-weight: bold; font-size: 16px; margin-bottom: 4px; }
-            .typ { color: #666; font-size: 12px; margin-bottom: 4px; }
-            .dauer { color: #666; font-size: 12px; }
-            .kulissen-title { font-weight: bold; margin-bottom: 6px; font-size: 11px; }
-            .kulissen-item { margin-bottom: 3px; }
-            .footer {
-              position: fixed;
-              bottom: 10px;
-              left: 0;
-              right: 0;
-              text-align: center;
-              font-size: 8px;
-              color: #666;
-              border-top: 1px solid #ccc;
-              padding-top: 5px;
-            }
-            @media print {
-              body { margin: 0; }
-              .programm-item { border: 1px solid #000; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="title">${sitzung.name} ${currentYear}</div>
-          </div>
-          ${sitzung.programmpunkte.map(pp => `
-            <div class="programm-item">
-              <div class="programm-left">
-                <div>
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
+              <div class="techniker-info">
+                <div class="techniker-title">🎛️ Techniker-Informationen</div>
+                <div class="techniker-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                <div class="techniker-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                <div class="techniker-item">
+                  🔊 Audio-Informationen:
+                  <div class="info-field">${pp.audioInfo || 'Keine Audio-Informationen'}</div>
                 </div>
-                <div class="typ">${pp.typ}</div>
-                <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
-              </div>
-              <div class="programm-right">
-                <div class="kulissen-title">🎭 Kulissen-Info</div>
-                <div class="kulissen-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                <div class="kulissen-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                <div class="kulissen-item">🎪 ${pp.buehne || 'Bühne: frei'}</div>
-              </div>
-            </div>
-          `).join('')}
-          <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
-          </div>
-        </body>
-      </html>
-    `;
-  };
-
-  const generateModeratorHTML = () => {
-    const currentYear = new Date().getFullYear();
-    const serverUrl = window.location.origin;
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Moderator - ${sitzung.name}</title>
-          <style>
-            @page { size: landscape; }
-            body { font-family: Arial, sans-serif; margin: 15px; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-            .programm-item { 
-              border: 1px solid #ccc; 
-              margin-bottom: 15px; 
-              padding: 12px; 
-              page-break-inside: avoid;
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-            }
-            .programm-left {
-              flex: 1;
-              margin-right: 15px;
-            }
-            .programm-right {
-              width: 250px;
-              background: #f5f5f5;
-              padding: 10px;
-              border-radius: 5px;
-              font-size: 12px;
-            }
-            .nummer { 
-              background: #fbbf24; 
-              color: #000; 
-              width: 25px; 
-              height: 25px; 
-              border-radius: 50%; 
-              display: inline-flex; 
-              align-items: center; 
-              justify-content: center; 
-              font-weight: bold;
-              margin-right: 8px;
-              font-size: 12px;
-            }
-            .name { font-weight: bold; font-size: 16px; margin-bottom: 6px; }
-            .typ { color: #666; font-size: 12px; margin-bottom: 6px; }
-            .dauer { color: #666; font-size: 12px; margin-bottom: 8px; }
-            .moderator-info { 
-              background: #f5f5f5; 
-              padding: 10px; 
-              border-radius: 5px; 
-              margin-top: 8px;
-            }
-            .moderator-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
-            .moderator-item { margin-bottom: 4px; font-size: 12px; }
-            .moderation-text {
-              background: #fff3cd;
-              padding: 6px;
-              border-radius: 3px;
-              margin-top: 4px;
-              font-size: 11px;
-              border-left: 3px solid #ffc107;
-            }
-            .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
-            .right-item { margin-bottom: 6px; font-size: 11px; }
-            .right-namensliste { 
-              background: #e8f4fd; 
-              padding: 4px; 
-              border-radius: 3px; 
-              margin-top: 2px;
-              font-size: 10px;
-            }
-            .footer {
-              position: fixed;
-              bottom: 10px;
-              left: 0;
-              right: 0;
-              text-align: center;
-              font-size: 8px;
-              color: #666;
-              border-top: 1px solid #ccc;
-              padding-top: 5px;
-            }
-            @media print {
-              body { margin: 0; }
-              .programm-item { border: 1px solid #000; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="title">${sitzung.name} ${currentYear}</div>
-          </div>
-          ${sitzung.programmpunkte.map(pp => `
-            <div class="programm-item">
-              <div class="programm-left">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
-                  <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
-                  </span>
+                <div class="techniker-item">
+                  💡 Licht-Informationen:
+                  <div class="info-field">${pp.lightInfo || 'Keine Licht-Informationen'}</div>
                 </div>
-                <div class="typ">${pp.typ}</div>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
-                </div>
-                <div class="moderator-info">
-                  <div class="moderator-title">📝 Moderator-Informationen</div>
-                  <div class="moderator-item">
-                    📝 Anmoderation:
-                    <div class="moderation-text">${pp.anmoderation || 'Noch nicht erstellt'}</div>
-                  </div>
-                  <div class="moderator-item">
-                    📝 Abmoderation:
-                    <div class="moderation-text">${pp.abmoderation || 'Noch nicht erstellt'}</div>
-                  </div>
-                  <div class="moderator-item">
-                    📝 Notizen:
-                    <div class="moderation-text">${pp.notizen || 'Keine Notizen'}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="programm-right">
-                <div class="right-title">👥 Personen & Namenslisten</div>
-                ${pp.trainer ? `<div class="right-item">👨‍🏫 Trainer: ${pp.trainer}</div>` : ''}
-                ${pp.betreuer ? `<div class="right-item">👨‍💼 Betreuer: ${pp.betreuer}</div>` : ''}
-                ${pp.namensliste && pp.namensliste.length > 0 ? `
-                  <div class="right-item">
-                    👥 Namensliste:
-                    <div class="right-namensliste">${pp.namensliste.join(', ')}</div>
-                  </div>
-                ` : ''}
-              </div>
-            </div>
-          `).join('')}
-          <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
-          </div>
-        </body>
-      </html>
-    `;
-  };
-
-  const generateTechnikerHTML = () => {
-    const currentYear = new Date().getFullYear();
-    const serverUrl = window.location.origin;
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Techniker - ${sitzung.name}</title>
-          <style>
-            @page { size: landscape; }
-            body { font-family: Arial, sans-serif; margin: 15px; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-            .programm-item { 
-              border: 1px solid #ccc; 
-              margin-bottom: 15px; 
-              padding: 12px; 
-              page-break-inside: avoid;
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-            }
-            .programm-left {
-              flex: 1;
-              margin-right: 15px;
-            }
-            .programm-right {
-              width: 250px;
-              background: #f5f5f5;
-              padding: 10px;
-              border-radius: 5px;
-              font-size: 12px;
-            }
-            .nummer { 
-              background: #fbbf24; 
-              color: #000; 
-              width: 25px; 
-              height: 25px; 
-              border-radius: 50%; 
-              display: inline-flex; 
-              align-items: center; 
-              justify-content: center; 
-              font-weight: bold;
-              margin-right: 8px;
-              font-size: 12px;
-            }
-            .name { font-weight: bold; font-size: 16px; margin-bottom: 6px; }
-            .typ { color: #666; font-size: 12px; margin-bottom: 6px; }
-            .dauer { color: #666; font-size: 12px; margin-bottom: 8px; }
-            .techniker-info { 
-              background: #f5f5f5; 
-              padding: 10px; 
-              border-radius: 5px; 
-              margin-top: 8px;
-            }
-            .techniker-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
-            .techniker-item { margin-bottom: 4px; font-size: 12px; }
-            .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
-            .right-item { margin-bottom: 6px; font-size: 11px; }
-            .right-cues { 
-              background: #e8f4fd; 
-              padding: 4px; 
-              border-radius: 3px; 
-              margin-top: 2px;
-              font-family: monospace;
-              font-size: 10px;
-            }
-            .info-field {
-              background: #fff3cd;
-              padding: 6px;
-              border-radius: 3px;
-              margin-top: 4px;
-              font-size: 11px;
-              border-left: 3px solid #ffc107;
-            }
-            .footer {
-              position: fixed;
-              bottom: 10px;
-              left: 0;
-              right: 0;
-              text-align: center;
-              font-size: 8px;
-              color: #666;
-              border-top: 1px solid #ccc;
-              padding-top: 5px;
-            }
-            @media print {
-              body { margin: 0; }
-              .programm-item { border: 1px solid #000; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="title">${sitzung.name} ${currentYear}</div>
-          </div>
-          ${sitzung.programmpunkte.map(pp => `
-            <div class="programm-item">
-              <div class="programm-left">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="nummer">${pp.nummer}</span>
-                  <span class="name">${pp.name}</span>
-                  <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
-                  </span>
-                </div>
-                <div class="typ">${pp.typ}</div>
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
-                </div>
-                <div class="techniker-info">
-                  <div class="techniker-title">🎛️ Techniker-Informationen</div>
-                  <div class="techniker-item">
-                    🔊 Audio-Informationen:
-                    <div class="info-field">${pp.audioInfo || 'Keine Audio-Informationen'}</div>
-                  </div>
-                  <div class="techniker-item">
-                    💡 Licht-Informationen:
-                    <div class="info-field">${pp.lightInfo || 'Keine Licht-Informationen'}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="programm-right">
-                <div class="right-title">🎛️ Techniker-Cues</div>
                 ${pp.audioCues && pp.audioCues.length > 0 ? `
-                  <div class="right-item">
+                  <div class="techniker-item">
                     🔊 Audio-Cues:
-                    <div class="right-cues">${pp.audioCues.map(cue => cue.text || cue).join('<br>')}</div>
+                    <div class="audio-cues">${pp.audioCues.map(cue => cue.text || cue).join('<br>')}</div>
                   </div>
                 ` : ''}
                 ${pp.lightCues && pp.lightCues.length > 0 ? `
-                  <div class="right-item">
+                  <div class="techniker-item">
                     💡 Licht-Cues:
-                    <div class="right-cues">${pp.lightCues.map(cue => cue.text || cue).join('<br>')}</div>
+                    <div class="light-cues">${pp.lightCues.map(cue => cue.text || cue).join('<br>')}</div>
                   </div>
                 ` : ''}
               </div>
@@ -1126,7 +571,37 @@ function DruckenView() {
           </div>
         </body>
       </html>
-    `;
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const printAllViewsAsPDF = async () => {
+    try {
+      const response = await fetch(`/api/sitzung/${aktiveSitzung}/pdf/all-in-one`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('PDF-Generierung fehlgeschlagen');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `alle-ansichten-${sitzung.name}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Fehler beim PDF-Download:', error);
+      alert('Fehler beim PDF-Download: ' + error.message);
+    }
   };
 
   if (loading) {
@@ -1165,7 +640,7 @@ function DruckenView() {
         <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</div>
         <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Alle Ansichten als PDF speichern</div>
         <div style={{ fontSize: '0.9rem', opacity: 0.9, textAlign: 'center' }}>
-          Erstellt automatisch alle vier Ansichten als PDF-Dateien
+          Erstellt ein einzelnes PDF mit allen vier Ansichten
         </div>
       </AllInOneButton>
       
