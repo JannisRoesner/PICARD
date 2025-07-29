@@ -238,11 +238,6 @@ function KulissenView() {
 
   return (
     <Container>
-      <Header>
-        <Title>🎭 Kulissen-Ansicht</Title>
-        <Subtitle>Übersicht für Kulissenschieber - Ein-/Auszug und Bühnenaufbau</Subtitle>
-      </Header>
-
       <ProgramList>
         {visibleProgrammpunkte.map((programmpunkt) => (
           <ProgramItem

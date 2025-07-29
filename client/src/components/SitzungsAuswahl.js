@@ -362,18 +362,17 @@ function SitzungsAuswahl() {
 
 
   if (loading && (!sitzungen || sitzungen.length === 0)) {
-    return (
-      <Container>
-        <Header>
-          <LogoContainer>
-            <Logo />
-          </LogoContainer>
-          <Title>PICARD</Title>
-          <Subtitle>Sitzungsverwaltung & Programmsteuerung</Subtitle>
-        </Header>
-        <LoadingMessage>Sitzungen werden geladen...</LoadingMessage>
-      </Container>
-    );
+          return (
+        <Container>
+          <Header>
+            <LogoContainer>
+              <Logo />
+            </LogoContainer>
+            <Subtitle>Sitzungsverwaltung & Programmsteuerung</Subtitle>
+          </Header>
+          <LoadingMessage>Sitzungen werden geladen...</LoadingMessage>
+        </Container>
+      );
   }
 
   return (
@@ -382,7 +381,6 @@ function SitzungsAuswahl() {
         <LogoContainer>
           <Logo />
         </LogoContainer>
-        <Title>PICARD</Title>
         <Subtitle>Sitzungsverwaltung & Programmsteuerung</Subtitle>
       </Header>
 
