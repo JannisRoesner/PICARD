@@ -470,7 +470,7 @@ function ModeratorView() {
 
   return (
     <Container>
-      <ZettelSystem viewType="moderator" onZettelToProgrammpunkt={handleZettelToProgrammpunkt} />
+      <ZettelSystem viewType="moderation" onZettelToProgrammpunkt={handleZettelToProgrammpunkt} />
       <StatusBar>
         <StatusItem>
           <StatusLabel>Nummer:</StatusLabel>

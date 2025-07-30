@@ -312,9 +312,8 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
   };
 
   const handleZettelUpdate = (data) => {
-    if (data.sitzungId === aktiveSitzung) {
-      loadZettel();
-    }
+    // Lade Zettel neu bei jedem Update
+    loadZettel();
   };
 
   const handleSubmit = async (e) => {

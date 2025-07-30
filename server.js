@@ -234,14 +234,17 @@ app.get('/api/sitzung/:id/zettel', (req, res) => {
 });
 
 app.post('/api/sitzung/:id/zettel', (req, res) => {
-  const { text, type } = req.body;
+  const { text, type, priority, sender } = req.body;
   const zettelListe = zettel.get(req.params.id) || [];
   
   const neuerZettel = {
     id: uuidv4(),
     text,
-    type: type || 'info',
-    timestamp: new Date().toISOString()
+    type: type || 'anAlle',
+    priority: priority || 'normal',
+    sender: sender || 'unknown',
+    timestamp: new Date().toISOString(),
+    geschlossen: false
   };
   
   zettelListe.push(neuerZettel);
@@ -261,11 +264,15 @@ app.delete('/api/sitzung/:id/zettel/:zettelId', (req, res) => {
     return res.status(404).json({ error: 'Zettel nicht gefunden' });
   }
   
-  zettelListe.splice(zettelIndex, 1);
+  // Markiere Zettel als geschlossen statt zu löschen
+  zettelListe[zettelIndex].geschlossen = true;
   zettel.set(req.params.id, zettelListe);
   
   // Echtzeit-Update
-  io.to(req.params.id).emit('zettelGeloescht', { zettelId: req.params.zettelId });
+  io.to(req.params.id).emit('zettelGeschlossen', { 
+    zettelId: req.params.zettelId,
+    sitzungId: req.params.id 
+  });
   
   res.json({ success: true });
 });

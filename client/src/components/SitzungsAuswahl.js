@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTheme } from '../context/ThemeContext';
-import Logo from './Logo';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -14,37 +13,7 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-`;
 
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 20px;
-`;
-
-const Title = styled.h1`
-  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
-  margin-bottom: 10px;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  font-size: 2.5rem;
-`;
-
-const Subtitle = styled.p`
-  color: ${props => props.theme?.colors?.textSecondary || '#ccc'};
-  font-size: 1.2rem;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-  margin: 0;
-  font-weight: 300;
-`;
 
 const Grid = styled.div`
   display: grid;
@@ -364,12 +333,6 @@ function SitzungsAuswahl() {
   if (loading && (!sitzungen || sitzungen.length === 0)) {
           return (
         <Container>
-          <Header>
-            <LogoContainer>
-              <Logo />
-            </LogoContainer>
-            <Subtitle>Sitzungsverwaltung & Programmsteuerung</Subtitle>
-          </Header>
           <LoadingMessage>Sitzungen werden geladen...</LoadingMessage>
         </Container>
       );
@@ -377,12 +340,6 @@ function SitzungsAuswahl() {
 
   return (
     <Container>
-      <Header>
-        <LogoContainer>
-          <Logo />
-        </LogoContainer>
-        <Subtitle>Sitzungsverwaltung & Programmsteuerung</Subtitle>
-      </Header>
 
       {error && (
         <ErrorMessage>

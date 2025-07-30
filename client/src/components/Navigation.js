@@ -300,19 +300,16 @@ function Navigation() {
             Verwaltung
           </NavLink>
           <NavLink to="/moderation" active={isActive('/moderation')}>
-            🎤
             Moderation
           </NavLink>
           <NavLink to="/technik" active={isActive('/technik')}>
-            🎛️
             Technik
           </NavLink>
           <NavLink to="/kulissen" active={isActive('/kulissen')}>
             Kulissen
           </NavLink>
           <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
-            📋
-            Programmansicht
+            Programm
           </NavLink>
           <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
             Sitzungsablauf

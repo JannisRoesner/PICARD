@@ -169,6 +169,14 @@ function Logo() {
   const handleWarpClick = () => {
     if (warpState !== 'idle') return;
     
+    // Speichere die aktuelle Position des Logos
+    const logoElement = logoRef.current;
+    if (logoElement) {
+      const rect = logoElement.getBoundingClientRect();
+      logoElement.style.setProperty('--logo-left', `${rect.left}px`);
+      logoElement.style.setProperty('--logo-top', `${rect.top}px`);
+    }
+    
     setWarpState('warping');
     
     // Phase 1: Warp-Flug (1.5 Sekunden)
@@ -205,8 +213,9 @@ function Logo() {
             visibility: warpState === 'hidden' ? 'hidden' : 'visible',
             position: warpState !== 'idle' ? 'fixed' : 'static',
             zIndex: warpState !== 'idle' ? 9999 : 'auto',
-            top: warpState !== 'idle' ? '50%' : 'auto',
-            transform: warpState !== 'idle' ? 'translateY(-50%)' : 'none'
+            left: warpState !== 'idle' ? 'var(--logo-left, 50%)' : 'auto',
+            top: warpState !== 'idle' ? 'var(--logo-top, 50%)' : 'auto',
+            transform: warpState !== 'idle' ? 'translate(-50%, -50%)' : 'none'
           }}
         />
         <div>

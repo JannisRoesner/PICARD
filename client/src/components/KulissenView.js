@@ -91,11 +91,11 @@ const ProgramLeft = styled.div`
 `;
 
 const ProgramCenter = styled.div`
-  width: 200px;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  margin: 0 15px;
 `;
 
 const ProgramRight = styled.div`
@@ -147,7 +147,7 @@ const BuehneBox = styled.div`
   box-shadow: 0 2px 4px rgba(0,0,0,0.3);
   color: ${props => props.isActive ? '#ecf0f1' : '#bdc3c7'};
   width: 100%;
-  max-width: 180px;
+  min-width: 200px;
 `;
 
 const KulissenTitle = styled.div`
