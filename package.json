@@ -1,6 +1,6 @@
 {
   "name": "sitzungsmaster-web",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "Web-basierte Anwendung für digitale Moderationskarten bei Karnevalssitzungen",
   "main": "server.js",
   "scripts": {
@@ -29,5 +29,5 @@
     "real-time"
   ],
   "author": "Jannis Rösner",
-  "license": "MIT"
+  "license": "AGPL-3.0"
 } 

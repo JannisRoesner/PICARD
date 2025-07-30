@@ -515,10 +515,10 @@ function TechnikView() {
   };
 
   const formatDuration = (seconds) => {
-    if (!seconds) return '00:00';
+    if (!seconds) return '00:00 min';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')} min`;
   };
 
   // Audio-Dateien bearbeiten
@@ -741,7 +741,7 @@ function TechnikView() {
                       type="text"
                       value={audio.duration}
                       onChange={e => updateAudioFile(index, 'duration', e.target.value)}
-                      placeholder="Dauer (Sekunden)"
+                      placeholder="Dauer (Minuten)"
                     />
                     <CueButton className="delete" onClick={() => deleteAudioFile(index)}>
                       Löschen

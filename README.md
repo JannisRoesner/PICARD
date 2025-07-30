@@ -153,7 +153,13 @@ node server.js
 
 ## 📝 Changelog
 
-### Version 4.2.0 (Aktuell)
+### Version 4.3.0 (Aktuell)
+- **Verbesserte Zeiteingabe**: Dauer wird jetzt in Minuten statt Sekunden eingegeben
+- **Klarere Zeitanzeige**: Alle Zeitangaben zeigen jetzt "min" als Einheit an
+- **Bessere Benutzerfreundlichkeit**: Schrittweise Eingabe (0,5-Minuten-Schritte) für präzisere Zeitangaben
+- **Konsistente Darstellung**: Einheitliche Zeitformatierung in allen Ansichten
+
+### Version 4.2.0
 - **Entfernung server-seitiger PDF-Export**: Stabilitätsverbesserung durch Entfernung problematischer Puppeteer-Abhängigkeiten
 - **Clientseitige PDF-Generierung**: Nur noch Browser-basierte PDF-Export-Funktion
 - **Vereinfachte Architektur**: Weniger Dependencies und kleinere Container-Größe
@@ -189,6 +195,20 @@ node server.js
 
 ## 📄 Lizenz
 
-Dieses Projekt ist unter der MIT-Lizenz lizenziert.
+Dieses Projekt ist unter der **GNU Affero General Public License v3.0 (AGPL-3.0)** lizenziert.
+
+### Was bedeutet das?
+
+- ✅ **Verbreitung erlaubt**: Sie können das Projekt frei nutzen und weiterverbreiten
+- ✅ **Forks erlaubt**: Sie können das Projekt forken und modifizieren
+- ✅ **Community-Nutzung**: Vereine und Organisationen können es kostenlos nutzen
+- ❌ **Keine kommerzielle Nutzung**: Der Code darf nicht in proprietäre Software eingebaut oder verkauft werden
+- ✅ **Copyleft**: Alle Derivate müssen ebenfalls unter AGPL-3.0 stehen
+
+### Vollständige Lizenz
+
+Die vollständige AGPL-3.0 Lizenz finden Sie hier: https://www.gnu.org/licenses/agpl-3.0.html
+
+**Wichtig**: Bei Nutzung als Web-Service (wie bei diesem Projekt) müssen auch die Nutzer Zugang zum Quellcode haben.
 
 

@@ -312,7 +312,7 @@ function Sitzungsablauf() {
   const [formData, setFormData] = useState({
     name: '',
     notizen: '',
-    dauer: '300' // 5 Minuten Standard
+    dauer: '5' // 5 Minuten Standard
   });
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -369,7 +369,7 @@ function Sitzungsablauf() {
     setFormData({
       name: '',
       notizen: '',
-      dauer: '300'
+      dauer: '5'
     });
     setShowModal(true);
   };
@@ -409,7 +409,7 @@ function Sitzungsablauf() {
         anmoderation: '',
         abmoderation: '',
         notizen: formData.notizen,
-        dauer: parseInt(formData.dauer) || 300,
+        dauer: Math.round(parseFloat(formData.dauer) * 60) || 300, // Minuten zu Sekunden konvertieren
         lichtStimmung: 'Standard',
         audioDateien: [],
         namensliste: [],
@@ -435,10 +435,10 @@ function Sitzungsablauf() {
   };
 
   const formatDuration = (seconds) => {
-    if (!seconds) return '0:00';
+    if (!seconds) return '0:00 min';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, '0')} min`;
   };
 
   // Filtere Programmpunkte: zeige nur aktuelle und zukünftige
@@ -536,14 +536,15 @@ function Sitzungsablauf() {
                 required
               />
 
-              <FormLabel>Dauer (Sekunden)</FormLabel>
+              <FormLabel>Dauer (Minuten)</FormLabel>
               <FormInput
                 type="number"
                 name="dauer"
                 value={formData.dauer}
                 onChange={handleInputChange}
-                placeholder="300"
+                placeholder="5"
                 min="0"
+                step="0.5"
               />
 
               <FormLabel>Notizen</FormLabel>

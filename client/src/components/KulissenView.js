@@ -244,7 +244,7 @@ function KulissenView() {
     if (!seconds || seconds === 0) return 'Keine Angabe';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')} min`;
   };
 
   const getVisibleProgrammpunkte = () => {

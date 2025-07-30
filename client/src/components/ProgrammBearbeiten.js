@@ -203,7 +203,7 @@ function ProgrammBearbeiten() {
   const [formData, setFormData] = useState({
     name: '',
     typ: '',
-    dauer: '',
+    dauer: '', // Wird in Minuten angezeigt
     trainer: '',
     betreuer: '',
     buehne: '',
@@ -229,7 +229,7 @@ function ProgrammBearbeiten() {
       setFormData({
         name: selected.name || '',
         typ: selected.typ || '',
-        dauer: selected.dauer?.toString() || '',
+        dauer: selected.dauer ? (selected.dauer / 60).toString() : '', // Sekunden zu Minuten konvertieren
         trainer: selected.trainer || '',
         betreuer: selected.betreuer || '',
         buehne: selected.buehne || '',
@@ -292,7 +292,7 @@ function ProgrammBearbeiten() {
     setFormData({
       name: '',
       typ: '',
-      dauer: '',
+      dauer: '', // Wird in Minuten angezeigt
       trainer: '',
       betreuer: '',
       buehne: '',
@@ -321,7 +321,7 @@ function ProgrammBearbeiten() {
       const payload = {
         name: formData.name,
         typ: formData.typ,
-        dauer: parseInt(formData.dauer) || 0,
+        dauer: Math.round(parseFloat(formData.dauer) * 60) || 0, // Minuten zu Sekunden konvertieren
         trainer: formData.trainer,
         betreuer: formData.betreuer,
         buehne: formData.buehne,
@@ -437,7 +437,7 @@ function ProgrammBearbeiten() {
             >
               <DragHandle>⋮⋮</DragHandle>
               <div style={{ fontWeight: 'bold' }}>{pp.name}</div>
-              <div style={{ fontSize: '0.95em', color: '#888' }}>{pp.typ} &bull; {pp.dauer ? pp.dauer + 's' : ''}</div>
+              <div style={{ fontSize: '0.95em', color: '#888' }}>{pp.typ} &bull; {pp.dauer ? Math.round(pp.dauer / 60) + 'min' : ''}</div>
             </ProgrammpunktItem>
           ))}
         </Programmliste>
@@ -459,8 +459,8 @@ function ProgrammBearbeiten() {
               {typen.map(typ => <option key={typ} value={typ}>{typ}</option>)}
             </Select>
 
-            <Label>Dauer (Sekunden)</Label>
-            <Input name="dauer" type="number" min="0" value={formData.dauer} onChange={handleInputChange} />
+            <Label>Dauer (Minuten)</Label>
+            <Input name="dauer" type="number" min="0" step="0.5" value={formData.dauer} onChange={handleInputChange} placeholder="5" />
 
             <Label>Trainer</Label>
             <Input name="trainer" value={formData.trainer} onChange={handleInputChange} />

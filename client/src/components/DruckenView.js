@@ -182,7 +182,7 @@ function DruckenView() {
                 <span class="name">${pp.name}</span>
               </div>
               <div class="typ">${pp.typ}</div>
-              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+              <div class="dauer">Dauer: ${pp.dauer ? Math.round(pp.dauer / 60) + ' Minuten' : 'Keine Angabe'}</div>
             </div>
           `).join('')}
           <div class="footer">
@@ -297,7 +297,7 @@ function DruckenView() {
                   <span class="name">${pp.name}</span>
                 </div>
                 <div class="typ">${pp.typ}</div>
-                <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
+                <div class="dauer">Dauer: ${pp.dauer ? Math.round(pp.dauer / 60) + ' Minuten' : 'Keine Angabe'}</div>
               </div>
               <div class="programm-center">
                 <div class="buehne-box">
@@ -428,7 +428,7 @@ function DruckenView() {
                 </div>
                 <div class="typ">${pp.typ}</div>
                 <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
+                  <span class="dauer">Dauer: ${pp.dauer ? Math.round(pp.dauer / 60) + ' Minuten' : 'Keine Angabe'}</span>
                 </div>
                 <div class="moderation-info">
                   <div class="moderation-title">🎤 Moderation-Informationen</div>
@@ -604,7 +604,7 @@ function DruckenView() {
                 </div>
                 <div class="typ">${pp.typ}</div>
                 <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
+                  <span class="dauer">Dauer: ${pp.dauer ? Math.round(pp.dauer / 60) + ' Minuten' : 'Keine Angabe'}</span>
                 </div>
                 <div class="technik-info">
                   <div class="technik-title">🔧 Technik-Informationen</div>

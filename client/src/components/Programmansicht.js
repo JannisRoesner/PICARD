@@ -156,10 +156,10 @@ function Programmansicht() {
   };
 
   const formatDuration = (seconds) => {
-    if (!seconds) return '0:00';
+    if (!seconds) return '0:00 min';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, '0')} min`;
   };
 
   // Filtere Programmpunkte: zeige nur aktuelle und zukünftige
