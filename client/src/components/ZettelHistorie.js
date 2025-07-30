@@ -209,8 +209,8 @@ function ZettelHistorie() {
 
   const getSenderName = (sender) => {
     switch (sender) {
-      case 'moderator': return 'Moderation';
-      case 'techniker': return 'Technik';
+      case 'moderation': return 'Moderation';
+      case 'technik': return 'Technik';
       case 'programmansicht': return 'Programmansicht';
       default: return sender;
     }

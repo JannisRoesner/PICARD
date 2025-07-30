@@ -270,7 +270,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
   const [showHistorie, setShowHistorie] = useState(false);
   const [formData, setFormData] = useState({
     text: '',
-    type: viewType === 'moderator' ? 'anTechnik' : viewType === 'techniker' ? 'anModeration' : 'anModeration',
+    type: viewType === 'moderation' ? 'anTechnik' : viewType === 'technik' ? 'anModeration' : 'anModeration',
     priority: 'normal'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -332,13 +332,13 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
         text: formData.text,
         type: formData.type,
         priority: formData.priority,
-        sender: viewType // 'moderator', 'techniker', 'programmansicht'
+        sender: viewType // 'moderation', 'technik', 'programmansicht'
       });
       
       setShowModal(false);
       setFormData({ 
         text: '', 
-        type: viewType === 'moderator' ? 'anTechnik' : viewType === 'techniker' ? 'anModeration' : 'anModeration', 
+        type: viewType === 'moderation' ? 'anTechnik' : viewType === 'technik' ? 'anModeration' : 'anModeration', 
         priority: 'normal' 
       });
     } catch (error) {
@@ -386,10 +386,10 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
     // Nur nicht-geschlossene Zettel anzeigen
     const aktiveZettel = zettel.filter(z => !z.geschlossen);
     
-    if (viewType === 'moderator') {
-      return aktiveZettel.filter(z => (z.type === 'anModeration' || z.type === 'anAlle') && z.sender !== 'moderator');
-    } else if (viewType === 'techniker') {
-      return aktiveZettel.filter(z => (z.type === 'anTechnik' || z.type === 'anAlle') && z.sender !== 'techniker');
+    if (viewType === 'moderation') {
+      return aktiveZettel.filter(z => (z.type === 'anModeration' || z.type === 'anAlle') && z.sender !== 'moderation');
+    } else if (viewType === 'technik') {
+      return aktiveZettel.filter(z => (z.type === 'anTechnik' || z.type === 'anAlle') && z.sender !== 'technik');
     } else if (viewType === 'kulissen' || viewType === 'programmansicht') {
       return aktiveZettel.filter(z => z.type === 'anAlle' && z.sender !== viewType);
     }
@@ -421,7 +421,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                  zettelItem.type === 'anTechnik' ? 'An Technik' : 'An Alle'}
               </ZettelType>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                {viewType === 'moderator' && zettelItem.type === 'anModeration' && (
+                {viewType === 'moderation' && zettelItem.type === 'anModeration' && (
                   <ActionButton 
                     onClick={() => onZettelToProgrammpunkt(zettelItem)}
                     title="Als Programmpunkt hinzufügen"
@@ -461,10 +461,10 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                 value={formData.type}
                 onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
               >
-                {viewType === 'moderator' && (
+                {viewType === 'moderation' && (
                   <option value="anTechnik">An Technik</option>
                 )}
-                {viewType === 'techniker' && (
+                {viewType === 'technik' && (
                   <option value="anModeration">An Moderation</option>
                 )}
                 {viewType === 'programmansicht' && (
@@ -588,8 +588,8 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                           })}
                         </span>
                         <span style={{ fontStyle: 'italic' }}>
-                          Von: {zettelItem.sender === 'moderator' ? 'Moderation' : 
-                                zettelItem.sender === 'techniker' ? 'Technik' : 
+                          Von: {zettelItem.sender === 'moderation' ? 'Moderation' : 
+                                zettelItem.sender === 'technik' ? 'Technik' : 
                                 zettelItem.sender === 'programmansicht' ? 'Programmansicht' :
                                 zettelItem.sender === 'kulissen' ? 'Kulissen' : zettelItem.sender}
                         </span>

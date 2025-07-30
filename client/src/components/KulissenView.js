@@ -79,6 +79,32 @@ const ProgramNumber = styled.div`
 
 const ProgramContent = styled.div`
   margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+`;
+
+const ProgramLeft = styled.div`
+  flex: 1;
+  margin-right: 15px;
+`;
+
+const ProgramCenter = styled.div`
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+`;
+
+const ProgramRight = styled.div`
+  width: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  flex-shrink: 0;
 `;
 
 const ProgramName = styled.div`
@@ -100,12 +126,28 @@ const ProgramDuration = styled.div`
   margin-bottom: 8px;
 `;
 
-const KulissenInfo = styled.div`
-  margin-top: 10px;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  border-left: 3px solid ${props => props.theme?.colors?.primary || '#fbbf24'};
+const BuehneBox = styled.div`
+  background: ${props => {
+    if (props.isActive) return '#2c3e50';
+    return '#34495e';
+  }};
+  border: 2px solid ${props => {
+    if (props.isActive) return '#3498db';
+    return '#4a90e2';
+  }};
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: ${props => props.isActive ? '#ecf0f1' : '#bdc3c7'};
+  width: 100%;
+  max-width: 180px;
 `;
 
 const KulissenTitle = styled.div`
@@ -247,17 +289,25 @@ function KulissenView() {
           >
             <ProgramNumber>{programmpunkt.nummer}</ProgramNumber>
             <ProgramContent>
-              <ProgramName isActive={activeProgrammpunkt?.id === programmpunkt.id}>
-                {programmpunkt.name}
-              </ProgramName>
-              <ProgramType isActive={activeProgrammpunkt?.id === programmpunkt.id}>
-                {programmpunkt.typ}
-              </ProgramType>
-              <ProgramDuration isActive={activeProgrammpunkt?.id === programmpunkt.id}>
-                Dauer: {formatDuration(programmpunkt.dauer)}
-              </ProgramDuration>
+              <ProgramLeft>
+                <ProgramName isActive={activeProgrammpunkt?.id === programmpunkt.id}>
+                  {programmpunkt.name}
+                </ProgramName>
+                <ProgramType isActive={activeProgrammpunkt?.id === programmpunkt.id}>
+                  {programmpunkt.typ}
+                </ProgramType>
+                <ProgramDuration isActive={activeProgrammpunkt?.id === programmpunkt.id}>
+                  Dauer: {formatDuration(programmpunkt.dauer)}
+                </ProgramDuration>
+              </ProgramLeft>
               
-              <KulissenInfo>
+              <ProgramCenter>
+                <BuehneBox isActive={activeProgrammpunkt?.id === programmpunkt.id}>
+                  🎪 {programmpunkt.buehne || 'Bühne: frei'}
+                </BuehneBox>
+              </ProgramCenter>
+              
+              <ProgramRight>
                 <KulissenTitle>🎭 Kulissen-Informationen</KulissenTitle>
                 <KulissenDetails>
                   <KulissenItem>
@@ -272,14 +322,8 @@ function KulissenView() {
                       Auszug: {programmpunkt.auszugCD ? 'Von CD' : 'Von Kapelle'}
                     </KulissenText>
                   </KulissenItem>
-                  <KulissenItem>
-                    <KulissenIcon>🎪</KulissenIcon>
-                    <KulissenText isActive={activeProgrammpunkt?.id === programmpunkt.id}>
-                      {programmpunkt.buehne || 'Bühne: frei'}
-                    </KulissenText>
-                  </KulissenItem>
                 </KulissenDetails>
-              </KulissenInfo>
+              </ProgramRight>
             </ProgramContent>
           </ProgramItem>
         ))}

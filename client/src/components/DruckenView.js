@@ -72,35 +72,6 @@ const ButtonDescription = styled.div`
   text-align: center;
 `;
 
-const AllInOneButton = styled.button`
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 24px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto 32px auto;
-  
-  &:hover {
-    background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-`;
-
 const InfoBox = styled.div`
   background: #232323;
   border: 1px solid #444;
@@ -118,7 +89,7 @@ const InfoText = styled.p`
   color: #ccc;
   font-size: 0.9rem;
   line-height: 1.4;
-`;
+`; 
 
 function DruckenView() {
   const { aktiveSitzung } = useContext(SitzungContext);
@@ -251,6 +222,27 @@ function DruckenView() {
               flex: 1;
               margin-right: 15px;
             }
+            .programm-center {
+              flex: 1;
+              margin: 0 15px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .buehne-box {
+              background: #f0f8ff;
+              border: 2px solid #4a90e2;
+              border-radius: 8px;
+              padding: 15px;
+              text-align: center;
+              font-size: 14px;
+              font-weight: bold;
+              min-height: 60px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
             .programm-right {
               width: 200px;
               background: #f5f5f5;
@@ -307,11 +299,14 @@ function DruckenView() {
                 <div class="typ">${pp.typ}</div>
                 <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
               </div>
+              <div class="programm-center">
+                <div class="buehne-box">
+                  🎪 ${pp.buehne || 'Bühne: frei'}
+                </div>
+              </div>
               <div class="programm-right">
-                <div class="kulissen-title">🎭 Kulissen-Info</div>
                 <div class="kulissen-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
                 <div class="kulissen-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                <div class="kulissen-item">🎪 ${pp.buehne || 'Bühne: frei'}</div>
               </div>
             </div>
           `).join('')}
@@ -325,7 +320,7 @@ function DruckenView() {
     printWindow.print();
   };
 
-  const printModeratorView = () => {
+  const printModerationView = () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printWindow = window.open('', '_blank');
@@ -333,7 +328,7 @@ function DruckenView() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Moderator - ${sitzung.name}</title>
+          <title>Moderation - ${sitzung.name}</title>
           <style>
             @page { size: landscape; }
             body { font-family: Arial, sans-serif; margin: 15px; }
@@ -344,6 +339,20 @@ function DruckenView() {
               margin-bottom: 15px; 
               padding: 12px; 
               page-break-inside: avoid;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+            }
+            .programm-left {
+              flex: 1;
+              margin-right: 15px;
+            }
+            .programm-right {
+              width: 250px;
+              background: #f5f5f5;
+              padding: 10px;
+              border-radius: 5px;
+              font-size: 12px;
             }
             .nummer { 
               background: #fbbf24; 
@@ -361,21 +370,14 @@ function DruckenView() {
             .name { font-weight: bold; font-size: 16px; margin-bottom: 6px; }
             .typ { color: #666; font-size: 12px; margin-bottom: 6px; }
             .dauer { color: #666; font-size: 12px; margin-bottom: 8px; }
-            .moderator-info { 
+            .moderation-info { 
               background: #f5f5f5; 
               padding: 10px; 
               border-radius: 5px; 
               margin-top: 8px;
             }
-            .moderator-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
-            .moderator-item { margin-bottom: 4px; font-size: 12px; }
-            .namensliste { 
-              background: #e8f4fd; 
-              padding: 6px; 
-              border-radius: 3px; 
-              margin-top: 4px;
-              font-size: 11px;
-            }
+            .moderation-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
+            .moderation-item { margin-bottom: 4px; font-size: 12px; }
             .moderation-text {
               background: #fff3cd;
               padding: 6px;
@@ -383,6 +385,15 @@ function DruckenView() {
               margin-top: 4px;
               font-size: 11px;
               border-left: 3px solid #ffc107;
+            }
+            .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
+            .right-item { margin-bottom: 6px; font-size: 11px; }
+            .right-namensliste { 
+              background: #e8f4fd; 
+              padding: 4px; 
+              border-radius: 3px; 
+              margin-top: 2px;
+              font-size: 10px;
             }
             .footer {
               position: fixed;
@@ -407,36 +418,44 @@ function DruckenView() {
           </div>
           ${sitzung.programmpunkte.map(pp => `
             <div class="programm-item">
-              <div>
-                <span class="nummer">${pp.nummer}</span>
-                <span class="name">${pp.name}</span>
+              <div class="programm-left">
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span class="nummer">${pp.nummer}</span>
+                  <span class="name">${pp.name}</span>
+                  <span style="margin-left: auto; font-size: 12px; color: #666;">
+                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
+                  </span>
+                </div>
+                <div class="typ">${pp.typ}</div>
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
+                </div>
+                <div class="moderation-info">
+                  <div class="moderation-title">🎤 Moderation-Informationen</div>
+                  <div class="moderation-item">
+                    🎤 Anmoderation:
+                    <div class="moderation-text">${pp.anmoderation || 'Noch nicht erstellt'}</div>
+                  </div>
+                  <div class="moderation-item">
+                    🎤 Abmoderation:
+                    <div class="moderation-text">${pp.abmoderation || 'Noch nicht erstellt'}</div>
+                  </div>
+                  <div class="moderation-item">
+                    🎤 Notizen:
+                    <div class="moderation-text">${pp.notizen || 'Keine Notizen'}</div>
+                  </div>
+                </div>
               </div>
-              <div class="typ">${pp.typ}</div>
-              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
-              <div class="moderator-info">
-                <div class="moderator-title">📝 Moderator-Informationen</div>
-                <div class="moderator-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                <div class="moderator-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                ${pp.trainer ? `<div class="moderator-item">👨‍🏫 Trainer: ${pp.trainer}</div>` : ''}
-                ${pp.betreuer ? `<div class="moderator-item">👨‍💼 Betreuer: ${pp.betreuer}</div>` : ''}
+              <div class="programm-right">
+                <div class="right-title">👥 Personen & Namenslisten</div>
+                ${pp.trainer ? `<div class="right-item">👨‍🏫 Trainer: ${pp.trainer}</div>` : ''}
+                ${pp.betreuer ? `<div class="right-item">👨‍💼 Betreuer: ${pp.betreuer}</div>` : ''}
                 ${pp.namensliste && pp.namensliste.length > 0 ? `
-                  <div class="moderator-item">
+                  <div class="right-item">
                     👥 Namensliste:
-                    <div class="namensliste">${pp.namensliste.join(', ')}</div>
+                    <div class="right-namensliste">${pp.namensliste.join(', ')}</div>
                   </div>
                 ` : ''}
-                <div class="moderator-item">
-                  📝 Anmoderation:
-                  <div class="moderation-text">${pp.anmoderation || 'Noch nicht erstellt'}</div>
-                </div>
-                <div class="moderator-item">
-                  📝 Abmoderation:
-                  <div class="moderation-text">${pp.abmoderation || 'Noch nicht erstellt'}</div>
-                </div>
-                <div class="moderator-item">
-                  📝 Notizen:
-                  <div class="moderation-text">${pp.notizen || 'Keine Notizen'}</div>
-                </div>
               </div>
             </div>
           `).join('')}
@@ -450,7 +469,7 @@ function DruckenView() {
     printWindow.print();
   };
 
-  const printTechnikerView = () => {
+  const printTechnikView = () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printWindow = window.open('', '_blank');
@@ -458,7 +477,7 @@ function DruckenView() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Techniker - ${sitzung.name}</title>
+          <title>Technik - ${sitzung.name}</title>
           <style>
             @page { size: landscape; }
             body { font-family: Arial, sans-serif; margin: 15px; }
@@ -469,6 +488,20 @@ function DruckenView() {
               margin-bottom: 15px; 
               padding: 12px; 
               page-break-inside: avoid;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+            }
+            .programm-left {
+              flex: 1;
+              margin-right: 15px;
+            }
+            .programm-right {
+              width: 250px;
+              background: #f5f5f5;
+              padding: 10px;
+              border-radius: 5px;
+              font-size: 12px;
             }
             .nummer { 
               background: #fbbf24; 
@@ -486,21 +519,23 @@ function DruckenView() {
             .name { font-weight: bold; font-size: 16px; margin-bottom: 6px; }
             .typ { color: #666; font-size: 12px; margin-bottom: 6px; }
             .dauer { color: #666; font-size: 12px; margin-bottom: 8px; }
-            .techniker-info { 
+            .technik-info { 
               background: #f5f5f5; 
               padding: 10px; 
               border-radius: 5px; 
               margin-top: 8px;
             }
-            .techniker-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
-            .techniker-item { margin-bottom: 4px; font-size: 12px; }
-            .audio-cues, .light-cues { 
+            .technik-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
+            .technik-item { margin-bottom: 4px; font-size: 12px; }
+            .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
+            .right-item { margin-bottom: 6px; font-size: 11px; }
+            .right-cues { 
               background: #e8f4fd; 
-              padding: 6px; 
+              padding: 4px; 
               border-radius: 3px; 
-              margin-top: 4px;
+              margin-top: 2px;
               font-family: monospace;
-              font-size: 11px;
+              font-size: 10px;
             }
             .info-field {
               background: #fff3cd;
@@ -533,34 +568,42 @@ function DruckenView() {
           </div>
           ${sitzung.programmpunkte.map(pp => `
             <div class="programm-item">
-              <div>
-                <span class="nummer">${pp.nummer}</span>
-                <span class="name">${pp.name}</span>
+              <div class="programm-left">
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span class="nummer">${pp.nummer}</span>
+                  <span class="name">${pp.name}</span>
+                  <span style="margin-left: auto; font-size: 12px; color: #666;">
+                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
+                  </span>
+                </div>
+                <div class="typ">${pp.typ}</div>
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                  <span class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</span>
+                </div>
+                <div class="technik-info">
+                  <div class="technik-title">🔧 Technik-Informationen</div>
+                  <div class="technik-item">
+                    🔊 Audio-Informationen:
+                    <div class="info-field">${pp.audioInfo || 'Keine Audio-Informationen'}</div>
+                  </div>
+                  <div class="technik-item">
+                    💡 Licht-Informationen:
+                    <div class="info-field">${pp.lightInfo || 'Keine Licht-Informationen'}</div>
+                  </div>
+                </div>
               </div>
-              <div class="typ">${pp.typ}</div>
-              <div class="dauer">Dauer: ${pp.dauer ? pp.dauer + ' Sekunden' : 'Keine Angabe'}</div>
-              <div class="techniker-info">
-                <div class="techniker-title">🎛️ Techniker-Informationen</div>
-                <div class="techniker-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                <div class="techniker-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                <div class="techniker-item">
-                  🔊 Audio-Informationen:
-                  <div class="info-field">${pp.audioInfo || 'Keine Audio-Informationen'}</div>
-                </div>
-                <div class="techniker-item">
-                  💡 Licht-Informationen:
-                  <div class="info-field">${pp.lightInfo || 'Keine Licht-Informationen'}</div>
-                </div>
+              <div class="programm-right">
+                <div class="right-title">🔧 Technik-Cues</div>
                 ${pp.audioCues && pp.audioCues.length > 0 ? `
-                  <div class="techniker-item">
+                  <div class="right-item">
                     🔊 Audio-Cues:
-                    <div class="audio-cues">${pp.audioCues.map(cue => cue.text || cue).join('<br>')}</div>
+                    <div class="right-cues">${pp.audioCues.map(cue => cue.description || cue.text || cue).join('<br>')}</div>
                   </div>
                 ` : ''}
                 ${pp.lightCues && pp.lightCues.length > 0 ? `
-                  <div class="techniker-item">
+                  <div class="right-item">
                     💡 Licht-Cues:
-                    <div class="light-cues">${pp.lightCues.map(cue => cue.text || cue).join('<br>')}</div>
+                    <div class="right-cues">${pp.lightCues.map(cue => cue.description || cue.text || cue).join('<br>')}</div>
                   </div>
                 ` : ''}
               </div>
@@ -574,34 +617,6 @@ function DruckenView() {
     `);
     printWindow.document.close();
     printWindow.print();
-  };
-
-  const printAllViewsAsPDF = async () => {
-    try {
-      const response = await fetch(`/api/sitzung/${aktiveSitzung}/pdf/all-in-one`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('PDF-Generierung fehlgeschlagen');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `alle-ansichten-${sitzung.name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Fehler beim PDF-Download:', error);
-      alert('Fehler beim PDF-Download: ' + error.message);
-    }
   };
 
   if (loading) {
@@ -636,14 +651,6 @@ function DruckenView() {
       <Title>Drucken</Title>
       <Subtitle>Wählen Sie eine Druckoption für die Sitzung "{sitzung.name}"</Subtitle>
       
-      <AllInOneButton onClick={printAllViewsAsPDF}>
-        <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📄</div>
-        <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Alle Ansichten als PDF speichern</div>
-        <div style={{ fontSize: '0.9rem', opacity: 0.9, textAlign: 'center' }}>
-          Erstellt ein einzelnes PDF mit allen vier Ansichten
-        </div>
-      </AllInOneButton>
-      
       <ButtonGrid>
         <PrintButton onClick={printProgrammansicht}>
           <ButtonIcon>📋</ButtonIcon>
@@ -661,17 +668,17 @@ function DruckenView() {
           </ButtonDescription>
         </PrintButton>
 
-        <PrintButton onClick={printModeratorView}>
+        <PrintButton onClick={printModerationView}>
           <ButtonIcon>🎤</ButtonIcon>
-          <ButtonTitle>Moderator-Ansicht</ButtonTitle>
+          <ButtonTitle>Moderation-Ansicht</ButtonTitle>
           <ButtonDescription>
-            Druckt das Programm mit allen Moderator-Informationen und Namenslisten
+            Druckt das Programm mit allen Moderation-Informationen und Namenslisten
           </ButtonDescription>
         </PrintButton>
 
-        <PrintButton onClick={printTechnikerView}>
-          <ButtonIcon>🎛️</ButtonIcon>
-          <ButtonTitle>Techniker-Ansicht</ButtonTitle>
+        <PrintButton onClick={printTechnikView}>
+          <ButtonIcon>🔧</ButtonIcon>
+          <ButtonTitle>Technik-Ansicht</ButtonTitle>
           <ButtonDescription>
             Druckt das Programm mit Audio- und Licht-Cues für die Technik
           </ButtonDescription>
@@ -679,7 +686,7 @@ function DruckenView() {
       </ButtonGrid>
 
       <InfoBox>
-        <InfoTitle>💡 Druckhinweise</InfoTitle>
+        <InfoTitle>ℹ️ Druckhinweise</InfoTitle>
         <InfoText>
           • Jede Ansicht wird in einem neuen Fenster geöffnet und automatisch zum Drucken vorbereitet<br/>
           • Die Druckansicht ist für A4-Papier optimiert<br/>

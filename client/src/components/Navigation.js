@@ -299,16 +299,19 @@ function Navigation() {
           <NavLink to="/" active={isActive('/')}>
             Verwaltung
           </NavLink>
-          <NavLink to="/moderator" active={isActive('/moderator')}>
-            Moderator
+          <NavLink to="/moderation" active={isActive('/moderation')}>
+            🎤
+            Moderation
           </NavLink>
-          <NavLink to="/techniker" active={isActive('/techniker')}>
-            Techniker
+          <NavLink to="/technik" active={isActive('/technik')}>
+            🎛️
+            Technik
           </NavLink>
           <NavLink to="/kulissen" active={isActive('/kulissen')}>
             Kulissen
           </NavLink>
           <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
+            📋
             Programmansicht
           </NavLink>
           <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
@@ -370,11 +373,11 @@ function Navigation() {
         <MobileNavLink to="/" active={isActive('/')} onClick={handleMobileLinkClick}>
           📋 Verwaltung
         </MobileNavLink>
-        <MobileNavLink to="/moderator" active={isActive('/moderator')} onClick={handleMobileLinkClick}>
-          🎤 Moderator
+        <MobileNavLink to="/moderation" active={isActive('/moderation')} onClick={handleMobileLinkClick}>
+          🎤 Moderation
         </MobileNavLink>
-        <MobileNavLink to="/techniker" active={isActive('/techniker')} onClick={handleMobileLinkClick}>
-          🎛️ Techniker
+        <MobileNavLink to="/technik" active={isActive('/technik')} onClick={handleMobileLinkClick}>
+          🎛️ Technik
         </MobileNavLink>
         <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
           Kulissen

@@ -210,8 +210,8 @@ const NoSitzungMessage = styled.div`
   color: #ccc;
 `;
 
-// Timer-Komponenten für die Statusleiste (identisch mit ModeratorView)
-const ModeratorTimerContainer = styled.div`
+// Timer-Komponenten für die Statusleiste (identisch mit ModerationView)
+const ModerationTimerContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -221,19 +221,19 @@ const ModeratorTimerContainer = styled.div`
   border: 1px solid ${(props) => (props.theme?.colors?.primary ? props.theme.colors.primary + '50' : 'rgba(251,191,36,0.3)')};
 `;
 
-const ModeratorTimerDisplay = styled.div`
+const ModerationTimerDisplay = styled.div`
   color: ${props => props.warning ? '#ffc107' : props => props.danger ? '#dc3545' : '#ff6b35'};
   font-weight: bold;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
 `;
 
-const ModeratorTimerDuration = styled.div`
+const ModerationTimerDuration = styled.div`
   color: #888;
   font-size: 0.8rem;
 `;
 
-const ModeratorProgressBar = styled.div`
+const ModerationProgressBar = styled.div`
   width: 60px;
   height: 4px;
   background: #333;
@@ -241,7 +241,7 @@ const ModeratorProgressBar = styled.div`
   overflow: hidden;
 `;
 
-const ModeratorProgressFill = styled.div`
+const ModerationProgressFill = styled.div`
   height: 100%;
   background: ${props => props.warning ? '#ffc107' : props => props.danger ? '#dc3545' : '#28a745'};
   width: ${props => props.progress}%;
@@ -342,7 +342,7 @@ const CueButton = styled.button`
   }
 `;
 
-function TechnikerView() {
+function TechnikView() {
   const [sitzung, setSitzung] = useState(null);
   const [selectedProgrammpunkt, setSelectedProgrammpunkt] = useState(null);
   const [audioCues, setAudioCues] = useState([]);
@@ -505,13 +505,13 @@ function TechnikerView() {
 
   const handleStartTimer = () => {
     const duration = selectedProgrammpunkt?.dauer || 300;
-    // Timer synchron mit Moderator starten
-    // Techniker können den Timer nicht direkt steuern, nur anzeigen
+    // Timer synchron mit Moderation starten
+    // Technik können den Timer nicht direkt steuern, nur anzeigen
   };
 
   const handleStopTimer = () => {
-    // Timer synchron mit Moderator stoppen
-    // Techniker können den Timer nicht direkt steuern, nur anzeigen
+    // Timer synchron mit Moderation stoppen
+    // Technik können den Timer nicht direkt steuern, nur anzeigen
   };
 
   const formatDuration = (seconds) => {
@@ -600,7 +600,7 @@ function TechnikerView() {
 
   return (
     <Container>
-      <ZettelSystem viewType="techniker" />
+      <ZettelSystem viewType="technik" />
       <StatusBar>
         <StatusItem>
           <StatusLabel>Nummer:</StatusLabel>
@@ -640,26 +640,26 @@ function TechnikerView() {
         </StatusItem>
         {activeProgrammpunkt && timerState.isRunning && (
           <StatusItem>
-            <ModeratorTimerContainer>
-              <ModeratorTimerDisplay 
+            <ModerationTimerContainer>
+              <ModerationTimerDisplay 
                 warning={getTimerColor() === 'warning'}
                 danger={getTimerColor() === 'danger'}
               >
                 {formatTime(timerState.remainingTime)}
-              </ModeratorTimerDisplay>
+              </ModerationTimerDisplay>
               
-              <ModeratorTimerDuration>
+              <ModerationTimerDuration>
                 / {formatTime(activeProgrammpunkt.dauer || 0)}
-              </ModeratorTimerDuration>
+              </ModerationTimerDuration>
               
-              <ModeratorProgressBar>
-                <ModeratorProgressFill 
+              <ModerationProgressBar>
+                <ModerationProgressFill 
                   progress={getProgressPercentage()}
                   warning={getTimerColor() === 'warning'}
                   danger={getTimerColor() === 'danger'}
                 />
-              </ModeratorProgressBar>
-            </ModeratorTimerContainer>
+              </ModerationProgressBar>
+            </ModerationTimerContainer>
           </StatusItem>
         )}
       </StatusBar>
@@ -817,4 +817,4 @@ function TechnikerView() {
   );
 }
 
-export default TechnikerView; 
+export default TechnikView; 

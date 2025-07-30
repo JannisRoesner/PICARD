@@ -4,7 +4,7 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 
 ## 🎯 Features
 
-### Moderator-Ansicht
+### Moderation-Ansicht
 - **Programmablauf**: Übersicht aller Programmpunkte mit Nummerierung
 - **Live-Textbearbeitung**: Direkte Bearbeitung von Anmoderation, Notizen und Abmoderation
 - **Namensliste**: Personen, die auftreten
@@ -13,7 +13,7 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Live-Zettel**: Kommunikation mit Technik und anderen Ansichten
 - **Zettel zu Programmpunkt**: Direkte Umwandlung von Zetteln in Programmpunkte
 
-### Techniker-Ansicht
+### Technik-Ansicht
 - **Programmablauf**: Übersicht aller Programmpunkte
 - **Audio-Informationen**: Welche Dateien abzuspielen sind
 - **Licht-Informationen**: Mehrzeilige Eingabe für Lichtdetails
@@ -46,16 +46,16 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Bühneninformationen**: Spezielle Felder für Kulissen
 
 ### Drucken
-- **Vier Druckoptionen**: Programmansicht, Kulissen, Moderator, Techniker
+- **Vier Druckoptionen**: Programmansicht, Kulissen, Moderation, Technik
 - **Professionelle Layouts**: Optimiert für A4-Papier
-- **Querformat**: Kulissen, Moderator und Techniker im Landscape-Modus
+- **Querformat**: Kulissen, Moderation und Technik im Landscape-Modus
 - **Jahreszahl**: Automatisch in alle Überschriften eingefügt
 - **Fußzeile**: Mit Server-URL und Hinweis auf Änderungen
 - **Spezielle Ansichten**: Jede Druckoption zeigt relevante Informationen
-- **PDF-Export**: "Als PDF speichern" für digitale Kopien
+- **Clientseitige PDF-Generierung**: "Als PDF speichern" über Browser-Druckfunktion
 
 ### Timer-Funktionen
-- **Automatischer Timer**: Startet automatisch bei Moderator-Auswahl
+- **Automatischer Timer**: Startet automatisch bei Moderation-Auswahl
 - **Synchronisation**: Timer zwischen allen Ansichten synchronisiert
 - **Live-Timer**: Countdown für Programmpunkte mit Start/Stop/Pause
 - **Farbkodierung**: Grün → Gelb → Rot je nach verbleibender Zeit
@@ -107,8 +107,8 @@ node server.js
 2. "Neue Sitzung erstellen" klicken und Namen vergeben
 3. Sitzung aktivieren und Programmpunkte verwalten
 4. Verschiedene Ansichten nutzen:
-   - **Moderator**: Für die Moderation während der Sitzung
-   - **Techniker**: Für die Bühnentechnik
+   - **Moderation**: Für die Moderation während der Sitzung
+   - **Technik**: Für die Bühnentechnik
    - **Programmansicht**: Für Zuschauer und Übersicht
    - **Kulissen**: Für Kulissenschieber
    - **Sitzungsablauf**: Für mobile Eingaben
@@ -137,10 +137,12 @@ node server.js
 - `POST /api/sitzung/:id/programmpunkt` - Programmpunkt hinzufügen
 - `PUT /api/sitzung/:id/programmpunkt/:punktId` - Programmpunkt aktualisieren
 - `DELETE /api/sitzung/:id/programmpunkt/:punktId` - Programmpunkt löschen
-- `PUT /api/sitzung/:id/programmpunkte/reorder` - Reihenfolge ändern
+- `POST /api/sitzung/:id/aktiv` - Sitzung aktivieren
+- `GET /api/sitzung/:id/aktiv` - Aktive Sitzung abrufen
+- `DELETE /api/sitzung/:id` - Sitzung löschen
 - `GET /api/sitzung/:id/zettel` - Zettel abrufen
 - `POST /api/sitzung/:id/zettel` - Zettel erstellen
-- `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel schließen
+- `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel löschen
 
 ## 🎨 Design
 
@@ -151,8 +153,14 @@ node server.js
 
 ## 📝 Changelog
 
-### Version 4.1.0 (Aktuell)
-- **Erweiterte Drucken-Funktionalität**: Querformat für Kulissen, Moderator und Techniker
+### Version 4.2.0 (Aktuell)
+- **Entfernung server-seitiger PDF-Export**: Stabilitätsverbesserung durch Entfernung problematischer Puppeteer-Abhängigkeiten
+- **Clientseitige PDF-Generierung**: Nur noch Browser-basierte PDF-Export-Funktion
+- **Vereinfachte Architektur**: Weniger Dependencies und kleinere Container-Größe
+- **Schnellere Builds**: Entfernung von Chrome-Installation im Docker-Container
+
+### Version 4.1.0
+- **Erweiterte Drucken-Funktionalität**: Querformat für Kulissen, Moderation und Technik
 - **Jahreszahl in Überschriften**: Automatische Einbindung des aktuellen Jahres
 - **Fußzeile mit Server-URL**: Professionelle Fußzeile mit Live-Programm-Hinweis
 - **Optimierte Layouts**: Bessere Platznutzung und professionelle Gestaltung
@@ -162,9 +170,9 @@ node server.js
 - **Drucken-Funktionalität**: Vier professionelle Drucklayouts für alle Ansichten
 - **Programmansicht-Druck**: Übersichtliches Layout ohne zusätzliche Details
 - **Kulissen-Druck**: Mit Einzug/Auszug und Bühneninformationen
-- **Moderator-Druck**: Mit allen Moderator-Informationen und Namenslisten
-- **Techniker-Druck**: Mit Audio- und Licht-Cues für die Technik
-- **PDF-Export**: Möglichkeit zum Speichern als PDF
+- **Moderation-Druck**: Mit allen Moderation-Informationen und Namenslisten
+- **Technik-Druck**: Mit Audio- und Licht-Cues für die Technik
+- **PDF-Export**: Möglichkeit zum Speichern als PDF über Browser-Druckfunktion
 
 ### Version 3.0.0
 - **Kulissen-Ansicht**: Neue Ansicht für Kulissenschieber mit Bühneninformationen
@@ -177,7 +185,7 @@ node server.js
 ### Version 2.0.0
 - **Live-Zettel-System**: Bidirektionale Kommunikation
 - **Programmansicht**: Neue Ansicht für Zuschauer
-- **Verbesserte Techniker-Ansicht**: Mehrzeilige Licht-Informationen
+- **Verbesserte Technik-Ansicht**: Mehrzeilige Licht-Informationen
 
 ## 📄 Lizenz
 

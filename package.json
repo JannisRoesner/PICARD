@@ -1,6 +1,6 @@
 {
   "name": "sitzungsmaster-web",
-  "version": "1.0.0",
+  "version": "4.2.0",
   "description": "Web-basierte Anwendung für digitale Moderationskarten bei Karnevalssitzungen",
   "main": "server.js",
   "scripts": {
@@ -16,9 +16,7 @@
     "socket.io": "^4.7.2",
     "cors": "^2.8.5",
     "body-parser": "^1.20.2",
-    "uuid": "^9.0.0",
-    "puppeteer": "^22.8.2",
-    "archiver": "^6.0.1"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

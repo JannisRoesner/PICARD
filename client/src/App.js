@@ -7,7 +7,7 @@ import styled from 'styled-components';
 // Components
 import SitzungsAuswahl from './components/SitzungsAuswahl';
 import ModeratorView from './components/ModeratorView';
-import TechnikerView from './components/TechnikerView';
+import TechnikView from './components/TechnikerView';
 import Sitzungsablauf from './components/Sitzungsablauf';
 import Programmansicht from './components/Programmansicht';
 import KulissenView from './components/KulissenView';
@@ -148,8 +148,8 @@ function App() {
                 <Navigation />
                 <Routes>
                   <Route path="/" element={<SitzungsAuswahl />} />
-                  <Route path="/moderator" element={<ModeratorView />} />
-                  <Route path="/techniker" element={<TechnikerView />} />
+                  <Route path="/moderation" element={<ModeratorView />} />
+                  <Route path="/technik" element={<TechnikView />} />
                                       <Route path="/programm-bearbeiten" element={<ProgrammBearbeiten />} />
                     <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
                     <Route path="/programmansicht" element={<Programmansicht />} />
