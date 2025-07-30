@@ -119,6 +119,11 @@ const LogoContainer = styled.div`
   font-family: ${props => props.theme.fonts.primary};
   min-width: 320px; // sorgt für mehr Platz für den Slogan
   position: relative;
+
+  @media (max-width: 480px) {
+    min-width: auto;
+    gap: 8px;
+  }
 `;
 
 const LogoImage = styled.img`
@@ -128,6 +133,10 @@ const LogoImage = styled.img`
   cursor: pointer;
   transition: all 0.3s ease;
   transform-origin: center center;
+  
+  @media (max-width: 480px) {
+    height: 30px;
+  }
   
   &:hover {
     transform: scale(1.1);
@@ -152,6 +161,10 @@ const LogoText = styled.div`
   font-weight: bold;
   color: ${props => props.theme?.colors?.navText || props.theme?.colors?.text || '#fff'};
   text-decoration: none;
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const LogoSubtext = styled.div`
@@ -159,6 +172,10 @@ const LogoSubtext = styled.div`
   color: ${props => props.theme?.colors?.navText || props.theme?.colors?.textSecondary || '#fff'};
   font-weight: normal;
   margin-top: -2px;
+
+  @media (max-width: 480px) {
+    display: none; /* Verstecke Slogan auf mobilen Geräten */
+  }
 `;
 
 function Logo() {

@@ -3,46 +3,13 @@ import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 
 const ThemeContext = createContext();
 
-// Altes Design (aktuell)
-const oldTheme = {
-  name: 'old',
-  colors: {
-    primary: '#ff6b35',
-    secondary: '#1a1a1a',
-    background: '#000',
-    surface: '#1a1a1a',
-    surfaceSecondary: '#2d2d2d',
-    text: '#fff',
-    textSecondary: '#ccc',
-    textMuted: '#888',
-    border: '#333',
-    success: '#28a745',
-    warning: '#ffc107',
-    danger: '#dc3545',
-    info: '#007bff'
-  },
-  gradients: {
-    primary: 'linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 100%)',
-    background: 'linear-gradient(135deg, #000 0%, #1a1a1a 100%)',
-    card: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)'
-  },
-  fonts: {
-    primary: 'Arial, sans-serif',
-    monospace: 'Courier New, monospace'
-  },
-  logo: {
-    src: null, // Kein Logo im alten Design
-    alt: 'PICARD'
-  }
-};
-
-// Neues Corporate Design (Hybrid)
-const newTheme = {
-  name: 'new',
+// Corporate Design (einheitlich)
+const theme = {
+  name: 'corporate',
   colors: {
     primary: '#fbbf24', // Gelb aus dem Logo
     secondary: '#f59e0b', // Dunkleres Gelb
-    background: '#000', // Dunkler Hintergrund beibehalten
+    background: '#000', // Dunkler Hintergrund
     surface: '#1a1a1a', // Dunkelgrau
     surfaceSecondary: '#2d2d2d', // Helleres Dunkelgrau
     text: '#fff', // Weiß für bessere Lesbarkeit
@@ -73,33 +40,20 @@ const newTheme = {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState('old');
-  const [theme, setTheme] = useState(oldTheme);
-
   useEffect(() => {
-    // Lade gespeichertes Theme aus localStorage
-    const savedTheme = localStorage.getItem('sitzungsmaster-theme');
-    if (savedTheme && (savedTheme === 'old' || savedTheme === 'new')) {
-      setCurrentTheme(savedTheme);
-      setTheme(savedTheme === 'old' ? oldTheme : newTheme);
-    }
+    // Entferne alte Theme-Einstellungen aus localStorage
+    localStorage.removeItem('sitzungsmaster-theme');
+    console.log('Using unified corporate theme');
   }, []);
-
-  const toggleTheme = () => {
-    const newThemeName = currentTheme === 'old' ? 'new' : 'old';
-    const newThemeData = newThemeName === 'old' ? oldTheme : newTheme;
-    
-    setCurrentTheme(newThemeName);
-    setTheme(newThemeData);
-    localStorage.setItem('sitzungsmaster-theme', newThemeName);
-  };
 
   const value = {
     theme,
-    currentTheme,
-    toggleTheme,
-    isOldTheme: currentTheme === 'old',
-    isNewTheme: currentTheme === 'new'
+    currentTheme: 'corporate',
+    toggleTheme: () => {
+      console.log('Theme toggle disabled - using unified corporate theme');
+    },
+    isOldTheme: false,
+    isNewTheme: true
   };
 
   return (

@@ -14,6 +14,14 @@ const NavContainer = styled.nav`
   position: sticky;
   top: 0;
   z-index: 1000;
+
+  @media (max-width: 480px) {
+    padding: 0 10px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 0 5px;
+  }
 `;
 
 const NavContent = styled.div`
@@ -23,6 +31,14 @@ const NavContent = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   height: 60px;
+
+  @media (max-width: 480px) {
+    height: 50px;
+  }
+
+  @media (max-width: 360px) {
+    height: 45px;
+  }
 `;
 
 const NavLinks = styled.div`
@@ -34,8 +50,19 @@ const NavLinks = styled.div`
   }
 `;
 
+const MobileMenuOverlay = styled.div`
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 998;
+`;
+
 const MobileNavLinks = styled.div`
-  display: none;
+  display: ${props => props.isOpen ? 'flex' : 'none'};
   position: fixed;
   top: 60px;
   left: 0;
@@ -45,24 +72,57 @@ const MobileNavLinks = styled.div`
   padding: 20px;
   flex-direction: column;
   gap: 15px;
-  transform: ${props => props.isOpen ? 'translateY(0)' : 'translateY(-100%)'};
-  transition: transform 0.3s ease;
   z-index: 999;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
 
-  @media (max-width: 768px) {
-    display: flex;
+  @media (max-width: 480px) {
+    top: 50px;
+    padding: 15px;
+    gap: 10px;
+    max-height: calc(100vh - 50px);
+  }
+
+  @media (max-width: 360px) {
+    top: 45px;
+    padding: 10px;
+    gap: 8px;
+    max-height: calc(100vh - 45px);
+  }
+
+  @media (min-width: 769px) {
+    display: none;
   }
 `;
 
 const MobileNavLink = styled(Link)`
   color: ${props => props.active ? (props.theme?.colors?.navActive || props.theme?.colors?.primary || '#ff6b35') : (props.theme?.colors?.navText || '#fff')};
   text-decoration: none;
-  padding: 12px 16px;
-  border-radius: 6px;
+  padding: 16px 20px;
+  border-radius: 8px;
   font-weight: ${props => props.active ? 'bold' : 'normal'};
   transition: all 0.2s ease;
   background: ${props => props.active ? `${props.theme?.colors?.navActive || props.theme?.colors?.primary || '#ff6b35'}20` : 'transparent'};
   border: 1px solid ${props => props.active ? `${props.theme?.colors?.navActive || props.theme?.colors?.primary || '#ff6b35'}50` : 'transparent'};
+  font-size: 18px;
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 480px) {
+    padding: 12px 15px;
+    font-size: 16px;
+    min-height: 45px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
 
   &:hover {
     background: ${props => props.theme?.colors?.navActive || props.theme?.colors?.primary || '#ff6b35'}20;
@@ -75,22 +135,43 @@ const HamburgerButton = styled.button`
   background: none;
   border: none;
   color: #fff;
-  font-size: 1.5rem;
+  font-size: 24px;
   cursor: pointer;
   padding: 8px;
   border-radius: 4px;
   transition: all 0.2s ease;
+  min-width: 50px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 480px) {
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 20px;
+    padding: 6px;
+  }
+
+  @media (max-width: 360px) {
+    min-width: 35px;
+    min-height: 35px;
+    font-size: 18px;
+    padding: 5px;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
   }
 
   @media (max-width: 768px) {
-    display: block;
+    display: flex;
+  }
+
+  @media (min-width: 769px) {
+    display: none; /* Verstecke Hamburger-Button auf Desktop */
   }
 `;
-
-
 
 const NavLink = styled(Link)`
   color: ${props => props.active ? (props.theme?.colors?.navActive || props.theme?.colors?.primary || '#ff6b35') : (props.theme?.colors?.navText || '#fff')};
@@ -114,8 +195,7 @@ const StatusIndicator = styled.div`
   font-size: 0.9rem;
 
   @media (max-width: 768px) {
-    gap: 8px;
-    font-size: 0.8rem;
+    display: none; /* Verstecke Timer und Sitzungsstatus auf mobilen Geräten */
   }
 
   @media (max-width: 480px) {
@@ -160,8 +240,6 @@ const SessionInfo = styled.div`
     gap: 3px;
   }
 `;
-
-
 
 const ActionButtons = styled.div`
   display: flex;
@@ -209,24 +287,38 @@ function Navigation() {
   const isActive = (path) => location.pathname === path;
 
   const handleMobileMenuToggle = () => {
+    console.log('Mobile menu toggle clicked, current state:', mobileMenuOpen);
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
   const handleMobileLinkClick = () => {
+    console.log('Mobile link clicked, closing menu');
     setMobileMenuOpen(false);
   };
 
-  // Schließe mobile Menü wenn außerhalb geklickt wird
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (mobileMenuOpen && !event.target.closest('.nav-container')) {
-        setMobileMenuOpen(false);
-      }
-    };
+  const handleOverlayClick = () => {
+    console.log('Overlay clicked, closing menu');
+    setMobileMenuOpen(false);
+  };
 
-    document.addEventListener('click', handleClickOutside);
+  // Schließe mobile Menü wenn sich die Route ändert
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Verhindere Body-Scroll wenn mobile Menü geöffnet ist
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('menu-open');
+    } else {
+      document.body.style.overflow = '';
+      document.body.classList.remove('menu-open');
+    }
+
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.body.style.overflow = '';
+      document.body.classList.remove('menu-open');
     };
   }, [mobileMenuOpen]);
 
@@ -291,82 +383,96 @@ function Navigation() {
   };
 
   return (
-    <NavContainer className="nav-container">
-      <NavContent>
-        <Logo />
-        
-        <NavLinks>
-          <NavLink to="/" active={isActive('/')}>
-            Verwaltung
-          </NavLink>
-          <NavLink to="/moderation" active={isActive('/moderation')}>
-            Moderation
-          </NavLink>
-          <NavLink to="/technik" active={isActive('/technik')}>
-            Technik
-          </NavLink>
-          <NavLink to="/kulissen" active={isActive('/kulissen')}>
-            Kulissen
-          </NavLink>
-          <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
-            Programm
-          </NavLink>
-          <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
-            Sitzungsablauf
-          </NavLink>
-          <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
-            Programm bearbeiten
-          </NavLink>
-          <NavLink to="/drucken" active={isActive('/drucken')}>
-            Drucken
-          </NavLink>
-        </NavLinks>
-
-        <HamburgerButton onClick={handleMobileMenuToggle}>
-          {mobileMenuOpen ? '✕' : '☰'}
-        </HamburgerButton>
-
-        <StatusIndicator>
-          <CurrentTime>{formatCurrentTime(currentTime)}</CurrentTime>
+    <>
+      <NavContainer className="nav-container">
+        <NavContent>
+          <Logo />
           
-          <SessionInfo>
-            <StatusDot active={!!aktiveSitzung} />
-            <span>
-              {aktiveSitzung ? 'Sitzung aktiv' : 'Keine aktive Sitzung'}
-            </span>
-          </SessionInfo>
+          <NavLinks>
+            <NavLink to="/" active={isActive('/')}>
+              Verwaltung
+            </NavLink>
+            <NavLink to="/moderation" active={isActive('/moderation')}>
+              Moderation
+            </NavLink>
+            <NavLink to="/technik" active={isActive('/technik')}>
+              Technik
+            </NavLink>
+            <NavLink to="/kulissen" active={isActive('/kulissen')}>
+              Kulissen
+            </NavLink>
+            <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
+              Programm
+            </NavLink>
+            <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
+              Sitzungsablauf
+            </NavLink>
+            <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
+              Programm bearbeiten
+            </NavLink>
+            <NavLink to="/drucken" active={isActive('/drucken')}>
+              Drucken
+            </NavLink>
+          </NavLinks>
 
-          <ActionButtons>
-            {aktiveSitzung && (
+          <HamburgerButton onClick={handleMobileMenuToggle} aria-label="Menü öffnen/schließen">
+            {mobileMenuOpen ? '✕' : '☰'}
+          </HamburgerButton>
+
+          <StatusIndicator>
+            <CurrentTime>{formatCurrentTime(currentTime)}</CurrentTime>
+            
+            <SessionInfo>
+              <StatusDot active={!!aktiveSitzung} />
+              <span>
+                {aktiveSitzung ? 'Sitzung aktiv' : 'Keine aktive Sitzung'}
+              </span>
+            </SessionInfo>
+
+            <ActionButtons>
+              {aktiveSitzung && (
+                <ActionButton 
+                  variant="export" 
+                  onClick={exportSitzung}
+                  disabled={exporting}
+                  title="Sitzung exportieren"
+                >
+                  {exporting ? '...' : '💾'}
+                </ActionButton>
+              )}
               <ActionButton 
-                variant="export" 
-                onClick={exportSitzung}
-                disabled={exporting}
-                title="Sitzung exportieren"
+                variant="import" 
+                onClick={() => fileInputRef.current?.click()}
+                title="Sitzung importieren"
               >
-                {exporting ? '...' : '💾'}
+                📂
               </ActionButton>
-            )}
-            <ActionButton 
-              variant="import" 
-              onClick={() => fileInputRef.current?.click()}
-              title="Sitzung importieren"
-            >
-              📂
-            </ActionButton>
-          </ActionButtons>
+            </ActionButtons>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            onChange={importSitzung}
-            style={{ display: 'none' }}
-          />
-        </StatusIndicator>
-      </NavContent>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={importSitzung}
+              style={{ display: 'none' }}
+            />
+          </StatusIndicator>
+        </NavContent>
+      </NavContainer>
 
+      <MobileMenuOverlay isOpen={mobileMenuOpen} onClick={handleOverlayClick} />
+      
       <MobileNavLinks isOpen={mobileMenuOpen}>
+        <div style={{ 
+          padding: '10px', 
+          textAlign: 'center', 
+          color: '#fff', 
+          fontSize: '14px',
+          borderBottom: '1px solid #333',
+          marginBottom: '10px'
+        }}>
+          Navigation
+        </div>
         <MobileNavLink to="/" active={isActive('/')} onClick={handleMobileLinkClick}>
           📋 Verwaltung
         </MobileNavLink>
@@ -391,8 +497,25 @@ function Navigation() {
         <MobileNavLink to="/drucken" active={isActive('/drucken')} onClick={handleMobileLinkClick}>
           🖨️ Drucken
         </MobileNavLink>
+        
+        {/* Mobile Sitzungsstatus */}
+        <div style={{ 
+          padding: '15px 20px', 
+          borderTop: '1px solid #333',
+          marginTop: '10px',
+          fontSize: '14px',
+          color: '#ccc'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
+            <StatusDot active={!!aktiveSitzung} />
+            <span>{aktiveSitzung ? 'Sitzung aktiv' : 'Keine aktive Sitzung'}</span>
+          </div>
+          <div style={{ fontSize: '12px', color: '#888' }}>
+            {formatCurrentTime(currentTime)}
+          </div>
+        </div>
       </MobileNavLinks>
-    </NavContainer>
+    </>
   );
 }
 
