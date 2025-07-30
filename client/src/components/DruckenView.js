@@ -545,6 +545,13 @@ function DruckenView() {
               font-size: 11px;
               border-left: 3px solid #ffc107;
             }
+            .audio-files {
+              background: #e8f4fd;
+              padding: 4px;
+              border-radius: 3px;
+              margin-top: 2px;
+              font-size: 10px;
+            }
             .footer {
               position: fixed;
               bottom: 10px;
@@ -566,7 +573,26 @@ function DruckenView() {
           <div class="header">
             <div class="title">${sitzung.name} ${currentYear}</div>
           </div>
-          ${sitzung.programmpunkte.map(pp => `
+          ${sitzung.programmpunkte.map(pp => {
+            // Audio-Informationen aus audioCues extrahieren
+            const audioInfo = pp.audioCues && pp.audioCues.length > 0 
+              ? pp.audioCues.map(cue => `${cue.time}: ${cue.description}`).join('\\n')
+              : 'Keine Audio-Cues definiert';
+            
+            // Licht-Informationen aus lightCues extrahieren
+            const lightInfo = pp.lightCues && pp.lightCues.length > 0 
+              ? pp.lightCues.map(cue => `${cue.time}: ${cue.description}`).join('\\n')
+              : 'Keine Licht-Cues definiert';
+            
+            // Audio-Dateien anzeigen
+            const audioFiles = pp.audioDateien && pp.audioDateien.length > 0 
+              ? pp.audioDateien.join(', ')
+              : 'Keine Audio-Dateien definiert';
+            
+            // Licht-Stimmung anzeigen
+            const lightMood = pp.lichtStimmung || 'Standard';
+            
+            return `
             <div class="programm-item">
               <div class="programm-left">
                 <div style="display: flex; align-items: center; margin-bottom: 8px;">
@@ -584,11 +610,19 @@ function DruckenView() {
                   <div class="technik-title">🔧 Technik-Informationen</div>
                   <div class="technik-item">
                     🔊 Audio-Informationen:
-                    <div class="info-field">${pp.audioInfo || 'Keine Audio-Informationen'}</div>
+                    <div class="info-field">${audioInfo}</div>
                   </div>
                   <div class="technik-item">
                     💡 Licht-Informationen:
-                    <div class="info-field">${pp.lightInfo || 'Keine Licht-Informationen'}</div>
+                    <div class="info-field">${lightInfo}</div>
+                  </div>
+                  <div class="technik-item">
+                    📁 Audio-Dateien:
+                    <div class="audio-files">${audioFiles}</div>
+                  </div>
+                  <div class="technik-item">
+                    🌟 Licht-Stimmung:
+                    <div class="info-field">${lightMood}</div>
                   </div>
                 </div>
               </div>
@@ -597,18 +631,18 @@ function DruckenView() {
                 ${pp.audioCues && pp.audioCues.length > 0 ? `
                   <div class="right-item">
                     🔊 Audio-Cues:
-                    <div class="right-cues">${pp.audioCues.map(cue => cue.description || cue.text || cue).join('<br>')}</div>
+                    <div class="right-cues">${pp.audioCues.map(cue => `${cue.time}: ${cue.description}`).join('<br>')}</div>
                   </div>
                 ` : ''}
                 ${pp.lightCues && pp.lightCues.length > 0 ? `
                   <div class="right-item">
                     💡 Licht-Cues:
-                    <div class="right-cues">${pp.lightCues.map(cue => cue.description || cue.text || cue).join('<br>')}</div>
+                    <div class="right-cues">${pp.lightCues.map(cue => `${cue.time}: ${cue.description}`).join('<br>')}</div>
                   </div>
                 ` : ''}
               </div>
             </div>
-          `).join('')}
+          `}).join('')}
           <div class="footer">
             Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
           </div>
