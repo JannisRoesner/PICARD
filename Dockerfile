@@ -8,8 +8,17 @@ COPY package*.json ./
 COPY client/package*.json ./client/
 
 # Dependencies installieren (mit reduzierten Warnungen)
-RUN npm install --omit=dev --no-audit --no-fund --silent
-RUN cd client && npm install --omit=dev --no-audit --no-fund --silent
+# System deps for better-sqlite3 build
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    python3 \
+    curl \
+    ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN npm install --omit=dev --no-audit --no-fund --silent \
+  && cd client && npm install --omit=dev --no-audit --no-fund --silent && cd .. \
+  && npm rebuild better-sqlite3 --unsafe-perm
 
 # Alle anderen Dateien kopieren
 COPY . .
@@ -19,6 +28,9 @@ RUN cd client && npm run build
 
 # Port freigeben
 EXPOSE 5000
+
+# Ensure data dir exists for SQLite when using single-container setup
+RUN mkdir -p /app/data
 
 # Health Check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

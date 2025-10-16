@@ -15,6 +15,12 @@ client/dist/
 .env.test.local
 .env.production.local
 
+# SQLite database files
+data/
+*.db
+*.db-wal
+*.db-shm
+
 # IDE files
 .vscode/
 .idea/

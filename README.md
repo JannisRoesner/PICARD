@@ -1,4 +1,4 @@
-# PICARD - Programm- & Informations-Center für Ablauf-, Regie- & Moderation
+# **PICARD** - **P**rogramm- & **I**nformations-**C**enter für **A**blauf-, **R**egie- & **D**eration
 
 Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssitzungen mit Echtzeit-Kollaboration zwischen Moderation, Technik und Kulissen.
 
@@ -76,20 +76,25 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 
 ## 🗄️ Datenhaltung
 
-**Wichtig:** Aktuell werden alle Daten im Arbeitsspeicher (In-Memory) gehalten. Das bedeutet:
-- **Daten gehen beim Neustart des Servers verloren!**
-- Für produktive Nutzung sollte eine echte Datenbank ergänzt werden.
+Die Anwendung speichert Daten persistent in einer lokalen SQLite-Datenbank.
+- Standardpfad: `./data/app.db` (konfigurierbar über Umgebungsvariable `DB_PATH`)
+- Zettel werden nicht gelöscht, sondern als `geschlossen` markiert (Historie bleibt erhalten)
+- In Docker wird die Datenbank unter `/data/app.db` gespeichert und über ein Volume persistiert
 
 ## 🚀 Installation & Betrieb
 
 ### Docker (empfohlen)
 ```bash
-# Container starten
-docker-compose up -d
+# Build und Start (erstellt/aktualisiert DB-Schema automatisch)
+docker compose up --build -d
 
 # Anwendung öffnen
 # http://localhost:5000
 ```
+
+Persistenz:
+- Volume-Name: `sitzungsmaster-data`
+- DB-Datei im Container: `/data/app.db`
 
 ### Lokale Installation
 ```bash
@@ -99,6 +104,9 @@ cd client && npm install && cd ..
 
 # Server starten
 node server.js
+
+# Standard-DB-Pfad (falls nicht gesetzt): ./data/app.db
+# Übersteuerbar mit Umgebungsvariable: DB_PATH=./mein/pfad.db node server.js
 ```
 
 ## 📱 Verwendung
@@ -120,7 +128,7 @@ node server.js
 ### Backend (Node.js/Express)
 - **Express.js**: Web-Framework
 - **Socket.IO**: Echtzeit-Kommunikation
-- **In-Memory Storage**: Für Entwicklung
+- **SQLite (better-sqlite3)**: Persistente Datenhaltung
 
 ### Frontend (React)
 - **React 18**: UI-Framework
@@ -142,7 +150,7 @@ node server.js
 - `DELETE /api/sitzung/:id` - Sitzung löschen
 - `GET /api/sitzung/:id/zettel` - Zettel abrufen
 - `POST /api/sitzung/:id/zettel` - Zettel erstellen
-- `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel löschen
+- `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel schließen (Historie bleibt erhalten)
 
 ## 🎨 Design
 
@@ -210,5 +218,3 @@ Dieses Projekt ist unter der **GNU Affero General Public License v3.0 (AGPL-3.0)
 Die vollständige AGPL-3.0 Lizenz finden Sie hier: https://www.gnu.org/licenses/agpl-3.0.html
 
 **Wichtig**: Bei Nutzung als Web-Service (wie bei diesem Projekt) müssen auch die Nutzer Zugang zum Quellcode haben.
-
-
