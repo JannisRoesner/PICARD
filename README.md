@@ -1,4 +1,4 @@
-# **PICARD** - **P**rogramm- & **I**nformations-**C**enter für **A**blauf-, **R**egie- & **D**eration
+# **PICARD** - **P**rogramm- & **I**nformations-**C**enter für **A**blauf-, **R**egie- & **M**oderation
 
 Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssitzungen mit Echtzeit-Kollaboration zwischen Moderation, Technik und Kulissen.
 
