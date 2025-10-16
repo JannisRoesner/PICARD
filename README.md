@@ -2,9 +2,11 @@
 
 Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssitzungen mit Echtzeit-Kollaboration zwischen Moderation, Technik und Kulissen.
 
+
 ## 🎯 Features
 
-### Moderation-Ansicht
+### Moderations-Ansicht
+![](/Screenshot1.png)
 - **Programmablauf**: Übersicht aller Programmpunkte mit Nummerierung
 - **Live-Textbearbeitung**: Direkte Bearbeitung von Anmoderation, Notizen und Abmoderation
 - **Namensliste**: Personen, die auftreten
@@ -14,6 +16,7 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Zettel zu Programmpunkt**: Direkte Umwandlung von Zetteln in Programmpunkte
 
 ### Technik-Ansicht
+![](/Screenshot2.png)
 - **Programmablauf**: Übersicht aller Programmpunkte
 - **Audio-Informationen**: Welche Dateien abzuspielen sind
 - **Licht-Informationen**: Mehrzeilige Eingabe für Lichtdetails
@@ -23,17 +26,18 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Live-Zettel**: Kommunikation mit Moderation
 
 ### Programmansicht
+![](/Screenshot6.png)
 - **Übersichtliche Darstellung**: Reine Anzeige des Programmablaufs ohne Bearbeitung
-- **Live-Zettel**: Erstellung von Zetteln für Moderation und Technik
-- **Schwebender Button**: Einfacher Zugang zu Zettel-Funktionen und Historie
 
 ### Kulissen-Ansicht
+![](/Screenshot3.png)
 - **Kulissen-Informationen**: Einzug/Auszug von CD oder Kapelle
 - **Bühnenaufbau**: Details zu Bütt, Notenständer oder anderen Bühnenrequisiten
 - **Live-Zettel**: Kommunikation mit anderen Ansichten
 - **Spezielle Anzeige**: Optimiert für Kulissenschieber
 
 ### Sitzungsablauf (Mobile)
+![](/Screenshot5.png)
 - **Mobile-optimiert**: Übersichtliche Darstellung für Smartphones
 - **Live-Einfügung**: Neue Programmpunkte an beliebigen Positionen
 - **Einfache Eingabe**: Nur Name, Dauer und Notizen bearbeitbar
@@ -62,12 +66,14 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Aktiver Programmpunkt**: Blinkende Markierung
 
 ### Live-Zettel-System
+![](/Screenshot7.png)
 - **Bidirektionale Kommunikation**: Zwischen allen Ansichten
 - **Prioritätsstufen**: Normal, Wichtig, Dringend mit Farbkodierung
 - **Zettel-Typen**: An Moderation, An Technik, An Alle
 - **Zettel-Historie**: Alle vergangenen Zettel einsehbar
 - **Zettel schließen**: Statt löschen werden Zettel als "geschlossen" markiert
 - **Echtzeit-Updates**: Sofortige Anzeige neuer Zettel
+![](/Screenshot8.png)
 
 ### Echtzeit-Funktionen
 - **Socket.IO**: Live-Updates zwischen allen verbundenen Clients
