@@ -399,10 +399,16 @@ function TechnikView() {
     try {
       const response = await axios.get(`/api/sitzung/${aktiveSitzung}`);
       setSitzung(response.data);
-      // Nur beim initialen Laden setzen, nicht bei jedem Update
-      // if (response.data.programmpunkte.length > 0) {
-      //   setSelectedProgrammpunkt(response.data.programmpunkte[0]);
-      // }
+      
+      // Update selectedProgrammpunkt with fresh data if it exists
+      if (selectedProgrammpunkt) {
+        const updatedProgrammpunkt = response.data.programmpunkte.find(
+          p => p.id === selectedProgrammpunkt.id
+        );
+        if (updatedProgrammpunkt) {
+          setSelectedProgrammpunkt(updatedProgrammpunkt);
+        }
+      }
     } catch (error) {
       console.error('Fehler beim Laden der Sitzung:', error);
     }
