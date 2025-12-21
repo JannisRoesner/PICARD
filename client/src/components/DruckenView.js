@@ -54,6 +54,7 @@ const PrintButton = styled.button`
   &:active {
     transform: translateY(0);
   }
+
 `;
 
 const ButtonIcon = styled.div`
@@ -540,32 +541,6 @@ function DruckenView() {
                 text-align: center;
                 font-size: 11px;
               }
-              .info-field {
-                background: #fff3cd;
-                padding: 6px;
-                border-radius: 3px;
-                margin-top: 4px;
-                font-size: 11px;
-                border-left: 3px solid #ffc107;
-              }
-              .audio-files {
-                background: #e8f4fd;
-                padding: 4px;
-                border-radius: 3px;
-                margin-top: 2px;
-                font-size: 10px;
-              }
-              margin-top: 4px;
-              font-size: 11px;
-              border-left: 3px solid #ffc107;
-            }
-            .audio-files {
-              background: #e8f4fd;
-              padding: 4px;
-              border-radius: 3px;
-              margin-top: 2px;
-              font-size: 10px;
-            }
             .footer {
               position: fixed;
               bottom: 10px;
@@ -588,12 +563,6 @@ function DruckenView() {
             <div class="title">${sitzung.name} ${currentYear}</div>
           </div>
           ${sitzung.programmpunkte.map(pp => {
-            const audioFiles = pp.audioDateien && pp.audioDateien.length > 0 
-              ? pp.audioDateien.join(', ')
-              : 'Keine Audio-Dateien definiert';
-
-            const lightMood = pp.lichtStimmung || 'Standard';
-
             const notes = Array.isArray(pp.pinboardNotes) ? pp.pinboardNotes : [];
             const notesHtml = notes.length > 0
               ? notes.map((note, idx) => {
@@ -616,17 +585,6 @@ function DruckenView() {
                 <div class="typ">${pp.typ}</div>
                 <div style="display: flex; align-items: center; margin-bottom: 8px;">
                   <span class="dauer">Dauer: ${pp.dauer ? Math.round(pp.dauer / 60) + ' Minuten' : 'Keine Angabe'}</span>
-                </div>
-                <div class="technik-info">
-                  <div class="technik-title">🔧 Technik-Informationen</div>
-                  <div class="technik-item">
-                    📁 Audio-Dateien:
-                    <div class="audio-files">${audioFiles}</div>
-                  </div>
-                  <div class="technik-item">
-                    🌟 Licht-Stimmung:
-                    <div class="info-field">${lightMood}</div>
-                  </div>
                 </div>
               </div>
               <div class="programm-right">
