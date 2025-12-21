@@ -1,7 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const Database = require('better-sqlite3');
-const { v4: uuidv4 } = require('uuid');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import Database from 'better-sqlite3';
+import { v4 as uuidv4 } from 'uuid';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const defaultDbDir = path.join(__dirname, 'data');
 const dbPath = process.env.DB_PATH || path.join(defaultDbDir, 'app.db');
@@ -303,7 +307,7 @@ function deleteSitzung(sitzungId) {
   return res.changes > 0;
 }
 
-module.exports = {
+export {
   createSitzung,
   getSitzungen,
   getSitzungById,

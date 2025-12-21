@@ -3,6 +3,7 @@
   "version": "4.3.0",
   "description": "Web-basierte Anwendung für digitale Moderationskarten bei Karnevalssitzungen",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -12,14 +13,14 @@
     "heroku-postbuild": "npm run install-client && npm run build"
   },
   "dependencies": {
-    "express": "^4.22.1",
+    "express": "^5.2.1",
     "socket.io": "^4.8.1",
     "cors": "^2.8.5",
-    "uuid": "^8.3.2",
-    "better-sqlite3": "^9.6.0"
+    "uuid": "^13.0.0",
+    "better-sqlite3": "^12.5.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.11"
   },
   "keywords": [
     "karneval",
