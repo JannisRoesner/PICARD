@@ -18,12 +18,9 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 ### Technik-Ansicht
 ![](/Screenshot2.png)
 - **Programmablauf**: Übersicht aller Programmpunkte
-- **Audio-Informationen**: Welche Dateien abzuspielen sind
-- **Licht-Informationen**: Mehrzeilige Eingabe für Lichtdetails
-- **Audio-Cues**: Bearbeitbare, zeitgesteuerte Audio-Events
-- **Licht-Cues**: Bearbeitbare, zeitgesteuerte Licht-Events
-- **Statusleiste**: Aktiver Programmpunkt, Timer, technische Details
-- **Live-Zettel**: Kommunikation mit Moderation
+- **Pinboard/Notizen**: Klebezettel pro Programmpunkt (Farben, Mehrzeilig)
+- **Statusleiste**: Aktiver Programmpunkt, Timer, Einzug/Auszug-Hinweise
+- **Live-Zettel**: Kommunikation mit Moderation und anderen Ansichten
 
 ### Programmansicht
 ![](/Screenshot6.png)
@@ -99,7 +96,7 @@ docker compose up --build -d
 ```
 
 Persistenz:
-- Volume-Name: `sitzungsmaster-data`
+- Volume-Name: `picard-data`
 - DB-Datei im Container: `/data/app.db`
 
 ### Lokale Installation
@@ -132,14 +129,15 @@ node server.js
 ## 🏗️ Architektur
 
 ### Backend (Node.js/Express)
-- **Express.js**: Web-Framework
+- **Node 24 + ESM**: Moderne Runtime, reines ES-Module-Setup
+- **Express 5**: Web-Framework
 - **Socket.IO**: Echtzeit-Kommunikation
 - **SQLite (better-sqlite3)**: Persistente Datenhaltung
 
 ### Frontend (React)
-- **React 18**: UI-Framework
+- **React 19**: UI-Framework
 - **Styled Components**: CSS-in-JS Styling
-- **React Router**: Navigation
+- **React Router 7**: Navigation
 - **Axios**: HTTP-Client
 - **Socket.IO Client**: Echtzeit-Updates
 
@@ -166,46 +164,20 @@ node server.js
 - **Intuitive Navigation**: Klare Struktur und einfache Bedienung
 
 ## 📝 Changelog
+### Version 5.0.0 (Aktuell)
+- **Pinboard statt Cues**: Technik-Ansicht und Technik-Druck zeigen Notizzettel pro Programmpunkt; alte Audio-/Licht-Cues entfernt
+- **Druck-Optimierung**: Alle Druck-Layouts kompakter für A4; Technik-Druck zeigt nur noch Notizen
+- **Dependency-Refresh**: Node 24, Express 5, React 19, React Router 7, uuid 13 (ESM-only), better-sqlite3 12
+- **ESM-Server**: server.js und db.js auf ES Modules umgestellt; kompatibel mit Express 5 Routing
+- **Docker**: Build auf node:24-bookworm-slim; client/node_modules nach Build entfernt, DB-Volume heißt `picard-data`
 
-### Version 4.3.0 (Aktuell)
-- **Verbesserte Zeiteingabe**: Dauer wird jetzt in Minuten statt Sekunden eingegeben
-- **Klarere Zeitanzeige**: Alle Zeitangaben zeigen jetzt "min" als Einheit an
-- **Bessere Benutzerfreundlichkeit**: Schrittweise Eingabe (0,5-Minuten-Schritte) für präzisere Zeitangaben
-- **Konsistente Darstellung**: Einheitliche Zeitformatierung in allen Ansichten
-
-### Version 4.2.0
-- **Entfernung server-seitiger PDF-Export**: Stabilitätsverbesserung durch Entfernung problematischer Puppeteer-Abhängigkeiten
-- **Clientseitige PDF-Generierung**: Nur noch Browser-basierte PDF-Export-Funktion
-- **Vereinfachte Architektur**: Weniger Dependencies und kleinere Container-Größe
-- **Schnellere Builds**: Entfernung von Chrome-Installation im Docker-Container
-
-### Version 4.1.0
-- **Erweiterte Drucken-Funktionalität**: Querformat für Kulissen, Moderation und Technik
-- **Jahreszahl in Überschriften**: Automatische Einbindung des aktuellen Jahres
-- **Fußzeile mit Server-URL**: Professionelle Fußzeile mit Live-Programm-Hinweis
-- **Optimierte Layouts**: Bessere Platznutzung und professionelle Gestaltung
-- **Programmansicht ohne Untertitel**: Saubere Übersicht ohne zusätzliche Beschriftung
-
-### Version 4.0.0
-- **Drucken-Funktionalität**: Vier professionelle Drucklayouts für alle Ansichten
-- **Programmansicht-Druck**: Übersichtliches Layout ohne zusätzliche Details
-- **Kulissen-Druck**: Mit Einzug/Auszug und Bühneninformationen
-- **Moderation-Druck**: Mit allen Moderation-Informationen und Namenslisten
-- **Technik-Druck**: Mit Audio- und Licht-Cues für die Technik
-- **PDF-Export**: Möglichkeit zum Speichern als PDF über Browser-Druckfunktion
-
-### Version 3.0.0
-- **Kulissen-Ansicht**: Neue Ansicht für Kulissenschieber mit Bühneninformationen
-- **Drag & Drop**: Reihenfolge-Änderung in "Programm bearbeiten"
-- **Zettel-Historie**: Alle vergangenen Zettel einsehbar
-- **Verbesserte Zettel-Logik**: Korrekte Filterung und Sichtbarkeit
-- **Bühneninformationen**: Neues Feld für Bühnenaufbau
-- **Einzug/Auszug-Anzeige**: "Von CD" vs "Von Kapelle"
-
-### Version 2.0.0
-- **Live-Zettel-System**: Bidirektionale Kommunikation
-- **Programmansicht**: Neue Ansicht für Zuschauer
-- **Verbesserte Technik-Ansicht**: Mehrzeilige Licht-Informationen
+### Historie (Auszug)
+- 4.3.0: Zeiteingabe auf Minuten umgestellt; einheitliche Zeitdarstellung
+- 4.2.0: Server-seitigen PDF-Export entfernt; nur noch Browser-PDF
+- 4.1.0: Druck-Layouts (Querformat) und Fußzeile mit Server-URL
+- 4.0.0: Vier Druckansichten (Programm, Kulissen, Moderation, Technik)
+- 3.0.0: Kulissen-Ansicht, Drag & Drop, Zettel-Historie
+- 2.0.0: Live-Zettel-System, Programmansicht, erste Technik-Verbesserungen
 
 ## 📄 Lizenz
 
