@@ -566,7 +566,7 @@ function DruckenView() {
             const notes = Array.isArray(pp.pinboardNotes) ? pp.pinboardNotes : [];
             const notesHtml = notes.length > 0
               ? notes.map((note, idx) => {
-                  const content = (note.content || 'Leer').replace(/\n/g, '<br>');
+                  const content = (note.text || 'Leer').replace(/\n/g, '<br>');
                   const bg = note.color || '#fff3cd';
                   return `<div class="sticky-note" style="background: ${bg}"><div class="sticky-note-title">Notiz ${idx + 1}</div><div class="sticky-note-content">${content}</div></div>`;
                 }).join('')
