@@ -1,10 +1,10 @@
 # Compose Specification v2.1+ (wegen healthcheck Feature)
 services:
-  sitzungsmaster:
+  picard:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: sitzungsmaster-web
+    container_name: picard-web
     ports:
       - "5000:5000"
     environment:
@@ -19,14 +19,14 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - sitzungsmaster-network
+      - picard-network
     volumes:
-      - sitzungsmaster-data:/data
+      - picard-data:/data
 
 networks:
-  sitzungsmaster-network:
+  picard-network:
     driver: bridge 
 
 volumes:
-  sitzungsmaster-data:
+  picard-data:
     driver: local

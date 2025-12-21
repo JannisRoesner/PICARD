@@ -2,7 +2,6 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const path = require('path');
 // Persistente Datenbank
 const db = require('./db');
@@ -19,7 +18,8 @@ const io = socketIo(server, {
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Prüfe ob Build-Verzeichnis existiert
 const buildPath = path.join(__dirname, 'client/build');
@@ -114,6 +114,7 @@ app.post('/api/sitzung/:id/programmpunkt', (req, res) => {
     dauer: created.dauer || 0,
     audioCues: created.audioCues ? JSON.parse(created.audioCues) : [],
     lightCues: created.lightCues ? JSON.parse(created.lightCues) : [],
+    pinboardNotes: created.pinboardNotes ? JSON.parse(created.pinboardNotes) : [],
     buehne: created.buehne,
     erstellt: created.erstellt,
     nummer: created.nummer
@@ -148,6 +149,7 @@ app.put('/api/sitzung/:id/programmpunkt/:punktId', (req, res) => {
     dauer: updated.dauer || 0,
     audioCues: updated.audioCues ? JSON.parse(updated.audioCues) : [],
     lightCues: updated.lightCues ? JSON.parse(updated.lightCues) : [],
+    pinboardNotes: updated.pinboardNotes ? JSON.parse(updated.pinboardNotes) : [],
     buehne: updated.buehne,
     erstellt: updated.erstellt,
     nummer: updated.nummer

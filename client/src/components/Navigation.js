@@ -285,6 +285,7 @@ function Navigation() {
   const fileInputRef = useRef();
 
   const isActive = (path) => location.pathname === path;
+  const isProgramView = isActive('/programmansicht');
 
   const handleMobileMenuToggle = () => {
     console.log('Mobile menu toggle clicked, current state:', mobileMenuOpen);
@@ -388,32 +389,38 @@ function Navigation() {
         <NavContent>
           <Logo />
           
-          <NavLinks>
-            <NavLink to="/" active={isActive('/')}>
-              Verwaltung
-            </NavLink>
-            <NavLink to="/moderation" active={isActive('/moderation')}>
-              Moderation
-            </NavLink>
-            <NavLink to="/technik" active={isActive('/technik')}>
-              Technik
-            </NavLink>
-            <NavLink to="/kulissen" active={isActive('/kulissen')}>
-              Kulissen
-            </NavLink>
-            <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
-              Programm
-            </NavLink>
-            <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
-              Sitzungsablauf
-            </NavLink>
-            <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
-              Programm bearbeiten
-            </NavLink>
-            <NavLink to="/drucken" active={isActive('/drucken')}>
-              Drucken
-            </NavLink>
-          </NavLinks>
+          {isProgramView ? (
+            <NavLinks>
+              <NavLink to="/programmansicht" active={true}>
+                Programm
+              </NavLink>
+            </NavLinks>
+          ) : (
+            <NavLinks>
+              <NavLink to="/" active={isActive('/')}>Verwaltung</NavLink>
+              <NavLink to="/moderation" active={isActive('/moderation')}>
+                Moderation
+              </NavLink>
+              <NavLink to="/technik" active={isActive('/technik')}>
+                Technik
+              </NavLink>
+              <NavLink to="/kulissen" active={isActive('/kulissen')}>
+                Kulissen
+              </NavLink>
+              <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
+                Programm
+              </NavLink>
+              <NavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')}>
+                Sitzungsablauf
+              </NavLink>
+              <NavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')}>
+                Programm bearbeiten
+              </NavLink>
+              <NavLink to="/drucken" active={isActive('/drucken')}>
+                Drucken
+              </NavLink>
+            </NavLinks>
+          )}
 
           <HamburgerButton onClick={handleMobileMenuToggle} aria-label="Menü öffnen/schließen">
             {mobileMenuOpen ? '✕' : '☰'}
@@ -421,41 +428,44 @@ function Navigation() {
 
           <StatusIndicator>
             <CurrentTime>{formatCurrentTime(currentTime)}</CurrentTime>
-            
-            <SessionInfo>
-              <StatusDot active={!!aktiveSitzung} />
-              <span>
-                {aktiveSitzung ? 'Sitzung aktiv' : 'Keine aktive Sitzung'}
-              </span>
-            </SessionInfo>
+            {!isProgramView && (
+              <>
+                <SessionInfo>
+                  <StatusDot active={!!aktiveSitzung} />
+                  <span>
+                    {aktiveSitzung ? 'Sitzung aktiv' : 'Keine aktive Sitzung'}
+                  </span>
+                </SessionInfo>
 
-            <ActionButtons>
-              {aktiveSitzung && (
-                <ActionButton 
-                  variant="export" 
-                  onClick={exportSitzung}
-                  disabled={exporting}
-                  title="Sitzung exportieren"
-                >
-                  {exporting ? '...' : '💾'}
-                </ActionButton>
-              )}
-              <ActionButton 
-                variant="import" 
-                onClick={() => fileInputRef.current?.click()}
-                title="Sitzung importieren"
-              >
-                📂
-              </ActionButton>
-            </ActionButtons>
+                <ActionButtons>
+                  {aktiveSitzung && (
+                    <ActionButton 
+                      variant="export" 
+                      onClick={exportSitzung}
+                      disabled={exporting}
+                      title="Sitzung exportieren"
+                    >
+                      {exporting ? '...' : '💾'}
+                    </ActionButton>
+                  )}
+                  <ActionButton 
+                    variant="import" 
+                    onClick={() => fileInputRef.current?.click()}
+                    title="Sitzung importieren"
+                  >
+                    📂
+                  </ActionButton>
+                </ActionButtons>
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={importSitzung}
-              style={{ display: 'none' }}
-            />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json"
+                  onChange={importSitzung}
+                  style={{ display: 'none' }}
+                />
+              </>
+            )}
           </StatusIndicator>
         </NavContent>
       </NavContainer>
@@ -473,47 +483,55 @@ function Navigation() {
         }}>
           Navigation
         </div>
-        <MobileNavLink to="/" active={isActive('/')} onClick={handleMobileLinkClick}>
-          📋 Verwaltung
-        </MobileNavLink>
-        <MobileNavLink to="/moderation" active={isActive('/moderation')} onClick={handleMobileLinkClick}>
-          🎤 Moderation
-        </MobileNavLink>
-        <MobileNavLink to="/technik" active={isActive('/technik')} onClick={handleMobileLinkClick}>
-          🎛️ Technik
-        </MobileNavLink>
-        <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
-          Kulissen
-        </MobileNavLink>
-        <MobileNavLink to="/programmansicht" active={isActive('/programmansicht')} onClick={handleMobileLinkClick}>
-          📋 Programmansicht
-        </MobileNavLink>
-        <MobileNavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')} onClick={handleMobileLinkClick}>
-          📱 Sitzungsablauf
-        </MobileNavLink>
-        <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
-          🛠️ Programm bearbeiten
-        </MobileNavLink>
-        <MobileNavLink to="/drucken" active={isActive('/drucken')} onClick={handleMobileLinkClick}>
-          🖨️ Drucken
-        </MobileNavLink>
-        
-        {/* Mobile Sitzungsstatus */}
-        <div style={{ 
-          padding: '15px 20px', 
-          borderTop: '1px solid #333',
-          marginTop: '10px',
-          fontSize: '14px',
-          color: '#ccc'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
-            <StatusDot active={!!aktiveSitzung} />
-            <span>{aktiveSitzung ? 'Sitzung aktiv' : 'Keine aktive Sitzung'}</span>
-          </div>
-          <div style={{ fontSize: '12px', color: '#888' }}>
-            {formatCurrentTime(currentTime)}
-          </div>
-        </div>
+        {isProgramView ? (
+          <MobileNavLink to="/programmansicht" active={true} onClick={handleMobileLinkClick}>
+            📋 Programmansicht
+          </MobileNavLink>
+        ) : (
+          <>
+            <MobileNavLink to="/" active={isActive('/')} onClick={handleMobileLinkClick}>
+              📋 Verwaltung
+            </MobileNavLink>
+            <MobileNavLink to="/moderation" active={isActive('/moderation')} onClick={handleMobileLinkClick}>
+              🎤 Moderation
+            </MobileNavLink>
+            <MobileNavLink to="/technik" active={isActive('/technik')} onClick={handleMobileLinkClick}>
+              🎛️ Technik
+            </MobileNavLink>
+            <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
+              Kulissen
+            </MobileNavLink>
+            <MobileNavLink to="/programmansicht" active={isActive('/programmansicht')} onClick={handleMobileLinkClick}>
+              📋 Programmansicht
+            </MobileNavLink>
+            <MobileNavLink to="/sitzungsablauf" active={isActive('/sitzungsablauf')} onClick={handleMobileLinkClick}>
+              📱 Sitzungsablauf
+            </MobileNavLink>
+            <MobileNavLink to="/programm-bearbeiten" active={isActive('/programm-bearbeiten')} onClick={handleMobileLinkClick}>
+              🛠️ Programm bearbeiten
+            </MobileNavLink>
+            <MobileNavLink to="/drucken" active={isActive('/drucken')} onClick={handleMobileLinkClick}>
+              🖨️ Drucken
+            </MobileNavLink>
+            
+            {/* Mobile Sitzungsstatus */}
+            <div style={{ 
+              padding: '15px 20px', 
+              borderTop: '1px solid #333',
+              marginTop: '10px',
+              fontSize: '14px',
+              color: '#ccc'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
+                <StatusDot active={!!aktiveSitzung} />
+                <span>{aktiveSitzung ? 'Sitzung aktiv' : 'Keine aktive Sitzung'}</span>
+              </div>
+              <div style={{ fontSize: '12px', color: '#888' }}>
+                {formatCurrentTime(currentTime)}
+              </div>
+            </div>
+          </>
+        )}
       </MobileNavLinks>
     </>
   );

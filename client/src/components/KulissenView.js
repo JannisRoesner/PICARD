@@ -105,6 +105,7 @@ const ProgramRight = styled.div`
   border-radius: 6px;
   font-size: 0.85rem;
   flex-shrink: 0;
+  color: ${props => props.isActive ? '#181818' : '#ddd'};
 `;
 
 const ProgramName = styled.div`
@@ -153,7 +154,7 @@ const BuehneBox = styled.div`
 const KulissenTitle = styled.div`
   font-weight: bold;
   font-size: 0.9rem;
-  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
+  color: ${props => props.isActive ? '#181818' : (props.theme?.colors?.primary || '#fbbf24')};
   margin-bottom: 5px;
 `;
 
@@ -307,8 +308,8 @@ function KulissenView() {
                 </BuehneBox>
               </ProgramCenter>
               
-              <ProgramRight>
-                <KulissenTitle>🎭 Kulissen-Informationen</KulissenTitle>
+              <ProgramRight isActive={activeProgrammpunkt?.id === programmpunkt.id}>
+                <KulissenTitle isActive={activeProgrammpunkt?.id === programmpunkt.id}>🎭 Kulissen-Informationen</KulissenTitle>
                 <KulissenDetails>
                   <KulissenItem>
                     <KulissenIcon>🎵</KulissenIcon>

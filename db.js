@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS programmpunkte (
   dauer INTEGER NOT NULL DEFAULT 0,
   audioCues TEXT, -- JSON string
   lightCues TEXT, -- JSON string
+  pinboardNotes TEXT,
   buehne TEXT,
   erstellt TEXT NOT NULL,
   FOREIGN KEY (sitzungId) REFERENCES sitzungen(id) ON DELETE CASCADE
@@ -74,6 +75,14 @@ function stringifyJson(value) {
   try { return JSON.stringify(value); } catch (_) { return null; }
 }
 
+// Migration: ensure 'pinboardNotes' exists for older databases
+try {
+  const cols = db.prepare("PRAGMA table_info('programmpunkte')").all();
+  if (!cols.some(c => c.name === 'pinboardNotes')) {
+    db.exec("ALTER TABLE programmpunkte ADD COLUMN pinboardNotes TEXT");
+  }
+} catch (_) {}
+
 // Sitzungen
 function createSitzung(name, programmpunkte = []) {
   const id = uuidv4();
@@ -83,8 +92,8 @@ function createSitzung(name, programmpunkte = []) {
     INSERT INTO programmpunkte (
       id, sitzungId, nummer, name, typ, einzugCD, auszugCD, trainer, betreuer,
       namensliste, anmoderation, abmoderation, notizen, audioDateien, lichtStimmung,
-      dauer, audioCues, lightCues, buehne, erstellt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      dauer, audioCues, lightCues, pinboardNotes, buehne, erstellt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   const tx = db.transaction(() => {
     insertSitzung.run(id, name, erstellt);
@@ -108,6 +117,7 @@ function createSitzung(name, programmpunkte = []) {
         punkt.dauer || 0,
         stringifyJson(punkt.audioCues || []),
         stringifyJson(punkt.lightCues || []),
+        stringifyJson(punkt.pinboardNotes || []),
         punkt.buehne || 'Bühne: frei',
         new Date().toISOString()
       );
@@ -147,6 +157,7 @@ function getProgrammpunkteForSitzung(sitzungId) {
     dauer: r.dauer || 0,
     audioCues: parseJson(r.audioCues, []),
     lightCues: parseJson(r.lightCues, []),
+    pinboardNotes: parseJson(r.pinboardNotes, []),
     buehne: r.buehne,
     erstellt: r.erstellt,
     nummer: r.nummer
@@ -162,8 +173,8 @@ function addProgrammpunkt(sitzungId, punkt, insertAfter) {
     INSERT INTO programmpunkte (
       id, sitzungId, nummer, name, typ, einzugCD, auszugCD, trainer, betreuer,
       namensliste, anmoderation, abmoderation, notizen, audioDateien, lichtStimmung,
-      dauer, audioCues, lightCues, buehne, erstellt
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      dauer, audioCues, lightCues, pinboardNotes, buehne, erstellt
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   const id = uuidv4();
   const created = new Date().toISOString();
@@ -190,6 +201,7 @@ function addProgrammpunkt(sitzungId, punkt, insertAfter) {
       punkt.dauer || 0,
       stringifyJson(punkt.audioCues || []),
       stringifyJson(punkt.lightCues || []),
+      stringifyJson(punkt.pinboardNotes || []),
       punkt.buehne || 'Bühne: frei',
       created
     );
@@ -209,7 +221,8 @@ function updateProgrammpunkt(sitzungId, punktId, updates) {
     namensliste: updates.namensliste !== undefined ? stringifyJson(updates.namensliste) : existing.namensliste,
     audioDateien: updates.audioDateien !== undefined ? stringifyJson(updates.audioDateien) : existing.audioDateien,
     audioCues: updates.audioCues !== undefined ? stringifyJson(updates.audioCues) : existing.audioCues,
-    lightCues: updates.lightCues !== undefined ? stringifyJson(updates.lightCues) : existing.lightCues
+    lightCues: updates.lightCues !== undefined ? stringifyJson(updates.lightCues) : existing.lightCues,
+    pinboardNotes: updates.pinboardNotes !== undefined ? stringifyJson(updates.pinboardNotes) : existing.pinboardNotes
   };
   const stmt = db.prepare(`UPDATE programmpunkte SET
     name = @name,
@@ -227,6 +240,7 @@ function updateProgrammpunkt(sitzungId, punktId, updates) {
     dauer = @dauer,
     audioCues = @audioCues,
     lightCues = @lightCues,
+    pinboardNotes = @pinboardNotes,
     buehne = @buehne
     WHERE id = @id AND sitzungId = @sitzungId`);
   stmt.run({ ...merged, id: punktId, sitzungId });

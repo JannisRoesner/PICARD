@@ -9,10 +9,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "socket.io-client": "^4.7.2",
-    "axios": "^1.4.0",
-    "react-router-dom": "^6.14.0",
-    "styled-components": "^6.0.0",
+    "socket.io-client": "^4.8.1",
+    "axios": "^1.7.0",
+    "react-router-dom": "^6.28.0",
+    "styled-components": "^6.1.0",
+    "react-rnd": "^10.4.13",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

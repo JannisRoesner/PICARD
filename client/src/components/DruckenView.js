@@ -135,8 +135,8 @@ function DruckenView() {
             .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
             .programm-item { 
               border: 1px solid #ccc; 
-              margin-bottom: 15px; 
-              padding: 15px; 
+              margin-bottom: 8px; 
+              padding: 10px; 
               page-break-inside: avoid;
             }
             .nummer { 
@@ -211,8 +211,8 @@ function DruckenView() {
             .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
             .programm-item { 
               border: 1px solid #ccc; 
-              margin-bottom: 12px; 
-              padding: 12px; 
+              margin-bottom: 8px; 
+              padding: 8px; 
               page-break-inside: avoid;
               display: flex;
               justify-content: space-between;
@@ -336,8 +336,8 @@ function DruckenView() {
             .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
             .programm-item { 
               border: 1px solid #ccc; 
-              margin-bottom: 15px; 
-              padding: 12px; 
+              margin-bottom: 8px; 
+              padding: 8px; 
               page-break-inside: avoid;
               display: flex;
               justify-content: space-between;
@@ -485,8 +485,8 @@ function DruckenView() {
             .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
             .programm-item { 
               border: 1px solid #ccc; 
-              margin-bottom: 15px; 
-              padding: 12px; 
+              margin-bottom: 8px; 
+              padding: 8px; 
               page-break-inside: avoid;
               display: flex;
               justify-content: space-between;
@@ -497,7 +497,7 @@ function DruckenView() {
               margin-right: 15px;
             }
             .programm-right {
-              width: 250px;
+              width: 280px;
               background: #f5f5f5;
               padding: 10px;
               border-radius: 5px;
@@ -516,31 +516,45 @@ function DruckenView() {
               margin-right: 8px;
               font-size: 12px;
             }
-            .name { font-weight: bold; font-size: 16px; margin-bottom: 6px; }
-            .typ { color: #666; font-size: 12px; margin-bottom: 6px; }
-            .dauer { color: #666; font-size: 12px; margin-bottom: 8px; }
-            .technik-info { 
-              background: #f5f5f5; 
-              padding: 10px; 
-              border-radius: 5px; 
-              margin-top: 8px;
-            }
-            .technik-title { font-weight: bold; margin-bottom: 6px; font-size: 13px; }
-            .technik-item { margin-bottom: 4px; font-size: 12px; }
-            .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
-            .right-item { margin-bottom: 6px; font-size: 11px; }
-            .right-cues { 
-              background: #e8f4fd; 
-              padding: 4px; 
-              border-radius: 3px; 
-              margin-top: 2px;
-              font-family: monospace;
-              font-size: 10px;
-            }
-            .info-field {
-              background: #fff3cd;
-              padding: 6px;
-              border-radius: 3px;
+              .right-title { font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #333; }
+              .sticky-note {
+                border-radius: 6px;
+                padding: 10px;
+                margin-bottom: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+                border: 1px solid rgba(0,0,0,0.1);
+                word-break: break-word;
+                font-size: 11px;
+                white-space: pre-wrap;
+              }
+              .sticky-note-title {
+                font-weight: bold;
+                margin-bottom: 6px;
+                font-size: 12px;
+              }
+              .sticky-note-empty {
+                padding: 8px;
+                background: #eee;
+                border-radius: 4px;
+                color: #666;
+                text-align: center;
+                font-size: 11px;
+              }
+              .info-field {
+                background: #fff3cd;
+                padding: 6px;
+                border-radius: 3px;
+                margin-top: 4px;
+                font-size: 11px;
+                border-left: 3px solid #ffc107;
+              }
+              .audio-files {
+                background: #e8f4fd;
+                padding: 4px;
+                border-radius: 3px;
+                margin-top: 2px;
+                font-size: 10px;
+              }
               margin-top: 4px;
               font-size: 11px;
               border-left: 3px solid #ffc107;
@@ -574,23 +588,20 @@ function DruckenView() {
             <div class="title">${sitzung.name} ${currentYear}</div>
           </div>
           ${sitzung.programmpunkte.map(pp => {
-            // Audio-Informationen aus audioCues extrahieren
-            const audioInfo = pp.audioCues && pp.audioCues.length > 0 
-              ? pp.audioCues.map(cue => `${cue.time}: ${cue.description}`).join('\\n')
-              : 'Keine Audio-Cues definiert';
-            
-            // Licht-Informationen aus lightCues extrahieren
-            const lightInfo = pp.lightCues && pp.lightCues.length > 0 
-              ? pp.lightCues.map(cue => `${cue.time}: ${cue.description}`).join('\\n')
-              : 'Keine Licht-Cues definiert';
-            
-            // Audio-Dateien anzeigen
             const audioFiles = pp.audioDateien && pp.audioDateien.length > 0 
               ? pp.audioDateien.join(', ')
               : 'Keine Audio-Dateien definiert';
-            
-            // Licht-Stimmung anzeigen
+
             const lightMood = pp.lichtStimmung || 'Standard';
+
+            const notes = Array.isArray(pp.pinboardNotes) ? pp.pinboardNotes : [];
+            const notesHtml = notes.length > 0
+              ? notes.map((note, idx) => {
+                  const content = (note.content || 'Leer').replace(/\n/g, '<br>');
+                  const bg = note.color || '#fff3cd';
+                  return `<div class="sticky-note" style="background: ${bg}"><div class="sticky-note-title">Notiz ${idx + 1}</div><div class="sticky-note-content">${content}</div></div>`;
+                }).join('')
+              : '<div class="sticky-note-empty">Keine Notizen vorhanden</div>';
             
             return `
             <div class="programm-item">
@@ -609,14 +620,6 @@ function DruckenView() {
                 <div class="technik-info">
                   <div class="technik-title">🔧 Technik-Informationen</div>
                   <div class="technik-item">
-                    🔊 Audio-Informationen:
-                    <div class="info-field">${audioInfo}</div>
-                  </div>
-                  <div class="technik-item">
-                    💡 Licht-Informationen:
-                    <div class="info-field">${lightInfo}</div>
-                  </div>
-                  <div class="technik-item">
                     📁 Audio-Dateien:
                     <div class="audio-files">${audioFiles}</div>
                   </div>
@@ -627,19 +630,8 @@ function DruckenView() {
                 </div>
               </div>
               <div class="programm-right">
-                <div class="right-title">🔧 Technik-Cues</div>
-                ${pp.audioCues && pp.audioCues.length > 0 ? `
-                  <div class="right-item">
-                    🔊 Audio-Cues:
-                    <div class="right-cues">${pp.audioCues.map(cue => `${cue.time}: ${cue.description}`).join('<br>')}</div>
-                  </div>
-                ` : ''}
-                ${pp.lightCues && pp.lightCues.length > 0 ? `
-                  <div class="right-item">
-                    💡 Licht-Cues:
-                    <div class="right-cues">${pp.lightCues.map(cue => `${cue.time}: ${cue.description}`).join('<br>')}</div>
-                  </div>
-                ` : ''}
+                <div class="right-title">🗒️ Notizen</div>
+                ${notesHtml}
               </div>
             </div>
           `}).join('')}
@@ -714,7 +706,7 @@ function DruckenView() {
           <ButtonIcon>🔧</ButtonIcon>
           <ButtonTitle>Technik-Ansicht</ButtonTitle>
           <ButtonDescription>
-            Druckt das Programm mit Audio- und Licht-Cues für die Technik
+            Druckt das Programm mit Technik-Infos und den Notizen der Pinwand
           </ButtonDescription>
         </PrintButton>
       </ButtonGrid>

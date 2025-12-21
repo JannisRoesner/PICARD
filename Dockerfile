@@ -1,5 +1,5 @@
 # Basis-Image mit Node.js
-FROM node:18-bullseye-slim
+FROM node:20-bookworm-slim
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN npm install --omit=dev --no-audit --no-fund --silent \
 COPY . .
 
 # React-App builden
-RUN cd client && npm run build
+RUN cd client && npm run build && rm -rf node_modules
 
 # Port freigeben
 EXPOSE 5000

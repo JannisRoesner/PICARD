@@ -5,6 +5,7 @@ import { SocketContext } from '../context/SocketContext';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTimer } from '../context/TimerContext';
 import ZettelSystem from './ZettelSystem';
+import Pinboard from './Pinboard';
 
 const Container = styled.div`
   display: grid;
@@ -689,136 +690,23 @@ function TechnikView() {
       </Panel>
 
       {/* Technische Informationen (Rechts) */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <TechInfoGrid>
-          {/* Audio Section */}
-          <TechSection>
-            <TechCard>
-              <TechCardTitle>🎚️ Audio-Cues</TechCardTitle>
-              <CueList>
-                {audioCues.map((cue, index) => (
-                  <EditableCueItem key={index}>
-                    <CueInput
-                      type="text"
-                      value={cue.time}
-                      onChange={(e) => updateCue('audio', index, 'time', e.target.value)}
-                      placeholder="00:00"
-                    />
-                    <CueTextarea
-                      value={cue.description}
-                      onChange={(e) => updateCue('audio', index, 'description', e.target.value)}
-                      placeholder="Cue-Beschreibung"
-                    />
-                    <CueButton 
-                      className="delete"
-                      onClick={() => deleteCue('audio', index)}
-                    >
-                      Löschen
-                    </CueButton>
-                  </EditableCueItem>
-                ))}
-                <CueButton onClick={() => addCue('audio')}>
-                  + Audio-Cue hinzufügen
-                </CueButton>
-              </CueList>
-              {/* Statusanzeige für automatisches Speichern */}
-              {saveStatus === 'saving' && (
-                <div style={{ color: '#888', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Speichern...</div>
-              )}
-              {saveStatus === 'saved' && (
-                <div style={{ color: '#28a745', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Gespeichert</div>
-              )}
-              {saveStatus === 'error' && (
-                <div style={{ color: '#dc3545', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Fehler beim Speichern</div>
-              )}
-            </TechCard>
-            <TechCard>
-              <TechCardTitle>🎵 Audio-Informationen</TechCardTitle>
-              {selectedProgrammpunkt?.audioDateien?.length > 0 ? (
-                selectedProgrammpunkt.audioDateien.map((audio, index) => (
-                  <EditableCueItem key={index}>
-                    <CueInput
-                      type="text"
-                      value={audio.name}
-                      onChange={e => updateAudioFile(index, 'name', e.target.value)}
-                      placeholder="Dateiname"
-                    />
-                    <CueInput
-                      type="text"
-                      value={audio.duration}
-                      onChange={e => updateAudioFile(index, 'duration', e.target.value)}
-                      placeholder="Dauer (Minuten)"
-                    />
-                    <CueButton className="delete" onClick={() => deleteAudioFile(index)}>
-                      Löschen
-                    </CueButton>
-                  </EditableCueItem>
-                ))
-              ) : (
-                <div style={{ color: '#888', fontStyle: 'italic' }}>
-                  Keine Audio-Dateien verfügbar
-                </div>
-              )}
-              <CueButton onClick={addAudioFile}>
-                + Audioinformationen hinzufügen
-              </CueButton>
-            </TechCard>
-          </TechSection>
-
-          {/* Light Section */}
-          <TechSection>
-            <TechCard>
-              <TechCardTitle>🎭 Licht-Cues</TechCardTitle>
-              <CueList>
-                {lightCues.map((cue, index) => (
-                  <EditableCueItem key={index}>
-                    <CueInput
-                      type="text"
-                      value={cue.time}
-                      onChange={(e) => updateCue('light', index, 'time', e.target.value)}
-                      placeholder="00:00"
-                    />
-                    <CueTextarea
-                      value={cue.description}
-                      onChange={(e) => updateCue('light', index, 'description', e.target.value)}
-                      placeholder="Cue-Beschreibung"
-                    />
-                    <CueButton 
-                      className="delete"
-                      onClick={() => deleteCue('light', index)}
-                    >
-                      Löschen
-                    </CueButton>
-                  </EditableCueItem>
-                ))}
-                <CueButton onClick={() => addCue('light')}>
-                  + Licht-Cue hinzufügen
-                </CueButton>
-              </CueList>
-              {/* Statusanzeige für automatisches Speichern */}
-              {saveStatus === 'saving' && (
-                <div style={{ color: '#888', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Speichern...</div>
-              )}
-              {saveStatus === 'saved' && (
-                <div style={{ color: '#28a745', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Gespeichert</div>
-              )}
-              {saveStatus === 'error' && (
-                <div style={{ color: '#dc3545', textAlign: 'center', marginTop: 4, fontSize: '0.95rem' }}>Fehler beim Speichern</div>
-              )}
-            </TechCard>
-            <TechCard>
-              <TechCardTitle>💡 Licht-Informationen</TechCardTitle>
-              <EditableCueItem>
-                <CueTextarea
-                  value={selectedProgrammpunkt?.lichtStimmung || ''}
-                  onChange={e => updateLichtStimmung(e.target.value)}
-                  placeholder="Licht-Infos eingeben..."
-                />
-              </EditableCueItem>
-            </TechCard>
-          </TechSection>
-        </TechInfoGrid>
-      </div>
+      <Panel>
+        <PanelTitle>🗒️ Notizen</PanelTitle>
+        {selectedProgrammpunkt ? (
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <Pinboard
+              sitzungId={aktiveSitzung}
+              programmpunkt={selectedProgrammpunkt}
+              onSaved={(payload) => {
+                // Update local selectedProgrammpunkt with latest notes
+                setSelectedProgrammpunkt(prev => prev ? { ...prev, pinboardNotes: payload } : prev);
+              }}
+            />
+          </div>
+        ) : (
+          <div style={{ color: '#888' }}>Kein Programmpunkt ausgewählt</div>
+        )}
+      </Panel>
     </Container>
   );
 }
