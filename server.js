@@ -183,6 +183,7 @@ app.delete('/api/sitzung/:id/programmpunkt/:punktId', (req, res) => {
 
 app.post('/api/sitzung/:id/aktiv', (req, res) => {
   db.setAktiveSitzung(req.params.id);
+  io.emit('aktiveSitzungGeaendert', { sitzungId: req.params.id });
   res.json({ success: true, aktiveSitzung: req.params.id });
 });
 
