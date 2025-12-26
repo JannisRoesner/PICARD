@@ -233,9 +233,14 @@ app.get('/api/aktive-sitzung', (req, res) => {
 });
 
 app.delete('/api/sitzung/:id', (req, res) => {
-  const ok = db.deleteSitzung(req.params.id);
+  const zielId = req.params.id;
+  const warAktiv = db.getAktiveSitzung() === zielId;
+  const ok = db.deleteSitzung(zielId);
   if (!ok) {
     return res.status(404).json({ error: 'Sitzung nicht gefunden' });
+  }
+  if (warAktiv) {
+    io.emit('aktiveSitzungGeaendert', { sitzungId: null });
   }
   res.json({ success: true });
 });

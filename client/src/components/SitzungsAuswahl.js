@@ -204,11 +204,32 @@ const Button = styled.button`
   }
 `;
 
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: ${props => props.theme?.colors?.danger || '#dc3545'};
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 function SitzungsAuswahl() {
   const [showModal, setShowModal] = useState(false);
   const [newSitzungName, setNewSitzungName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [confirmDeleteName, setConfirmDeleteName] = useState('');
   const context = useContext(SitzungContext);
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -292,6 +313,32 @@ function SitzungsAuswahl() {
     } catch (error) {
       console.error('Fehler beim Aktivieren der Sitzung:', error);
       setError('Fehler beim Aktivieren der Sitzung: ' + error.message);
+    }
+  };
+
+  const requestDeleteSitzung = (sitzung) => {
+    if (!sitzung || !sitzung.id) return;
+    setConfirmDeleteId(sitzung.id);
+    setConfirmDeleteName(sitzung.name || 'Unbenannte Sitzung');
+  };
+
+  const deleteSitzung = async () => {
+    if (!confirmDeleteId) return;
+    try {
+      setLoading(true);
+      setError(null);
+      await axios.delete(`/api/sitzung/${confirmDeleteId}`);
+      setSitzungen(prev => prev.filter(s => s && s.id !== confirmDeleteId));
+      if (aktiveSitzung === confirmDeleteId) {
+        setAktiveSitzung(null);
+      }
+      setConfirmDeleteId(null);
+      setConfirmDeleteName('');
+    } catch (error) {
+      console.error('Fehler beim Löschen der Sitzung:', error);
+      setError('Fehler beim Löschen der Sitzung: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -381,6 +428,12 @@ function SitzungsAuswahl() {
                   active={aktiveSitzung === sitzung.id}
                   onClick={() => sitzung.id && activateSitzung(sitzung.id)}
                 >
+                  <DeleteButton
+                    onClick={(e) => { e.stopPropagation(); requestDeleteSitzung(sitzung); }}
+                    title="Sitzung löschen"
+                  >
+                    🗑️ Löschen
+                  </DeleteButton>
                   {aktiveSitzung && aktiveSitzung === sitzung.id && (
                     <ActiveBadge>AKTIV</ActiveBadge>
                   )}
@@ -438,6 +491,37 @@ function SitzungsAuswahl() {
                 onClick={createSitzung}
               >
                 Erstellen
+              </Button>
+            </ButtonGroup>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {confirmDeleteId && (
+        <Modal onClick={() => { setConfirmDeleteId(null); setConfirmDeleteName(''); }}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>Sitzung löschen?</ModalTitle>
+            <div style={{ color: '#ddd', marginBottom: '16px' }}>
+              Möchten Sie die Sitzung "{confirmDeleteName}" wirklich löschen?
+              {aktiveSitzung === confirmDeleteId && (
+                <div style={{ color: '#f66', marginTop: '8px' }}>
+                  Hinweis: Diese Sitzung ist aktuell aktiv und wird deaktiviert.
+                </div>
+              )}
+            </div>
+            <ButtonGroup>
+              <Button
+                className="secondary"
+                onClick={() => { setConfirmDeleteId(null); setConfirmDeleteName(''); }}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                className="primary"
+                onClick={deleteSitzung}
+                disabled={loading}
+              >
+                {loading ? 'Löscht...' : 'Löschen'}
               </Button>
             </ButtonGroup>
           </ModalContent>
