@@ -124,6 +124,7 @@ function DruckenView() {
   const printProgrammansicht = () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
+    const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -190,7 +191,8 @@ function DruckenView() {
             <div style="margin-bottom: 10px;">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
-            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
+            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -202,6 +204,8 @@ function DruckenView() {
   const printKulissenView = () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
+    const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -318,7 +322,8 @@ function DruckenView() {
             <div style="margin-bottom: 10px;">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
-            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
+            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -330,6 +335,7 @@ function DruckenView() {
   const printModerationView = () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
+    const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -470,7 +476,8 @@ function DruckenView() {
             <div style="margin-bottom: 10px;">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
-            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
+            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -482,6 +489,7 @@ function DruckenView() {
   const printTechnikView = () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
+    const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -606,7 +614,8 @@ function DruckenView() {
             <div style="margin-bottom: 10px;">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
-            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
+            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
