@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
+import QRCode from 'qrcode';
 import { SitzungContext } from '../context/SitzungContext';
 
 const Container = styled.div`
@@ -121,12 +122,14 @@ function DruckenView() {
     }
   };
 
-  const printProgrammansicht = () => {
+  const printProgrammansicht = async () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
-    const printWindow = window.open('', '_blank');
+    
+    try {
+      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
+      const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
@@ -164,9 +167,14 @@ function DruckenView() {
               right: 0;
               text-align: center;
               font-size: 8px;
-              color: #666;
-              border-top: 1px solid #ccc;
+              color: #999;
+              border-top: 1px solid #ddd;
               padding-top: 5px;
+              background: #fafafa;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 15px;
             }
             @media print {
               body { margin: 0; }
@@ -189,24 +197,29 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            <div style="margin-bottom: 10px;">
-              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0;" />
+            <div>
+              <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+              <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
             </div>
-            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
-            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
     `);
     printWindow.document.close();
-    printWindow.print();
+    setTimeout(() => printWindow.print(), 100);
+    } catch (error) {
+      console.error('Fehler beim Generieren des QR-Codes:', error);
+    }
   };
 
-  const printKulissenView = () => {
+  const printKulissenView = async () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
+    
+    try {
+      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -284,9 +297,14 @@ function DruckenView() {
               right: 0;
               text-align: center;
               font-size: 8px;
-              color: #666;
-              border-top: 1px solid #ccc;
+              color: #999;
+              border-top: 1px solid #ddd;
               padding-top: 5px;
+              background: #fafafa;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 15px;
             }
             @media print {
               body { margin: 0; }
@@ -321,7 +339,7 @@ function DruckenView() {
           `).join('')}
           <div class="footer">
             <div style="margin-bottom: 10px;">
-              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+              <img src="${qrCodeDataUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
             <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
             <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -330,15 +348,19 @@ function DruckenView() {
       </html>
     `);
     printWindow.document.close();
-    printWindow.print();
+    setTimeout(() => printWindow.print(), 100);
+    } catch (error) {
+      console.error('Fehler beim Generieren des QR-Codes:', error);
+    }
   };
 
-  const printModerationView = () => {
+  const printModerationView = async () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
-    const printWindow = window.open('', '_blank');
+    
+    try {
+      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
@@ -476,7 +498,7 @@ function DruckenView() {
           `).join('')}
           <div class="footer">
             <div style="margin-bottom: 10px;">
-              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+              <img src="${qrCodeDataUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
             <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
             <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -485,14 +507,19 @@ function DruckenView() {
       </html>
     `);
     printWindow.document.close();
-    printWindow.print();
+    setTimeout(() => printWindow.print(), 100);
+    } catch (error) {
+      console.error('Fehler beim Generieren des QR-Codes:', error);
+    }
   };
 
-  const printTechnikView = () => {
+  const printTechnikView = async () => {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
+    
+    try {
+      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -614,17 +641,20 @@ function DruckenView() {
             </div>
           `}).join('')}
           <div class="footer">
-            <div style="margin-bottom: 10px;">
-              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0;" />
+            <div>
+              <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+              <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
             </div>
-            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
-            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
     `);
     printWindow.document.close();
-    printWindow.print();
+    setTimeout(() => printWindow.print(), 100);
+    } catch (error) {
+      console.error('Fehler beim Generieren des QR-Codes:', error);
+    }
   };
 
   if (loading) {
