@@ -125,6 +125,7 @@ function DruckenView() {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -189,7 +190,7 @@ function DruckenView() {
           `).join('')}
           <div class="footer">
             <div style="margin-bottom: 10px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
             <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
             <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -205,6 +206,7 @@ function DruckenView() {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -319,7 +321,7 @@ function DruckenView() {
           `).join('')}
           <div class="footer">
             <div style="margin-bottom: 10px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
             <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
             <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -335,6 +337,7 @@ function DruckenView() {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -473,7 +476,7 @@ function DruckenView() {
           `).join('')}
           <div class="footer">
             <div style="margin-bottom: 10px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
             <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
             <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -489,6 +492,7 @@ function DruckenView() {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(serverUrl + '/programmansicht')}`;
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -611,7 +615,7 @@ function DruckenView() {
           `}).join('')}
           <div class="footer">
             <div style="margin-bottom: 10px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+              <img src="${qrCodeUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
             </div>
             <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
             <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
