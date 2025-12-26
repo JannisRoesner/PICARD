@@ -205,7 +205,6 @@ function DruckenView() {
     const currentYear = new Date().getFullYear();
     const serverUrl = window.location.origin;
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
