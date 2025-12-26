@@ -301,6 +301,11 @@ function closeZettel(sitzungId, zettelId) {
   return result.changes > 0;
 }
 
+function updateSitzungName(sitzungId, newName) {
+  const result = db.prepare('UPDATE sitzungen SET name = ? WHERE id = ?').run(newName, sitzungId);
+  return result.changes > 0;
+}
+
 function deleteSitzung(sitzungId) {
   const res = db.prepare('DELETE FROM sitzungen WHERE id = ?').run(sitzungId);
   if (getAktiveSitzung() === sitzungId) setAktiveSitzung(null);
@@ -320,6 +325,7 @@ export {
   getZettelList,
   addZettel,
   closeZettel,
+  updateSitzungName,
   deleteSitzung
 };
 

@@ -223,6 +223,25 @@ const DeleteButton = styled.button`
   }
 `;
 
+const RenameButton = styled.button`
+  position: absolute;
+  top: 8px;
+  left: 100px;
+  background: ${props => props.theme?.colors?.primary || '#fbbf24'};
+  color: #181818;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 function SitzungsAuswahl() {
   const [showModal, setShowModal] = useState(false);
   const [newSitzungName, setNewSitzungName] = useState('');
@@ -230,6 +249,8 @@ function SitzungsAuswahl() {
   const [error, setError] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [confirmDeleteName, setConfirmDeleteName] = useState('');
+  const [renameId, setRenameId] = useState(null);
+  const [renameName, setRenameName] = useState('');
   const context = useContext(SitzungContext);
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -342,6 +363,31 @@ function SitzungsAuswahl() {
     }
   };
 
+  const requestRenameSitzung = (sitzung) => {
+    if (!sitzung || !sitzung.id) return;
+    setRenameId(sitzung.id);
+    setRenameName(sitzung.name || '');
+  };
+
+  const renameSitzung = async () => {
+    if (!renameId || !renameName.trim()) return;
+    try {
+      setLoading(true);
+      setError(null);
+      await axios.patch(`/api/sitzung/${renameId}`, { name: renameName.trim() });
+      setSitzungen(prev => prev.map(s => 
+        s && s.id === renameId ? { ...s, name: renameName.trim() } : s
+      ));
+      setRenameId(null);
+      setRenameName('');
+    } catch (error) {
+      console.error('Fehler beim Umbenennen der Sitzung:', error);
+      setError('Fehler beim Umbenennen der Sitzung: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Aktualisiere Sitzungen wenn sie sich ändern
   const refreshSitzungen = async () => {
     try {
@@ -434,6 +480,12 @@ function SitzungsAuswahl() {
                   >
                     🗑️ Löschen
                   </DeleteButton>
+                  <RenameButton
+                    onClick={(e) => { e.stopPropagation(); requestRenameSitzung(sitzung); }}
+                    title="Sitzung umbenennen"
+                  >
+                    ✏️ Umbenennen
+                  </RenameButton>
                   {aktiveSitzung && aktiveSitzung === sitzung.id && (
                     <ActiveBadge>AKTIV</ActiveBadge>
                   )}
@@ -522,6 +574,37 @@ function SitzungsAuswahl() {
                 disabled={loading}
               >
                 {loading ? 'Löscht...' : 'Löschen'}
+              </Button>
+            </ButtonGroup>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {renameId && (
+        <Modal onClick={() => { setRenameId(null); setRenameName(''); }}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>Sitzung umbenennen</ModalTitle>
+            <Input
+              type="text"
+              placeholder="Neuer Name der Sitzung"
+              value={renameName}
+              onChange={(e) => setRenameName(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && renameSitzung()}
+              autoFocus
+            />
+            <ButtonGroup>
+              <Button
+                className="secondary"
+                onClick={() => { setRenameId(null); setRenameName(''); }}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                className="primary"
+                onClick={renameSitzung}
+                disabled={loading || !renameName.trim()}
+              >
+                {loading ? 'Speichert...' : 'Speichern'}
               </Button>
             </ButtonGroup>
           </ModalContent>

@@ -105,6 +105,18 @@ app.post('/api/sitzung', (req, res) => {
   res.json(created);
 });
 
+app.patch('/api/sitzung/:id', (req, res) => {
+  const { name } = req.body;
+  if (!name || typeof name !== 'string' || !name.trim()) {
+    return res.status(400).json({ error: 'Name ist erforderlich' });
+  }
+  const ok = db.updateSitzungName(req.params.id, name.trim());
+  if (!ok) {
+    return res.status(404).json({ error: 'Sitzung nicht gefunden' });
+  }
+  res.json({ success: true, name: name.trim() });
+});
+
 app.get('/api/sitzung/:id', (req, res) => {
   const sitzung = db.getSitzungById(req.params.id);
   if (sitzung) {
