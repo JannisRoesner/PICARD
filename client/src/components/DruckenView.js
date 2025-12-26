@@ -187,7 +187,10 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+            <div style="margin-bottom: 10px;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            </div>
+            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -312,7 +315,10 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+            <div style="margin-bottom: 10px;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            </div>
+            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -461,7 +467,10 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+            <div style="margin-bottom: 10px;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            </div>
+            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -594,7 +603,10 @@ function DruckenView() {
             </div>
           `}).join('')}
           <div class="footer">
-            Änderungen vorbehalten. Live-Programminformationen sind hier verfügbar: ${serverUrl}
+            <div style="margin-bottom: 10px;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(serverUrl + '/programmansicht')}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            </div>
+            <div>Änderungen vorbehalten. Live-Programminformationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
