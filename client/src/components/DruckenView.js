@@ -162,15 +162,14 @@ function DruckenView() {
             .dauer { color: #666; font-size: 14px; }
             .footer {
               position: fixed;
-              bottom: 10px;
+              bottom: 0;
               left: 0;
               right: 0;
               text-align: center;
               font-size: 8px;
               color: #999;
               border-top: 1px solid #ddd;
-              padding-top: 5px;
-              background: #fafafa;
+              padding: 5px 10px;
               display: flex;
               align-items: center;
               justify-content: center;
@@ -179,6 +178,7 @@ function DruckenView() {
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
+              .footer { padding: 3px 5px; }
             }
           </style>
         </head>
@@ -197,8 +197,8 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0;" />
-            <div>
+            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+            <div style="text-align: left;">
               <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
               <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
             </div>
@@ -292,15 +292,14 @@ function DruckenView() {
             .kulissen-item { margin-bottom: 3px; }
             .footer {
               position: fixed;
-              bottom: 10px;
+              bottom: 0;
               left: 0;
               right: 0;
               text-align: center;
               font-size: 8px;
               color: #999;
               border-top: 1px solid #ddd;
-              padding-top: 5px;
-              background: #fafafa;
+              padding: 5px 10px;
               display: flex;
               align-items: center;
               justify-content: center;
@@ -309,6 +308,7 @@ function DruckenView() {
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
+              .footer { padding: 3px 5px; }
             }
           </style>
         </head>
@@ -338,11 +338,11 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            <div style="margin-bottom: 10px;">
-              <img src="${qrCodeDataUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+            <div style="text-align: left;">
+              <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+              <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
             </div>
-            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
-            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -435,18 +435,23 @@ function DruckenView() {
             }
             .footer {
               position: fixed;
-              bottom: 10px;
+              bottom: 0;
               left: 0;
               right: 0;
               text-align: center;
               font-size: 8px;
               color: #666;
               border-top: 1px solid #ccc;
-              padding-top: 5px;
+              padding: 5px 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 15px;
             }
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
+              .footer { padding: 3px 5px; }
             }
           </style>
         </head>
@@ -498,11 +503,11 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            <div style="margin-bottom: 10px;">
-              <img src="${qrCodeDataUrl}" alt="QR Code" style="vertical-align: middle; margin-right: 10px;" />
+            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+            <div style="text-align: left;">
+              <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
+              <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
             </div>
-            <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
-            <div style="margin-top: 3px;">Live-Informationen: ${serverUrl}/programmansicht</div>
           </div>
         </body>
       </html>
@@ -591,18 +596,23 @@ function DruckenView() {
               }
             .footer {
               position: fixed;
-              bottom: 10px;
+              bottom: 0;
               left: 0;
               right: 0;
               text-align: center;
               font-size: 8px;
               color: #666;
               border-top: 1px solid #ccc;
-              padding-top: 5px;
+              padding: 5px 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 15px;
             }
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
+              .footer { padding: 3px 5px; }
             }
           </style>
         </head>
@@ -642,8 +652,8 @@ function DruckenView() {
             </div>
           `}).join('')}
           <div class="footer">
-            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0;" />
-            <div>
+            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+            <div style="text-align: left;">
               <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
               <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
             </div>
