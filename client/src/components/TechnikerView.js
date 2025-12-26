@@ -123,82 +123,9 @@ const ProgramDuration = styled.span`
   margin-left: 8px;
 `;
 
-const TechInfoGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  height: 100%;
-`;
+// Entfernt: Unbenutzte TechInfo-Styles
 
-const TechSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
-
-const TechCard = styled.div`
-  background: #2d2d2d;
-  border: 1px solid #555;
-  border-radius: 8px;
-  padding: 16px;
-  flex: 1;
-`;
-
-const TechCardTitle = styled.h4`
-  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
-  margin: 0 0 12px 0;
-  font-size: 1.1rem;
-`;
-
-const AudioFile = styled.div`
-  background: #1a1a1a;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const AudioFileName = styled.span`
-  color: #fff;
-  font-weight: bold;
-`;
-
-const AudioFileDuration = styled.span`
-  color: #ccc;
-  font-size: 0.9rem;
-`;
-
-const LightPreset = styled.div`
-  background: ${props => {
-    switch (props.preset) {
-      case 'Standard': return '#2d2d2d';
-      case 'Warm': return '#8B4513';
-      case 'Kalt': return '#4169E1';
-      case 'Dramatisch': return '#4B0082';
-      case 'Party': return '#FF1493';
-      default: return '#2d2d2d';
-    }
-  }};
-  border: 2px solid ${props => {
-    switch (props.preset) {
-      case 'Standard': return '#555';
-      case 'Warm': return '#D2691E';
-      case 'Kalt': return '#6495ED';
-      case 'Dramatisch': return '#9932CC';
-      case 'Party': return '#FF69B4';
-      default: return '#555';
-    }
-  }};
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 8px;
-  text-align: center;
-  font-weight: bold;
-  color: #fff;
-`;
+// Entfernt: Unbenutzte Audio-/Licht-Styles
 
 
 
@@ -249,106 +176,12 @@ const ModerationProgressFill = styled.div`
   transition: width 1s ease, background 0.3s ease;
 `;
 
-const CueList = styled.div`
-  flex: 1;
-  overflow-y: auto;
-`;
-
-const CueItem = styled.div`
-  background: #1a1a1a;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 8px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: #666;
-  }
-`;
-
-const CueTime = styled.div`
-  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-bottom: 4px;
-`;
-
-const CueDescription = styled.div`
-  color: #fff;
-  font-size: 1rem;
-`;
-
-const EditableCueItem = styled.div`
-  background: #1a1a1a;
-  border: 1px solid #555;
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 8px;
-`;
-
-const CueInput = styled.input`
-  background: #2d2d2d;
-  border: 1px solid #555;
-  border-radius: 4px;
-  color: #fff;
-  padding: 6px 8px;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-  width: 100%;
-
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
-  }
-`;
-
-const CueTextarea = styled.textarea`
-  background: #2d2d2d;
-  border: 1px solid #555;
-  border-radius: 4px;
-  color: #fff;
-  padding: 6px 8px;
-  font-size: 0.9rem;
-  width: 100%;
-  min-height: 80px;
-  resize: vertical;
-
-  &:focus {
-    outline: none;
-    border-color: ${props => props.theme?.colors?.primary || '#fbbf24'};
-  }
-`;
-
-const CueButton = styled.button`
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  margin-right: 4px;
-
-  &:hover {
-    background: #218838;
-  }
-
-  &.delete {
-    background: #dc3545;
-
-    &:hover {
-      background: #c82333;
-    }
-  }
-`;
+// Entfernt: Unbenutzte Cue-Styles
 
 function TechnikView() {
   const [sitzung, setSitzung] = useState(null);
   const [selectedProgrammpunkt, setSelectedProgrammpunkt] = useState(null);
-  const [audioCues, setAudioCues] = useState([]);
-  const [lightCues, setLightCues] = useState([]);
-  const [editingCue, setEditingCue] = useState(null);
+  // Entfernt: Audio-/Licht-Cues-Zustände, da UI nicht mehr vorhanden ist
   const { aktiveSitzung } = useContext(SitzungContext);
   const socket = useContext(SocketContext);
   const { 
@@ -358,11 +191,13 @@ function TechnikView() {
     getProgressPercentage, 
     getTimerColor 
   } = useTimer();
-  const [saveStatus, setSaveStatus] = useState(''); // '' | 'saving' | 'saved' | 'error'
-  const saveTimeout = useRef(null);
+  // Entfernt: Save-Status/Timeout für Audio-/Licht-Autosaves
+  // Stabilisierte Sitzungs-ID für Autosaves, um transienten Null-Zustand zu vermeiden
+  const [stableSitzungId, setStableSitzungId] = useState(null);
 
   useEffect(() => {
     if (aktiveSitzung) {
+      setStableSitzungId(aktiveSitzung);
       loadSitzung();
       socket?.emit('joinSitzung', aktiveSitzung);
     }
@@ -380,13 +215,13 @@ function TechnikView() {
           socket.on('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
       socket.on('programmpunktAktualisiert', handleProgrammpunktUpdate);
       socket.on('programmpunktGeloescht', handleProgrammpunktUpdate);
-      socket.on('programmpunkteReordered', handleProgrammpunktUpdate);
+      // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
 
     return () => {
               socket.off('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
         socket.off('programmpunktAktualisiert', handleProgrammpunktUpdate);
         socket.off('programmpunktGeloescht', handleProgrammpunktUpdate);
-        socket.off('programmpunkteReordered', handleProgrammpunktUpdate);
+        // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
     };
   }, [socket, aktiveSitzung]);
 
@@ -424,102 +259,17 @@ function TechnikView() {
   // Lade Cues aus dem Programmpunkt (falls vorhanden), sonst Standardwerte
   const handleProgrammpunktSelect = (programmpunkt) => {
     setSelectedProgrammpunkt(programmpunkt);
-    setAudioCues(programmpunkt.audioCues || [
-      { time: '00:00', description: 'Einzug starten' },
-      { time: '00:30', description: 'Hauptmusik starten' },
-      { time: formatDuration((programmpunkt.dauer || 0) - 30), description: 'Auszug vorbereiten' }
-    ]);
-    setLightCues(programmpunkt.lightCues || [
-      { time: '00:00', description: 'Einzug-Licht aktivieren' },
-      { time: '00:05', description: 'Hauptlicht auf 80%' },
-      { time: '00:45', description: 'Spotlight auf Hauptperson' },
-      { time: formatDuration((programmpunkt.dauer || 0) - 15), description: 'Auszug-Licht vorbereiten' }
-    ]);
   };
 
-  // NEU: Immer wenn selectedProgrammpunkt sich ändert, Cues laden
-  useEffect(() => {
-    if (selectedProgrammpunkt) {
-      setAudioCues(selectedProgrammpunkt.audioCues || [
-        { time: '00:00', description: 'Einzug starten' },
-        { time: '00:30', description: 'Hauptmusik starten' },
-        { time: formatDuration((selectedProgrammpunkt.dauer || 0) - 30), description: 'Auszug vorbereiten' }
-      ]);
-      setLightCues(selectedProgrammpunkt.lightCues || [
-        { time: '00:00', description: 'Einzug-Licht aktivieren' },
-        { time: '00:05', description: 'Hauptlicht auf 80%' },
-        { time: '00:45', description: 'Spotlight auf Hauptperson' },
-        { time: formatDuration((selectedProgrammpunkt.dauer || 0) - 15), description: 'Auszug-Licht vorbereiten' }
-      ]);
-    }
-  }, [selectedProgrammpunkt]);
+  // Entfernt: automatisches Laden/Setzen von Audio-/Licht-Cues
 
-  // Automatisches Speichern der Cues (debounced)
-  useEffect(() => {
-    if (!selectedProgrammpunkt) return;
-    if (saveTimeout.current) clearTimeout(saveTimeout.current);
-    setSaveStatus('saving');
-    saveTimeout.current = setTimeout(() => {
-      autoSaveCues();
-    }, 1000);
-    // eslint-disable-next-line
-  }, [audioCues, lightCues, selectedProgrammpunkt?.id]);
+  // Entfernt: Debounced Autosave für Audio-/Licht-Cues
 
-  const autoSaveCues = async () => {
-    if (!selectedProgrammpunkt) return;
-    try {
-      await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selectedProgrammpunkt.id}`, {
-        audioCues,
-        lightCues
-      });
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus(''), 1200);
-    } catch (error) {
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus(''), 2000);
-      console.error('Fehler beim Speichern der Cues:', error);
-    }
-  };
+  // Entfernt: autoSaveCues
 
-  const addCue = (type) => {
-    const newCue = { time: '00:00', description: 'Neuer Cue' };
-    if (type === 'audio') {
-      setAudioCues(prev => [...prev, newCue]);
-    } else {
-      setLightCues(prev => [...prev, newCue]);
-    }
-  };
+  // Entfernt: Cue-Management-Funktionen
 
-  const updateCue = (type, index, field, value) => {
-    if (type === 'audio') {
-      setAudioCues(prev => prev.map((cue, i) => 
-        i === index ? { ...cue, [field]: value } : cue
-      ));
-    } else {
-      setLightCues(prev => prev.map((cue, i) => 
-        i === index ? { ...cue, [field]: value } : cue
-      ));
-    }
-  };
-
-  const deleteCue = (type, index) => {
-    if (type === 'audio') {
-      setAudioCues(prev => prev.filter((_, i) => i !== index));
-    } else {
-      setLightCues(prev => prev.filter((_, i) => i !== index));
-    }
-  };
-
-  const handleStartTimer = () => {
-    const duration = selectedProgrammpunkt?.dauer || 300;
-    // Timer synchron mit Moderation starten
-    // Technik können den Timer nicht direkt steuern, nur anzeigen
-  };
-
-  const handleStopTimer = () => {
-    // Timer synchron mit Moderation stoppen
-    // Technik können den Timer nicht direkt steuern, nur anzeigen
-  };
+  // Entfernt: nicht verwendete Timer-Handler
 
   const formatDuration = (seconds) => {
     if (!seconds) return '00:00 min';
@@ -528,66 +278,9 @@ function TechnikView() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')} min`;
   };
 
-  // Audio-Dateien bearbeiten
-  const updateAudioFile = (index, field, value) => {
-    if (!selectedProgrammpunkt) return;
-    const updated = [...(selectedProgrammpunkt.audioDateien || [])];
-    updated[index] = { ...updated[index], [field]: value };
-    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, audioDateien: updated });
-    autoSaveAudioFiles(updated);
-  };
+  // Entfernt: Audio-Datei-Management und Autosave
 
-  const deleteAudioFile = (index) => {
-    if (!selectedProgrammpunkt) return;
-    const updated = [...(selectedProgrammpunkt.audioDateien || [])];
-    updated.splice(index, 1);
-    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, audioDateien: updated });
-    autoSaveAudioFiles(updated);
-  };
-
-  const addAudioFile = () => {
-    if (!selectedProgrammpunkt) return;
-    const updated = [...(selectedProgrammpunkt.audioDateien || []), { name: '', duration: '' }];
-    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, audioDateien: updated });
-    autoSaveAudioFiles(updated);
-  };
-
-  const autoSaveAudioFiles = async (audioDateien) => {
-    if (!selectedProgrammpunkt) return;
-    try {
-      await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selectedProgrammpunkt.id}`, {
-        audioDateien
-      });
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus(''), 1200);
-    } catch (error) {
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus(''), 2000);
-      console.error('Fehler beim Speichern der Audio-Dateien:', error);
-    }
-  };
-
-  // Lichtstimmung bearbeiten
-  const updateLichtStimmung = (value) => {
-    if (!selectedProgrammpunkt) return;
-    setSelectedProgrammpunkt({ ...selectedProgrammpunkt, lichtStimmung: value });
-    autoSaveLichtStimmung(value);
-  };
-
-  const autoSaveLichtStimmung = async (lichtStimmung) => {
-    if (!selectedProgrammpunkt) return;
-    try {
-      await axios.put(`/api/sitzung/${aktiveSitzung}/programmpunkt/${selectedProgrammpunkt.id}`, {
-        lichtStimmung
-      });
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus(''), 1200);
-    } catch (error) {
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus(''), 2000);
-      console.error('Fehler beim Speichern der Lichtstimmung:', error);
-    }
-  };
+  // Entfernt: Lichtstimmung-Management und Autosave
 
   if (!aktiveSitzung) {
     return (
@@ -695,7 +388,7 @@ function TechnikView() {
         {selectedProgrammpunkt ? (
           <div style={{ flex: 1, minHeight: 0 }}>
             <Pinboard
-              sitzungId={aktiveSitzung}
+              sitzungId={stableSitzungId || aktiveSitzung}
               programmpunkt={selectedProgrammpunkt}
               onSaved={(payload) => {
                 // Update local selectedProgrammpunkt with latest notes

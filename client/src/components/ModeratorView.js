@@ -340,13 +340,13 @@ function ModeratorView() {
           socket.on('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
       socket.on('programmpunktAktualisiert', handleProgrammpunktUpdate);
       socket.on('programmpunktGeloescht', handleProgrammpunktUpdate);
-      socket.on('programmpunkteReordered', handleProgrammpunktUpdate);
+      // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
 
     return () => {
               socket.off('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
         socket.off('programmpunktAktualisiert', handleProgrammpunktUpdate);
         socket.off('programmpunktGeloescht', handleProgrammpunktUpdate);
-        socket.off('programmpunkteReordered', handleProgrammpunktUpdate);
+        // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
     };
   }, [socket, aktiveSitzung]);
 
@@ -433,8 +433,6 @@ function ModeratorView() {
         abmoderation: '',
         notizen: `Erstellt aus Zettel: ${zettel.text}`,
         dauer: 300, // 5 Minuten Standard
-        lichtStimmung: 'Standard',
-        audioDateien: [],
         namensliste: []
       };
 

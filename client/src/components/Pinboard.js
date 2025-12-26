@@ -106,12 +106,15 @@ export default function Pinboard({ sitzungId, programmpunkt, onSaved }) {
   };
 
   const scheduleSave = (payload) => {
-    if (!programmpunkt?.id || !sitzungId) return;
+    // Snapshot der aktuellen IDs, um Race-Conditions bei Timeout zu vermeiden
+    const targetSitzungId = sitzungId;
+    const targetProgrammpunktId = programmpunkt?.id;
+    if (!targetProgrammpunktId || !targetSitzungId) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     setSaveState('saving');
     saveTimer.current = setTimeout(async () => {
       try {
-        await axios.put(`/api/sitzung/${sitzungId}/programmpunkt/${programmpunkt.id}`, {
+        await axios.put(`/api/sitzung/${targetSitzungId}/programmpunkt/${targetProgrammpunktId}`, {
           pinboardNotes: payload
         });
         setSaveState('saved');

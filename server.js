@@ -75,7 +75,28 @@ app.get('/api/typen', (req, res) => {
 
 app.get('/api/sitzungen', (req, res) => {
   const list = db.getSitzungen();
-  res.json(list);
+  const sanitized = list.map(s => ({
+    ...s,
+    programmpunkte: (s.programmpunkte || []).map(p => ({
+      id: p.id,
+      name: p.name,
+      typ: p.typ,
+      einzugCD: !!p.einzugCD,
+      auszugCD: !!p.auszugCD,
+      trainer: p.trainer || '',
+      betreuer: p.betreuer || '',
+      namensliste: Array.isArray(p.namensliste) ? p.namensliste : [],
+      anmoderation: p.anmoderation,
+      abmoderation: p.abmoderation,
+      notizen: p.notizen,
+      dauer: p.dauer || 0,
+      pinboardNotes: Array.isArray(p.pinboardNotes) ? p.pinboardNotes : [],
+      buehne: p.buehne,
+      erstellt: p.erstellt,
+      nummer: p.nummer
+    }))
+  }));
+  res.json(sanitized);
 });
 
 app.post('/api/sitzung', (req, res) => {
@@ -87,7 +108,28 @@ app.post('/api/sitzung', (req, res) => {
 app.get('/api/sitzung/:id', (req, res) => {
   const sitzung = db.getSitzungById(req.params.id);
   if (sitzung) {
-    res.json(sitzung);
+    const sanitized = {
+      ...sitzung,
+      programmpunkte: (sitzung.programmpunkte || []).map(p => ({
+        id: p.id,
+        name: p.name,
+        typ: p.typ,
+        einzugCD: !!p.einzugCD,
+        auszugCD: !!p.auszugCD,
+        trainer: p.trainer || '',
+        betreuer: p.betreuer || '',
+        namensliste: Array.isArray(p.namensliste) ? p.namensliste : [],
+        anmoderation: p.anmoderation,
+        abmoderation: p.abmoderation,
+        notizen: p.notizen,
+        dauer: p.dauer || 0,
+        pinboardNotes: Array.isArray(p.pinboardNotes) ? p.pinboardNotes : [],
+        buehne: p.buehne,
+        erstellt: p.erstellt,
+        nummer: p.nummer
+      }))
+    };
+    res.json(sanitized);
   } else {
     res.status(404).json({ error: 'Sitzung nicht gefunden' });
   }
@@ -113,11 +155,7 @@ app.post('/api/sitzung/:id/programmpunkt', (req, res) => {
     anmoderation: created.anmoderation,
     abmoderation: created.abmoderation,
     notizen: created.notizen,
-    audioDateien: created.audioDateien ? JSON.parse(created.audioDateien) : [],
-    lichtStimmung: created.lichtStimmung,
     dauer: created.dauer || 0,
-    audioCues: created.audioCues ? JSON.parse(created.audioCues) : [],
-    lightCues: created.lightCues ? JSON.parse(created.lightCues) : [],
     pinboardNotes: created.pinboardNotes ? JSON.parse(created.pinboardNotes) : [],
     buehne: created.buehne,
     erstellt: created.erstellt,
@@ -148,11 +186,7 @@ app.put('/api/sitzung/:id/programmpunkt/:punktId', (req, res) => {
     anmoderation: updated.anmoderation,
     abmoderation: updated.abmoderation,
     notizen: updated.notizen,
-    audioDateien: updated.audioDateien ? JSON.parse(updated.audioDateien) : [],
-    lichtStimmung: updated.lichtStimmung,
     dauer: updated.dauer || 0,
-    audioCues: updated.audioCues ? JSON.parse(updated.audioCues) : [],
-    lightCues: updated.lightCues ? JSON.parse(updated.lightCues) : [],
     pinboardNotes: updated.pinboardNotes ? JSON.parse(updated.pinboardNotes) : [],
     buehne: updated.buehne,
     erstellt: updated.erstellt,
@@ -188,6 +222,12 @@ app.post('/api/sitzung/:id/aktiv', (req, res) => {
 });
 
 app.get('/api/sitzung/:id/aktiv', (req, res) => {
+  const aktiveSitzung = db.getAktiveSitzung();
+  res.json({ aktiveSitzung });
+});
+
+// Neue Route: aktive Sitzung abrufen (ohne ID)
+app.get('/api/aktive-sitzung', (req, res) => {
   const aktiveSitzung = db.getAktiveSitzung();
   res.json({ aktiveSitzung });
 });
