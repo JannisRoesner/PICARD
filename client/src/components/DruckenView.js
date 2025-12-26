@@ -361,6 +361,7 @@ function DruckenView() {
     
     try {
       const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
+      const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
