@@ -128,7 +128,11 @@ function DruckenView() {
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     
     try {
-      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
+      const qrCodeSvg = await QRCode.toString(serverUrl + '/programmansicht', {
+        type: 'svg',
+        errorCorrectionLevel: 'M',
+        margin: 2,
+      });
       const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -175,6 +179,13 @@ function DruckenView() {
               justify-content: center;
               gap: 15px;
             }
+            .qr svg {
+              width: 40px;
+              height: 40px;
+              filter: grayscale(100%);
+              opacity: 0.65;
+              flex-shrink: 0;
+            }
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
@@ -197,7 +208,7 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+            <div class="qr">${qrCodeSvg}</div>
             <div style="text-align: left;">
               <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
               <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -219,7 +230,11 @@ function DruckenView() {
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     
     try {
-      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
+      const qrCodeSvg = await QRCode.toString(serverUrl + '/programmansicht', {
+        type: 'svg',
+        errorCorrectionLevel: 'M',
+        margin: 2,
+      });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -305,6 +320,13 @@ function DruckenView() {
               justify-content: center;
               gap: 15px;
             }
+            .qr svg {
+              width: 40px;
+              height: 40px;
+              filter: grayscale(100%);
+              opacity: 0.65;
+              flex-shrink: 0;
+            }
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
@@ -338,7 +360,7 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+            <div class="qr">${qrCodeSvg}</div>
             <div style="text-align: left;">
               <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
               <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -360,7 +382,11 @@ function DruckenView() {
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     
     try {
-      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
+      const qrCodeSvg = await QRCode.toString(serverUrl + '/programmansicht', {
+        type: 'svg',
+        errorCorrectionLevel: 'M',
+        margin: 2,
+      });
       const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -448,6 +474,13 @@ function DruckenView() {
               justify-content: center;
               gap: 15px;
             }
+            .qr svg {
+              width: 40px;
+              height: 40px;
+              filter: grayscale(100%);
+              opacity: 0.65;
+              flex-shrink: 0;
+            }
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
@@ -503,7 +536,7 @@ function DruckenView() {
             </div>
           `).join('')}
           <div class="footer">
-            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+            <div class="qr">${qrCodeSvg}</div>
             <div style="text-align: left;">
               <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
               <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
@@ -525,7 +558,11 @@ function DruckenView() {
     const printDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     
     try {
-      const qrCodeDataUrl = await QRCode.toDataURL(serverUrl + '/programmansicht', { width: 50 });
+        const qrCodeSvg = await QRCode.toString(serverUrl + '/programmansicht', {
+          type: 'svg',
+          errorCorrectionLevel: 'M',
+          margin: 2,
+        });
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -609,6 +646,13 @@ function DruckenView() {
               justify-content: center;
               gap: 15px;
             }
+              .qr svg {
+                width: 40px;
+                height: 40px;
+                filter: grayscale(100%);
+                opacity: 0.65;
+                flex-shrink: 0;
+              }
             @media print {
               body { margin: 0; }
               .programm-item { border: 1px solid #000; }
@@ -629,7 +673,6 @@ function DruckenView() {
                   return `<div class="sticky-note" style="background: ${bg}"><div class="sticky-note-title">Notiz ${idx + 1}</div><div class="sticky-note-content">${content}</div></div>`;
                 }).join('')
               : '<div class="sticky-note-empty">Keine Notizen vorhanden</div>';
-            
             return `
             <div class="programm-item">
               <div class="programm-left">
@@ -652,7 +695,7 @@ function DruckenView() {
             </div>
           `}).join('')}
           <div class="footer">
-            <img src="${qrCodeDataUrl}" alt="QR Code" style="filter: grayscale(100%); opacity: 0.6; flex-shrink: 0; width: 40px; height: 40px;" />
+              <div class="qr">${qrCodeSvg}</div>
             <div style="text-align: left;">
               <div>Änderungen vorbehalten, Stand ${printDate} Uhr</div>
               <div style="margin-top: 2px;">Live-Informationen: ${serverUrl}/programmansicht</div>
