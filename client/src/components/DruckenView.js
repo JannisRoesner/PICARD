@@ -180,11 +180,14 @@ function DruckenView() {
               gap: 15px;
             }
             .qr svg {
-              width: 40px;
-              height: 40px;
-              filter: grayscale(100%);
-              opacity: 0.65;
+              width: 48px;
+              height: 48px;
+              filter: none;
+              opacity: 1;
               flex-shrink: 0;
+              display: block;
+              shape-rendering: crispEdges;
+              image-rendering: pixelated;
             }
             @media print {
               body { margin: 0; }
@@ -321,11 +324,14 @@ function DruckenView() {
               gap: 15px;
             }
             .qr svg {
-              width: 40px;
-              height: 40px;
-              filter: grayscale(100%);
-              opacity: 0.65;
+              width: 48px;
+              height: 48px;
+              filter: none;
+              opacity: 1;
               flex-shrink: 0;
+              display: block;
+              shape-rendering: crispEdges;
+              image-rendering: pixelated;
             }
             @media print {
               body { margin: 0; }
@@ -475,11 +481,14 @@ function DruckenView() {
               gap: 15px;
             }
             .qr svg {
-              width: 40px;
-              height: 40px;
-              filter: grayscale(100%);
-              opacity: 0.65;
+              width: 48px;
+              height: 48px;
+              filter: none;
+              opacity: 1;
               flex-shrink: 0;
+              display: block;
+              shape-rendering: crispEdges;
+              image-rendering: pixelated;
             }
             @media print {
               body { margin: 0; }
@@ -647,11 +656,14 @@ function DruckenView() {
               gap: 15px;
             }
               .qr svg {
-                width: 40px;
-                height: 40px;
-                filter: grayscale(100%);
-                opacity: 0.65;
+                width: 48px;
+                height: 48px;
+                filter: none;
+                opacity: 1;
                 flex-shrink: 0;
+                display: block;
+                shape-rendering: crispEdges;
+                image-rendering: pixelated;
               }
             @media print {
               body { margin: 0; }
