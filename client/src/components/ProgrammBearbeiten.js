@@ -248,7 +248,7 @@ function ProgrammBearbeiten() {
       const response = await axios.get('/api/typen');
       setTypen(response.data);
     } catch (error) {
-      setTypen(['SHOWTANZ', 'BÜTTENREDE', 'MARSCH', 'PAUSE']);
+      setTypen(['BÜTTENREDE', 'MARSCH', 'POLKA', 'SHOWTANZ', 'GARDETANZ', 'SOLO', 'GESANG', 'MODERATION', 'PUBLIKUM', 'PAUSE', 'SONSTIGES']);
     }
   };
 
