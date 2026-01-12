@@ -306,6 +306,17 @@ function updateSitzungName(sitzungId, newName) {
   return result.changes > 0;
 }
 
+function reorderProgrammpunkte(sitzungId, programmpunkte) {
+  const tx = db.transaction(() => {
+    programmpunkte.forEach((punkt, index) => {
+      db.prepare('UPDATE programmpunkte SET nummer = ? WHERE id = ? AND sitzungId = ?')
+        .run(index + 1, punkt.id, sitzungId);
+    });
+  });
+  tx();
+  return true;
+}
+
 function deleteSitzung(sitzungId) {
   const res = db.prepare('DELETE FROM sitzungen WHERE id = ?').run(sitzungId);
   if (getAktiveSitzung() === sitzungId) setAktiveSitzung(null);
@@ -320,6 +331,7 @@ export {
   addProgrammpunkt,
   updateProgrammpunkt,
   deleteProgrammpunkt,
+  reorderProgrammpunkte,
   setAktiveSitzung,
   getAktiveSitzung,
   getZettelList,

@@ -227,6 +227,20 @@ app.delete('/api/sitzung/:id/programmpunkt/:punktId', (req, res) => {
   res.json({ success: true });
 });
 
+app.put('/api/sitzung/:id/programmpunkte/reorder', (req, res) => {
+  const sitzung = db.getSitzungById(req.params.id);
+  if (!sitzung) {
+    return res.status(404).json({ error: 'Sitzung nicht gefunden' });
+  }
+  const { programmpunkte } = req.body;
+  if (!Array.isArray(programmpunkte)) {
+    return res.status(400).json({ error: 'Programmpunkte müssen ein Array sein' });
+  }
+  db.reorderProgrammpunkte(req.params.id, programmpunkte);
+  io.emit('programmpunkteReordert', { sitzungId: req.params.id });
+  res.json({ success: true });
+});
+
 app.post('/api/sitzung/:id/aktiv', (req, res) => {
   db.setAktiveSitzung(req.params.id);
   io.emit('aktiveSitzungGeaendert', { sitzungId: req.params.id });
