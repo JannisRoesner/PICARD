@@ -128,25 +128,19 @@ const ProgramDuration = styled.div`
 `;
 
 const BuehneBox = styled.div`
-  background: ${props => {
-    if (props.isActive) return '#2c3e50';
-    return '#34495e';
-  }};
-  border: 2px solid ${props => {
-    if (props.isActive) return '#3498db';
-    return '#4a90e2';
-  }};
+  background: ${props => props.theme?.colors?.primary || '#fbbf24'};
+  border: 3px solid ${props => props.theme?.colors?.primary || '#fbbf24'};
   border-radius: 8px;
   padding: 15px;
   text-align: center;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
-  min-height: 60px;
+  min-height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  color: ${props => props.isActive ? '#ecf0f1' : '#bdc3c7'};
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  color: #181818;
   width: 100%;
   min-width: 200px;
 `;
