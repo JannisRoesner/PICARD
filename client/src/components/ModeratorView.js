@@ -8,7 +8,7 @@ import ZettelSystem from './ZettelSystem';
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 450px 1fr 445px;
+  grid-template-columns: 340px 1fr 400px;
   grid-template-rows: 60px 1fr;
   height: calc(100vh - 60px);
   gap: 10px;
@@ -69,9 +69,51 @@ const PanelTitle = styled.h3`
   padding-bottom: 8px;
 `;
 
+const NotizenPanel = styled(Panel)`
+  flex: ${props => (props.$open ? '0.6' : '0')};
+  min-height: ${props => (props.$open ? '140px' : '56px')};
+`;
+
+const NotizenHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+`;
+
+const NotizenTitle = styled(PanelTitle)`
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+`;
+
+const NotizenToggle = styled.button`
+  background: #2d2d2d;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+`;
+
+const NotizenContent = styled.div`
+  margin-top: 10px;
+  display: flex;
+  flex: 1;
+`;
+
+const NotizenHint = styled.div`
+  margin-top: 8px;
+  color: #888;
+  font-size: 0.9rem;
+`;
+
 const ProgramList = styled.div`
   flex: 1;
   overflow-y: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const ProgramItem = styled.div`
@@ -84,6 +126,12 @@ const ProgramItem = styled.div`
   font-size: 1.1rem;
   font-weight: ${props => props.active ? 'bold' : 'normal'};
   color: ${props => props.active ? '#181818' : '#fff'};
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  line-height: 1.3;
+  min-height: 44px;
+  box-sizing: border-box;
 
   &:hover {
     background: ${props => props.active ? (props.theme?.colors?.primary || '#fbbf24') + 'cc' : '#3d3d3d'};
@@ -307,6 +355,7 @@ function ModeratorView() {
     notizen: '',
     abmoderation: ''
   });
+  const [isNotizenOpen, setIsNotizenOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(''); // '' | 'saving' | 'saved' | 'error'
   const saveTimeout = useRef(null);
@@ -320,6 +369,13 @@ function ModeratorView() {
     getProgressPercentage, 
     getTimerColor 
   } = useTimer();
+
+  const isMeaningfulNotizen = (value) => {
+    const text = (value || '').trim();
+    if (!text) return false;
+    if (text === 'Es wurden keine Notizen hinterlegt') return false;
+    return true;
+  };
 
   useEffect(() => {
     if (aktiveSitzung) {
@@ -375,10 +431,17 @@ function ModeratorView() {
       notizen: programmpunkt.notizen || '',
       abmoderation: programmpunkt.abmoderation || ''
     });
+    setIsNotizenOpen(isMeaningfulNotizen(programmpunkt.notizen));
     
     // Setze den aktiven Programmpunkt (startet automatisch den Timer)
     setActiveProgrammpunkt(programmpunkt);
   };
+
+  useEffect(() => {
+    if (isMeaningfulNotizen(editingTexts.notizen)) {
+      setIsNotizenOpen(true);
+    }
+  }, [editingTexts.notizen]);
 
   const handleTextChange = (field, value) => {
     setEditingTexts(prev => ({
@@ -559,14 +622,26 @@ function ModeratorView() {
           />
         </Panel>
 
-        <Panel style={{ flex: '1' }}>
-          <PanelTitle>Notizen</PanelTitle>
-          <TextArea
-            value={editingTexts.notizen}
-            onChange={(e) => handleTextChange('notizen', e.target.value)}
-            placeholder="Notizen eingeben..."
-          />
-        </Panel>
+        <NotizenPanel $open={isNotizenOpen}>
+          <NotizenHeader>
+            <NotizenTitle>Notizen</NotizenTitle>
+            <NotizenToggle type="button" onClick={() => setIsNotizenOpen(prev => !prev)}>
+              {isNotizenOpen ? 'Einklappen' : 'Ausklappen'}
+            </NotizenToggle>
+          </NotizenHeader>
+
+          {isNotizenOpen ? (
+            <NotizenContent>
+              <TextArea
+                value={editingTexts.notizen}
+                onChange={(e) => handleTextChange('notizen', e.target.value)}
+                placeholder="Notizen eingeben..."
+              />
+            </NotizenContent>
+          ) : (
+            <NotizenHint>{editingTexts.notizen?.trim() ? 'Notizen vorhanden' : 'Keine Notizen'}</NotizenHint>
+          )}
+        </NotizenPanel>
 
         <Panel style={{ flex: '1' }}>
           <PanelTitle>Abmoderation</PanelTitle>
