@@ -354,8 +354,18 @@ function ModeratorView() {
     try {
       const response = await axios.get(`/api/sitzung/${aktiveSitzung}`);
       setSitzung(response.data);
-      if (response.data.programmpunkte.length > 0) {
+      
+      // Wenn kein Programmpunkt ausgewählt ist, den ersten nehmen
+      if (!selectedProgrammpunkt && response.data.programmpunkte.length > 0) {
         setSelectedProgrammpunkt(response.data.programmpunkte[0]);
+      } else if (selectedProgrammpunkt && response.data.programmpunkte.length > 0) {
+        // Den aktuell ausgewählten Programmpunkt in der aktualisierten Liste finden
+        const updatedProgrammpunkt = response.data.programmpunkte.find(
+          p => p.id === selectedProgrammpunkt.id
+        );
+        if (updatedProgrammpunkt) {
+          setSelectedProgrammpunkt(updatedProgrammpunkt);
+        }
       }
     } catch (error) {
       console.error('Fehler beim Laden der Sitzung:', error);
