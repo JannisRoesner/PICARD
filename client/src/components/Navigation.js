@@ -407,6 +407,9 @@ function Navigation() {
               <NavLink to="/kulissen" active={isActive('/kulissen')}>
                 Kulissen
               </NavLink>
+              <NavLink to="/elferrat" active={isActive('/elferrat')}>
+                Elferrat
+              </NavLink>
               <NavLink to="/programmansicht" active={isActive('/programmansicht')}>
                 Programm
               </NavLink>
@@ -500,6 +503,9 @@ function Navigation() {
             </MobileNavLink>
             <MobileNavLink to="/kulissen" active={isActive('/kulissen')} onClick={handleMobileLinkClick}>
               Kulissen
+            </MobileNavLink>
+            <MobileNavLink to="/elferrat" active={isActive('/elferrat')} onClick={handleMobileLinkClick}>
+              🎩 Elferrat
             </MobileNavLink>
             <MobileNavLink to="/programmansicht" active={isActive('/programmansicht')} onClick={handleMobileLinkClick}>
               📋 Programmansicht

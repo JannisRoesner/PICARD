@@ -4,6 +4,8 @@ import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
 import { SitzungContext } from '../context/SitzungContext';
 
+const ZETTEL_SYNC_INTERVAL_MS = 30000;
+
 const ZettelContainer = styled.div`
   position: fixed;
   top: 70px;
@@ -20,6 +22,8 @@ const ZettelCard = styled.div`
     if (props.priority === 'wichtig') return '#ff6b35';
     if (props.type === 'anModeration') return '#007bff';
     if (props.type === 'anTechnik') return '#28a745';
+    if (props.type === 'anKulissen') return '#6f42c1';
+    if (props.type === 'anKueche') return '#20c997';
     return '#fbbf24';
   }};
   color: ${props => props.priority === 'dringend' || props.priority === 'wichtig' ? '#fff' : '#181818'};
@@ -31,6 +35,8 @@ const ZettelCard = styled.div`
     if (props.priority === 'wichtig') return '#e55a2b';
     if (props.type === 'anModeration') return '#0056b3';
     if (props.type === 'anTechnik') return '#1e7e34';
+    if (props.type === 'anKulissen') return '#5a32a3';
+    if (props.type === 'anKueche') return '#199d7e';
     return '#e0a800';
   }};
   animation: ${props => props.isNew ? 'blink 1s infinite' : 'none'};
@@ -268,30 +274,64 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
   const [zettel, setZettel] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showHistorie, setShowHistorie] = useState(false);
+  const getDefaultRecipientType = () => {
+    if (viewType === 'moderation') return 'anTechnik';
+    if (viewType === 'technik') return 'anModeration';
+    if (viewType === 'elferrat') return 'anModeration';
+    return 'anModeration';
+  };
+
   const [formData, setFormData] = useState({
     text: '',
-    type: viewType === 'moderation' ? 'anTechnik' : viewType === 'technik' ? 'anModeration' : 'anModeration',
+    type: getDefaultRecipientType(),
     priority: 'normal'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { aktiveSitzung } = useContext(SitzungContext);
   const socket = useContext(SocketContext);
 
+  const loadZettel = async () => {
+    if (!aktiveSitzung) return;
+
+    try {
+      const response = await axios.get(`/api/sitzung/${aktiveSitzung}/zettel`);
+      setZettel(response.data);
+    } catch (error) {
+      console.error('Fehler beim Laden der Zettel:', error);
+    }
+  };
+
+  const handleZettelUpdate = () => {
+    loadZettel();
+  };
+
   useEffect(() => {
-    if (aktiveSitzung) {
+    if (!aktiveSitzung) return;
+    loadZettel();
+  }, [aktiveSitzung]);
+
+  useEffect(() => {
+    if (!socket || !aktiveSitzung) return;
+
+    const joinAndSync = () => {
+      socket.emit('joinSitzung', aktiveSitzung);
       loadZettel();
-      socket?.emit('joinSitzung', aktiveSitzung);
+    };
+
+    if (socket.connected) {
+      joinAndSync();
     }
 
+    socket.on('connect', joinAndSync);
+
     return () => {
-      if (aktiveSitzung) {
-        socket?.emit('leaveSitzung', aktiveSitzung);
-      }
+      socket.off('connect', joinAndSync);
+      socket.emit('leaveSitzung', aktiveSitzung);
     };
   }, [aktiveSitzung, socket]);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !aktiveSitzung) return;
 
     socket.on('zettelHinzugefuegt', handleZettelUpdate);
     socket.on('zettelGeschlossen', handleZettelUpdate);
@@ -302,19 +342,15 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
     };
   }, [socket, aktiveSitzung]);
 
-  const loadZettel = async () => {
-    try {
-      const response = await axios.get(`/api/sitzung/${aktiveSitzung}/zettel`);
-      setZettel(response.data);
-    } catch (error) {
-      console.error('Fehler beim Laden der Zettel:', error);
-    }
-  };
+  useEffect(() => {
+    if (!aktiveSitzung) return;
 
-  const handleZettelUpdate = (data) => {
-    // Lade Zettel neu bei jedem Update
-    loadZettel();
-  };
+    const syncInterval = setInterval(() => {
+      loadZettel();
+    }, ZETTEL_SYNC_INTERVAL_MS);
+
+    return () => clearInterval(syncInterval);
+  }, [aktiveSitzung]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -337,7 +373,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
       setShowModal(false);
       setFormData({ 
         text: '', 
-        type: viewType === 'moderation' ? 'anTechnik' : viewType === 'technik' ? 'anModeration' : 'anModeration', 
+        type: getDefaultRecipientType(), 
         priority: 'normal' 
       });
     } catch (error) {
@@ -360,8 +396,22 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
     switch (type) {
       case 'anModeration': return '📝';
       case 'anTechnik': return '🎛️';
+      case 'anKulissen': return '🎭';
+      case 'anKueche': return '🍽️';
       case 'anAlle': return '📢';
       default: return '📄';
+    }
+  };
+
+  const getZettelTypeLabel = (type) => {
+    switch (type) {
+      case 'anModeration': return 'An Moderation';
+      case 'anTechnik': return 'An Technik';
+      case 'anKulissen': return 'An Kulissen';
+      case 'anKueche': return 'An Küche';
+      case 'anAlle':
+      default:
+        return 'An Alle';
     }
   };
 
@@ -387,9 +437,13 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
     
     if (viewType === 'moderation') {
       return aktiveZettel.filter(z => (z.type === 'anModeration' || z.type === 'anAlle') && z.sender !== 'moderation');
+    } else if (viewType === 'elferrat') {
+      return aktiveZettel.filter(z => (z.type === 'anModeration' || z.type === 'anAlle') && z.sender !== 'elferrat');
     } else if (viewType === 'technik') {
       return aktiveZettel.filter(z => (z.type === 'anTechnik' || z.type === 'anAlle') && z.sender !== 'technik');
-    } else if (viewType === 'kulissen' || viewType === 'programmansicht') {
+    } else if (viewType === 'kulissen') {
+      return aktiveZettel.filter(z => (z.type === 'anKulissen' || z.type === 'anAlle') && z.sender !== 'kulissen');
+    } else if (viewType === 'programmansicht') {
       return aktiveZettel.filter(z => z.type === 'anAlle' && z.sender !== viewType);
     }
     return [];
@@ -416,8 +470,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
             <ZettelHeader>
               <ZettelType>
                 {getZettelIcon(zettelItem.type)} {getPriorityIcon(zettelItem.priority)}
-                {zettelItem.type === 'anModeration' ? 'An Moderation' : 
-                 zettelItem.type === 'anTechnik' ? 'An Technik' : 'An Alle'}
+                {getZettelTypeLabel(zettelItem.type)}
               </ZettelType>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 {viewType === 'moderation' && zettelItem.type === 'anModeration' && (
@@ -463,19 +516,42 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                 {viewType === 'moderation' && (
                   <option value="anTechnik">An Technik</option>
                 )}
+                {viewType === 'moderation' && (
+                  <option value="anKulissen">An Kulissen</option>
+                )}
+                {viewType === 'moderation' && (
+                  <option value="anKueche">An Küche</option>
+                )}
                 {viewType === 'technik' && (
                   <option value="anModeration">An Moderation</option>
+                )}
+                {viewType === 'technik' && (
+                  <option value="anKulissen">An Kulissen</option>
+                )}
+                {viewType === 'technik' && (
+                  <option value="anKueche">An Küche</option>
+                )}
+                {viewType === 'elferrat' && (
+                  <>
+                    <option value="anModeration">An Moderation</option>
+                    <option value="anTechnik">An Technik</option>
+                    <option value="anKulissen">An Kulissen</option>
+                    <option value="anKueche">An Küche</option>
+                  </>
                 )}
                 {viewType === 'programmansicht' && (
                   <>
                     <option value="anModeration">An Moderation</option>
                     <option value="anTechnik">An Technik</option>
+                    <option value="anKulissen">An Kulissen</option>
+                    <option value="anKueche">An Küche</option>
                   </>
                 )}
                 {viewType === 'kulissen' && (
                   <>
                     <option value="anModeration">An Moderation</option>
                     <option value="anTechnik">An Technik</option>
+                    <option value="anKueche">An Küche</option>
                   </>
                 )}
                 <option value="anAlle">An Alle</option>
@@ -539,7 +615,9 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                         background: zettelItem.priority === 'dringend' ? '#dc3545' : 
                                    zettelItem.priority === 'wichtig' ? '#ff6b35' :
                                    zettelItem.type === 'anModeration' ? '#007bff' :
-                                   zettelItem.type === 'anTechnik' ? '#28a745' : '#fbbf24',
+                                   zettelItem.type === 'anTechnik' ? '#28a745' :
+                                   zettelItem.type === 'anKulissen' ? '#6f42c1' :
+                                   zettelItem.type === 'anKueche' ? '#20c997' : '#fbbf24',
                         color: zettelItem.priority === 'dringend' || zettelItem.priority === 'wichtig' ? '#fff' : '#181818',
                         borderRadius: '8px',
                         padding: '12px',
@@ -547,7 +625,9 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                         borderColor: zettelItem.priority === 'dringend' ? '#c82333' :
                                     zettelItem.priority === 'wichtig' ? '#e55a2b' :
                                     zettelItem.type === 'anModeration' ? '#0056b3' :
-                                    zettelItem.type === 'anTechnik' ? '#1e7e34' : '#e0a800',
+                                    zettelItem.type === 'anTechnik' ? '#1e7e34' :
+                                    zettelItem.type === 'anKulissen' ? '#5a32a3' :
+                                    zettelItem.type === 'anKueche' ? '#199d7e' : '#e0a800',
                         opacity: zettelItem.geschlossen ? '0.6' : '1',
                         position: 'relative'
                       }}
@@ -570,8 +650,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
                         <span>
                           {getZettelIcon(zettelItem.type)} {getPriorityIcon(zettelItem.priority)}
-                          {zettelItem.type === 'anModeration' ? 'An Moderation' : 
-                           zettelItem.type === 'anTechnik' ? 'An Technik' : 'An Alle'}
+                          {getZettelTypeLabel(zettelItem.type)}
                         </span>
                       </div>
                       <div style={{ fontSize: '1rem', lineHeight: '1.4', wordWrap: 'break-word', marginBottom: '8px' }}>
@@ -590,7 +669,8 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
                           Von: {zettelItem.sender === 'moderation' ? 'Moderation' : 
                                 zettelItem.sender === 'technik' ? 'Technik' : 
                                 zettelItem.sender === 'programmansicht' ? 'Programmansicht' :
-                                zettelItem.sender === 'kulissen' ? 'Kulissen' : zettelItem.sender}
+                                zettelItem.sender === 'kulissen' ? 'Kulissen' :
+                                zettelItem.sender === 'elferrat' ? 'Elferrat' : zettelItem.sender}
                         </span>
                       </div>
                     </div>

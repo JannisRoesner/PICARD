@@ -12,6 +12,7 @@ import Sitzungsablauf from './components/Sitzungsablauf';
 import Programmansicht from './components/Programmansicht';
 import KulissenView from './components/KulissenView';
 import DruckenView from './components/DruckenView';
+import ElferratView from './components/ElferratView';
 import Navigation from './components/Navigation';
 import ProgrammBearbeiten from './components/ProgrammBearbeiten';
 
@@ -154,6 +155,7 @@ function App() {
                     <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
                     <Route path="/programmansicht" element={<Programmansicht />} />
                     <Route path="/kulissen" element={<KulissenView />} />
+                    <Route path="/elferrat" element={<ElferratView />} />
                     <Route path="/drucken" element={<DruckenView />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>

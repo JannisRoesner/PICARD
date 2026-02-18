@@ -33,6 +33,12 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Live-Zettel**: Kommunikation mit anderen Ansichten
 - **Spezielle Anzeige**: Optimiert für Kulissenschieber
 
+### Elferrat-Ansicht
+- **Zettel-Fokus**: Eigene Ansicht ausschließlich für das Live-Zettel-System
+- **Identität „Elferrat“**: Zettel können als Elferrat erstellt werden
+- **Empfang wie Moderation**: Elferrat sieht dieselben eingehenden Zettel wie die Moderation (`An Moderation` und `An Alle`)
+- **Kein separater Empfänger**: Es gibt bewusst keinen eigenen Typ `An Elferrat`
+
 ### Sitzungsablauf (Mobile)
 ![](/Screenshot5.png)
 - **Mobile-optimiert**: Übersichtliche Darstellung für Smartphones
@@ -66,10 +72,10 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 ![](/Screenshot7.png)
 - **Bidirektionale Kommunikation**: Zwischen allen Ansichten
 - **Prioritätsstufen**: Normal, Wichtig, Dringend mit Farbkodierung
-- **Zettel-Typen**: An Moderation, An Technik, An Alle
+- **Zettel-Typen**: An Moderation, An Technik, An Kulissen, An Küche, An Alle
 - **Zettel-Historie**: Alle vergangenen Zettel einsehbar
 - **Zettel schließen**: Statt löschen werden Zettel als "geschlossen" markiert
-- **Echtzeit-Updates**: Sofortige Anzeige neuer Zettel
+- **Echtzeit-Updates**: Sofortige Anzeige neuer Zettel mit Reconnect-Resync (inkl. Fallback-Synchronisierung)
 ![](/Screenshot8.png)
 
 ### Echtzeit-Funktionen
@@ -119,6 +125,7 @@ node server.js
 3. Sitzung aktivieren und Programmpunkte verwalten
 4. Verschiedene Ansichten nutzen:
    - **Moderation**: Für die Moderation während der Sitzung
+   - **Elferrat**: Eigene Zettel-Ansicht mit Empfang wie Moderation
    - **Technik**: Für die Bühnentechnik
    - **Programmansicht**: Für Zuschauer und Übersicht
    - **Kulissen**: Für Kulissenschieber
@@ -164,7 +171,13 @@ node server.js
 - **Intuitive Navigation**: Klare Struktur und einfache Bedienung
 
 ## 📝 Changelog
-### Version 5.0.0 (Aktuell)
+### Version 5.1.0 (Aktuell)
+- **Neue Elferrat-Ansicht**: Eigene View mit Fokus auf Zettel schreiben + Historie lesen
+- **Zettel-Empfänger erweitert**: Unterstützung für `An Kulissen` und `An Küche`
+- **Elferrat-Empfangslogik**: Elferrat empfängt wie Moderation, ohne eigenen Empfängertyp
+- **Zettel-Sync robuster**: Rejoin/Resync nach Socket-Reconnect plus periodische Fallback-Synchronisierung
+
+### Version 5.0.0
 - **Pinboard statt Cues**: Technik-Ansicht und Technik-Druck zeigen Notizzettel pro Programmpunkt; alte Audio-/Licht-Cues entfernt
 - **Druck-Optimierung**: Alle Druck-Layouts kompakter für A4; Technik-Druck zeigt nur noch Notizen
 - **Dependency-Refresh**: Node 24, Express 5, React 19, React Router 7, uuid 13 (ESM-only), better-sqlite3 12
