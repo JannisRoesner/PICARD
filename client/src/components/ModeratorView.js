@@ -350,6 +350,7 @@ const ModeratorProgressFill = styled.div`
 function ModeratorView() {
   const [sitzung, setSitzung] = useState(null);
   const [selectedProgrammpunkt, setSelectedProgrammpunkt] = useState(null);
+  const selectedProgrammpunktRef = useRef(null);
   const [editingTexts, setEditingTexts] = useState({
     anmoderation: '',
     notizen: '',
@@ -406,21 +407,28 @@ function ModeratorView() {
     };
   }, [socket, aktiveSitzung]);
 
+  useEffect(() => {
+    selectedProgrammpunktRef.current = selectedProgrammpunkt;
+  }, [selectedProgrammpunkt]);
+
   const loadSitzung = async () => {
     try {
       const response = await axios.get(`/api/sitzung/${aktiveSitzung}`);
       setSitzung(response.data);
+      const currentSelected = selectedProgrammpunktRef.current;
       
       // Wenn kein Programmpunkt ausgewählt ist, den ersten nehmen
-      if (!selectedProgrammpunkt && response.data.programmpunkte.length > 0) {
+      if (!currentSelected && response.data.programmpunkte.length > 0) {
         setSelectedProgrammpunkt(response.data.programmpunkte[0]);
-      } else if (selectedProgrammpunkt && response.data.programmpunkte.length > 0) {
+      } else if (currentSelected && response.data.programmpunkte.length > 0) {
         // Den aktuell ausgewählten Programmpunkt in der aktualisierten Liste finden
         const updatedProgrammpunkt = response.data.programmpunkte.find(
-          p => p.id === selectedProgrammpunkt.id
+          p => p.id === currentSelected.id
         );
         if (updatedProgrammpunkt) {
           setSelectedProgrammpunkt(updatedProgrammpunkt);
+        } else {
+          setSelectedProgrammpunkt(response.data.programmpunkte[0]);
         }
       }
     } catch (error) {
