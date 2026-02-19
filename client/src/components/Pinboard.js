@@ -428,6 +428,13 @@ export default function Pinboard({ sitzungId, programmpunkt, onSaved }) {
 
   const removeNote = (id) => {
     const noteToRemove = notes.find((note) => note.id === id);
+    const noteTitle = getNoteTitle(noteToRemove) || (noteToRemove?.type === 'audio' ? 'diese Audio-Notiz' : 'diese Notiz');
+    
+    const confirmDelete = window.confirm(`Möchten Sie "${noteTitle}" wirklich löschen?`);
+    if (!confirmDelete) {
+      return;
+    }
+
     const audio = audioElementRefs.current[id];
     if (audio && !audio.paused) {
       audio.pause();

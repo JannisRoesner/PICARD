@@ -21,6 +21,8 @@ import { SocketContext } from './context/SocketContext';
 import { SitzungContext } from './context/SitzungContext';
 import { TimerProvider } from './context/TimerContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -141,29 +143,31 @@ function App() {
 
   return (
     <ThemeProvider>
-      <SocketContext.Provider value={socket}>
-        <SitzungContext.Provider value={{ aktiveSitzung, setAktiveSitzung, sitzungen, setSitzungen }}>
-          <TimerProvider>
-            <Router>
-              <AppContainer>
-                <Navigation />
-                <Routes>
-                  <Route path="/" element={<SitzungsAuswahl />} />
-                  <Route path="/moderation" element={<ModeratorView />} />
-                  <Route path="/technik" element={<TechnikView />} />
-                                      <Route path="/programm-bearbeiten" element={<ProgrammBearbeiten />} />
+      <AuthProvider>
+        <SocketContext.Provider value={socket}>
+          <SitzungContext.Provider value={{ aktiveSitzung, setAktiveSitzung, sitzungen, setSitzungen }}>
+            <TimerProvider>
+              <Router>
+                <AppContainer>
+                  <Navigation />
+                  <Routes>
+                    <Route path="/" element={<ProtectedRoute><SitzungsAuswahl /></ProtectedRoute>} />
+                    <Route path="/moderation" element={<ProtectedRoute><ModeratorView /></ProtectedRoute>} />
+                    <Route path="/technik" element={<TechnikView />} />
+                    <Route path="/programm-bearbeiten" element={<ProtectedRoute><ProgrammBearbeiten /></ProtectedRoute>} />
                     <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
                     <Route path="/programmansicht" element={<Programmansicht />} />
                     <Route path="/kulissen" element={<KulissenView />} />
                     <Route path="/elferrat" element={<ElferratView />} />
-                    <Route path="/drucken" element={<DruckenView />} />
+                    <Route path="/drucken" element={<ProtectedRoute><DruckenView /></ProtectedRoute>} />
                     <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </AppContainer>
-            </Router>
-          </TimerProvider>
-        </SitzungContext.Provider>
-      </SocketContext.Provider>
+                  </Routes>
+                </AppContainer>
+              </Router>
+            </TimerProvider>
+          </SitzungContext.Provider>
+        </SocketContext.Provider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

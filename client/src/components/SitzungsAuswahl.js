@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTheme } from '../context/ThemeContext';
+import PasswordChangeDialog from './PasswordChangeDialog';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -204,41 +205,52 @@ const Button = styled.button`
   }
 `;
 
-const DeleteButton = styled.button`
+const CardActions = styled.div`
   position: absolute;
   top: 8px;
-  left: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+`;
+
+const DeleteButton = styled.button`
   background: ${props => props.theme?.colors?.danger || '#dc3545'};
   color: white;
   border: none;
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
   opacity: 0.9;
   transition: all 0.2s ease;
+  white-space: nowrap;
 
   &:hover {
     opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
   }
 `;
 
 const RenameButton = styled.button`
-  position: absolute;
-  top: 8px;
-  left: 100px;
   background: ${props => props.theme?.colors?.primary || '#fbbf24'};
   color: #181818;
   border: none;
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
   opacity: 0.9;
   transition: all 0.2s ease;
+  white-space: nowrap;
 
   &:hover {
     opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
   }
 `;
 
@@ -251,6 +263,9 @@ function SitzungsAuswahl() {
   const [confirmDeleteName, setConfirmDeleteName] = useState('');
   const [renameId, setRenameId] = useState(null);
   const [renameName, setRenameName] = useState('');
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const fileInputRef = useRef();
   const context = useContext(SitzungContext);
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -406,6 +421,107 @@ function SitzungsAuswahl() {
     }
   };
 
+  const exportSitzung = async () => {
+    if (!aktiveSitzung) {
+      alert('Keine aktive Sitzung zum Exportieren');
+      return;
+    }
+
+    try {
+      setExporting(true);
+      const response = await axios.get(`/api/sitzung/${aktiveSitzung}/export`, {
+        responseType: 'blob'
+      });
+
+      const contentDisposition = response.headers['content-disposition'] || '';
+      const matchedName = contentDisposition.match(/filename="?([^";]+)"?/i);
+      const fileName = matchedName?.[1] || `sitzung_export_${new Date().toISOString().split('T')[0]}.zip`;
+
+      const dataBlob = new Blob([response.data], { type: 'application/zip' });
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert('Sitzung erfolgreich als ZIP exportiert!');
+    } catch (error) {
+      console.error('Fehler beim Exportieren:', error);
+      alert('Fehler beim Exportieren der Sitzung');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const importSitzung = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      if (file.name.toLowerCase().endsWith('.zip')) {
+        const formData = new FormData();
+        formData.append('archive', file);
+
+        await axios.post('/api/sitzung/import-zip', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        alert('ZIP-Sitzung erfolgreich importiert!');
+        window.location.reload();
+        event.target.value = '';
+        return;
+      }
+
+      const text = await file.text();
+      const sitzungData = JSON.parse(text);
+      
+      if (!sitzungData.name || !sitzungData.programmpunkte) {
+        throw new Error('Ungültige Sitzungsdatei');
+      }
+
+      const normalizedProgrammpunkte = (Array.isArray(sitzungData.programmpunkte) ? sitzungData.programmpunkte : []).map((punkt) => {
+        const normalizedPinboardNotes = Array.isArray(punkt.pinboardNotes)
+          ? punkt.pinboardNotes.map((note) => ({
+              ...note,
+              type: note?.type === 'audio' ? 'audio' : 'text',
+              title: typeof note?.title === 'string' ? note.title : (note?.type === 'audio' ? (note?.audioName || 'Audio') : 'Notiz'),
+              text: typeof note?.text === 'string' ? note.text : '',
+              audioSrc: typeof note?.audioSrc === 'string' ? note.audioSrc : undefined,
+              audioName: typeof note?.audioName === 'string' ? note.audioName : undefined,
+              audioMimeType: typeof note?.audioMimeType === 'string' ? note.audioMimeType : undefined,
+              waveformBars: Array.isArray(note?.waveformBars) ? note.waveformBars : undefined
+            }))
+          : [];
+
+        return {
+          ...punkt,
+          pinboardNotes: normalizedPinboardNotes
+        };
+      });
+
+      const response = await axios.post('/api/sitzung', {
+        name: `${sitzungData.name} (Importiert)`,
+        programmpunkte: normalizedProgrammpunkte
+      });
+
+      alert('Sitzung erfolgreich importiert!');
+      window.location.reload();
+      
+      event.target.value = '';
+    } catch (error) {
+      console.error('Fehler beim Importieren:', error);
+      const errorMessage = error?.response?.status === 413
+        ? 'Die Datei ist zu groß. Bitte Audio-Dateien verkleinern oder serverseitigen Dateiupload nutzen.'
+        : error.message;
+      alert('Fehler beim Importieren der Sitzung: ' + errorMessage);
+      event.target.value = '';
+    }
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return 'Unbekannt';
     try {
@@ -451,14 +567,48 @@ function SitzungsAuswahl() {
         marginBottom: '20px' 
       }}>
         <h2 style={{ color: '#fff', margin: 0 }}>Verfügbare Sitzungen</h2>
-        <Button 
-          className="secondary" 
-          onClick={refreshSitzungen}
-          disabled={loading}
-        >
-          {loading ? 'Lädt...' : '🔄 Aktualisieren'}
-        </Button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {aktiveSitzung && (
+            <Button 
+              className="secondary" 
+              onClick={exportSitzung}
+              disabled={exporting}
+              title="Aktive Sitzung exportieren"
+            >
+              {exporting ? '...' : '💾 Exportieren'}
+            </Button>
+          )}
+          <Button 
+            className="secondary" 
+            onClick={() => fileInputRef.current?.click()}
+            title="Sitzung importieren"
+          >
+            📂 Importieren
+          </Button>
+          <Button 
+            className="secondary" 
+            onClick={() => setShowPasswordDialog(true)}
+            title="Passwort ändern"
+          >
+            ⚙️ Passwort
+          </Button>
+          <Button 
+            className="secondary" 
+            onClick={refreshSitzungen}
+            disabled={loading}
+          >
+            {loading ? 'Lädt...' : '🔄 Aktualisieren'}
+          </Button>
+        </div>
       </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".zip,.json"
+        onChange={importSitzung}
+        style={{ display: 'none' }}
+      />
 
       <Grid>
         {sitzungen && sitzungen.length > 0 ? (
@@ -474,18 +624,20 @@ function SitzungsAuswahl() {
                   active={aktiveSitzung === sitzung.id}
                   onClick={() => sitzung.id && activateSitzung(sitzung.id)}
                 >
-                  <DeleteButton
-                    onClick={(e) => { e.stopPropagation(); requestDeleteSitzung(sitzung); }}
-                    title="Sitzung löschen"
-                  >
-                    🗑️ Löschen
-                  </DeleteButton>
-                  <RenameButton
-                    onClick={(e) => { e.stopPropagation(); requestRenameSitzung(sitzung); }}
-                    title="Sitzung umbenennen"
-                  >
-                    ✏️ Umbenennen
-                  </RenameButton>
+                  <CardActions>
+                    <DeleteButton
+                      onClick={(e) => { e.stopPropagation(); requestDeleteSitzung(sitzung); }}
+                      title="Sitzung löschen"
+                    >
+                      🗑️ Löschen
+                    </DeleteButton>
+                    <RenameButton
+                      onClick={(e) => { e.stopPropagation(); requestRenameSitzung(sitzung); }}
+                      title="Sitzung umbenennen"
+                    >
+                      ✏️ Umbenennen
+                    </RenameButton>
+                  </CardActions>
                   {aktiveSitzung && aktiveSitzung === sitzung.id && (
                     <ActiveBadge>AKTIV</ActiveBadge>
                   )}
@@ -609,6 +761,10 @@ function SitzungsAuswahl() {
             </ButtonGroup>
           </ModalContent>
         </Modal>
+      )}
+
+      {showPasswordDialog && (
+        <PasswordChangeDialog onClose={() => setShowPasswordDialog(false)} />
       )}
     </Container>
   );

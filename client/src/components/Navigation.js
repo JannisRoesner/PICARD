@@ -5,6 +5,7 @@ import axios from 'axios';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTimer } from '../context/TimerContext';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
 
 const NavContainer = styled.nav`
@@ -280,12 +281,18 @@ function Navigation() {
     formatCurrentTime
   } = useTimer();
   const { theme } = useTheme();
-  const [exporting, setExporting] = useState(false);
+  const { authenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const fileInputRef = useRef();
 
   const isActive = (path) => location.pathname === path;
   const isProgramView = isActive('/programmansicht');
+
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result.success) {
+      window.location.href = '/';
+    }
+  };
 
   const handleMobileMenuToggle = () => {
     console.log('Mobile menu toggle clicked, current state:', mobileMenuOpen);
@@ -322,107 +329,6 @@ function Navigation() {
       document.body.classList.remove('menu-open');
     };
   }, [mobileMenuOpen]);
-
-  const exportSitzung = async () => {
-    if (!aktiveSitzung) {
-      alert('Keine aktive Sitzung zum Exportieren');
-      return;
-    }
-
-    try {
-      setExporting(true);
-      const response = await axios.get(`/api/sitzung/${aktiveSitzung}/export`, {
-        responseType: 'blob'
-      });
-
-      const contentDisposition = response.headers['content-disposition'] || '';
-      const matchedName = contentDisposition.match(/filename="?([^";]+)"?/i);
-      const fileName = matchedName?.[1] || `sitzung_export_${new Date().toISOString().split('T')[0]}.zip`;
-
-      const dataBlob = new Blob([response.data], { type: 'application/zip' });
-      const url = URL.createObjectURL(dataBlob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      alert('Sitzung erfolgreich als ZIP exportiert!');
-    } catch (error) {
-      console.error('Fehler beim Exportieren:', error);
-      alert('Fehler beim Exportieren der Sitzung');
-    } finally {
-      setExporting(false);
-    }
-  };
-
-  const importSitzung = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    try {
-      if (file.name.toLowerCase().endsWith('.zip')) {
-        const formData = new FormData();
-        formData.append('archive', file);
-
-        await axios.post('/api/sitzung/import-zip', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-
-        alert('ZIP-Sitzung erfolgreich importiert!');
-        window.location.reload();
-        event.target.value = '';
-        return;
-      }
-
-      const text = await file.text();
-      const sitzungData = JSON.parse(text);
-      
-      if (!sitzungData.name || !sitzungData.programmpunkte) {
-        throw new Error('Ungültige Sitzungsdatei');
-      }
-
-      const normalizedProgrammpunkte = (Array.isArray(sitzungData.programmpunkte) ? sitzungData.programmpunkte : []).map((punkt) => {
-        const normalizedPinboardNotes = Array.isArray(punkt.pinboardNotes)
-          ? punkt.pinboardNotes.map((note) => ({
-              ...note,
-              type: note?.type === 'audio' ? 'audio' : 'text',
-              title: typeof note?.title === 'string' ? note.title : (note?.type === 'audio' ? (note?.audioName || 'Audio') : 'Notiz'),
-              text: typeof note?.text === 'string' ? note.text : '',
-              audioSrc: typeof note?.audioSrc === 'string' ? note.audioSrc : undefined,
-              audioName: typeof note?.audioName === 'string' ? note.audioName : undefined,
-              audioMimeType: typeof note?.audioMimeType === 'string' ? note.audioMimeType : undefined,
-              waveformBars: Array.isArray(note?.waveformBars) ? note.waveformBars : undefined
-            }))
-          : [];
-
-        return {
-          ...punkt,
-          pinboardNotes: normalizedPinboardNotes
-        };
-      });
-
-      const response = await axios.post('/api/sitzung', {
-        name: `${sitzungData.name} (Importiert)`,
-        programmpunkte: normalizedProgrammpunkte
-      });
-
-      alert('Sitzung erfolgreich importiert!');
-      window.location.reload(); // Seite neu laden um neue Sitzung anzuzeigen
-      
-      event.target.value = '';
-    } catch (error) {
-      console.error('Fehler beim Importieren:', error);
-      const errorMessage = error?.response?.status === 413
-        ? 'Die Datei ist zu groß. Bitte Audio-Dateien verkleinern oder serverseitigen Dateiupload nutzen.'
-        : error.message;
-      alert('Fehler beim Importieren der Sitzung: ' + errorMessage);
-      event.target.value = '';
-    }
-  };
 
   return (
     <>
@@ -481,33 +387,17 @@ function Navigation() {
                   </span>
                 </SessionInfo>
 
-                <ActionButtons>
-                  {aktiveSitzung && (
+                {authenticated && (
+                  <ActionButtons>
                     <ActionButton 
-                      variant="export" 
-                      onClick={exportSitzung}
-                      disabled={exporting}
-                      title="Sitzung exportieren"
+                      variant="logout" 
+                      onClick={handleLogout}
+                      title="Abmelden"
                     >
-                      {exporting ? '...' : '💾'}
+                      🚪
                     </ActionButton>
-                  )}
-                  <ActionButton 
-                    variant="import" 
-                    onClick={() => fileInputRef.current?.click()}
-                    title="Sitzung importieren"
-                  >
-                    📂
-                  </ActionButton>
-                </ActionButtons>
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".zip,.json"
-                  onChange={importSitzung}
-                  style={{ display: 'none' }}
-                />
+                  </ActionButtons>
+                )}
               </>
             )}
           </StatusIndicator>
@@ -576,6 +466,24 @@ function Navigation() {
               <div style={{ fontSize: '12px', color: '#888' }}>
                 {formatCurrentTime(currentTime)}
               </div>
+              {authenticated && (
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    marginTop: '10px',
+                    padding: '8px 16px',
+                    background: '#d32f2f',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    width: '100%'
+                  }}
+                >
+                  🚪 Abmelden
+                </button>
+              )}
             </div>
           </>
         )}

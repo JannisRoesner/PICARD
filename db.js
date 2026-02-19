@@ -323,6 +323,17 @@ function deleteSitzung(sitzungId) {
   return res.changes > 0;
 }
 
+// Password Management
+function setPasswordHash(hash) {
+  db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value')
+    .run('passwordHash', hash);
+}
+
+function getPasswordHash() {
+  const row = db.prepare('SELECT value FROM settings WHERE key = ?').get('passwordHash');
+  return row && row.value ? row.value : null;
+}
+
 export {
   createSitzung,
   getSitzungen,
@@ -338,7 +349,10 @@ export {
   addZettel,
   closeZettel,
   updateSitzungName,
-  deleteSitzung
+  deleteSitzung,
+  setPasswordHash,
+  getPasswordHash,
+  db // Export db instance for session store
 };
 
 

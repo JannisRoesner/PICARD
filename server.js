@@ -8,6 +8,9 @@ import fs from 'fs';
 import multer from 'multer';
 import AdmZip from 'adm-zip';
 import { randomUUID } from 'crypto';
+import session from 'express-session';
+import SqliteStore from 'better-sqlite3-session-store';
+import bcrypt from 'bcrypt';
 // Persistente Datenbank
 import * as db from './db.js';
 
@@ -84,6 +87,42 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use('/media', express.static(mediaRoot));
 
+// Session Store
+const SessionStore = SqliteStore(session);
+app.use(session({
+  store: new SessionStore({
+    client: db.db,
+    expired: {
+      clear: true,
+      intervalMs: 900000 // Clean expired sessions every 15 minutes
+    }
+  }),
+  secret: process.env.SESSION_SECRET || 'picard-session-secret-' + randomUUID(),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    sameSite: 'lax'
+  }
+}));
+
+// Initialize password if not set
+(async () => {
+  const existingHash = db.getPasswordHash();
+  if (!existingHash) {
+    const initialPassword = process.env.ADMIN_PASSWORD || 'admin';
+    const hash = await bcrypt.hash(initialPassword, 10);
+    db.setPasswordHash(hash);
+    if (!process.env.ADMIN_PASSWORD) {
+      console.warn('⚠️  WARNUNG: Kein ADMIN_PASSWORD gesetzt. Standard-Passwort "admin" wird verwendet.');
+      console.warn('   Bitte ändern Sie das Passwort nach dem ersten Login!');
+    } else {
+      console.log('✓ Initiales Admin-Passwort wurde gesetzt.');
+    }
+  }
+})();
+
 // Prüfe ob Build-Verzeichnis existiert
 const buildPath = path.join(__dirname, 'client/build');
 const buildExists = fs.existsSync(buildPath);
@@ -127,6 +166,71 @@ const TYPEN = {
   PAUSE: 'PAUSE',
   SONSTIGES: 'SONSTIGES'
 };
+
+// Authentication Routes
+app.post('/api/auth/login', async (req, res) => {
+  const { password } = req.body;
+  
+  if (!password || typeof password !== 'string') {
+    return res.status(400).json({ error: 'Passwort erforderlich' });
+  }
+
+  const storedHash = db.getPasswordHash();
+  if (!storedHash) {
+    return res.status(500).json({ error: 'Keine Passwort-Konfiguration gefunden' });
+  }
+
+  const isValid = await bcrypt.compare(password, storedHash);
+  
+  if (!isValid) {
+    return res.status(401).json({ error: 'Falsches Passwort' });
+  }
+
+  req.session.authenticated = true;
+  req.session.save((err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Session-Fehler' });
+    }
+    res.json({ success: true });
+  });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Logout fehlgeschlagen' });
+    }
+    res.json({ success: true });
+  });
+});
+
+app.get('/api/auth/status', (req, res) => {
+  res.json({ authenticated: !!req.session.authenticated });
+});
+
+app.post('/api/auth/change-password', async (req, res) => {
+  if (!req.session.authenticated) {
+    return res.status(401).json({ error: 'Nicht angemeldet' });
+  }
+
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword || typeof newPassword !== 'string' || newPassword.length < 4) {
+    return res.status(400).json({ error: 'Ungültige Passwort-Daten (mindestens 4 Zeichen erforderlich)' });
+  }
+
+  const storedHash = db.getPasswordHash();
+  const isValid = await bcrypt.compare(currentPassword, storedHash);
+
+  if (!isValid) {
+    return res.status(401).json({ error: 'Aktuelles Passwort ist falsch' });
+  }
+
+  const newHash = await bcrypt.hash(newPassword, 10);
+  db.setPasswordHash(newHash);
+
+  res.json({ success: true });
+});
 
 // API Routes
 app.get('/api/typen', (req, res) => {

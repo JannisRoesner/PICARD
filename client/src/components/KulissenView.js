@@ -167,6 +167,7 @@ const KulissenItem = styled.div`
 
 const KulissenIcon = styled.span`
   font-size: 1rem;
+  color: ${props => props.color || 'inherit'};
 `;
 
 const KulissenText = styled.span`
@@ -303,16 +304,16 @@ function KulissenView() {
               </ProgramCenter>
               
               <ProgramRight isActive={activeProgrammpunkt?.id === programmpunkt.id}>
-                <KulissenTitle isActive={activeProgrammpunkt?.id === programmpunkt.id}>🎭 Kulissen-Informationen</KulissenTitle>
+                <KulissenTitle isActive={activeProgrammpunkt?.id === programmpunkt.id}>♪ Musik-Informationen</KulissenTitle>
                 <KulissenDetails>
                   <KulissenItem>
-                    <KulissenIcon>🎵</KulissenIcon>
+                    <KulissenIcon color="#4ade80">→</KulissenIcon>
                     <KulissenText isActive={activeProgrammpunkt?.id === programmpunkt.id}>
                       Einzug: {programmpunkt.einzugCD ? 'Von CD' : 'Von Kapelle'}
                     </KulissenText>
                   </KulissenItem>
                   <KulissenItem>
-                    <KulissenIcon>🎵</KulissenIcon>
+                    <KulissenIcon color="#f87171">←</KulissenIcon>
                     <KulissenText isActive={activeProgrammpunkt?.id === programmpunkt.id}>
                       Auszug: {programmpunkt.auszugCD ? 'Von CD' : 'Von Kapelle'}
                     </KulissenText>

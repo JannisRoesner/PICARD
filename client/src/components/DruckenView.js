@@ -360,8 +360,8 @@ function DruckenView() {
                 </div>
               </div>
               <div class="programm-right">
-                <div class="kulissen-item">🎵 Einzug: ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
-                <div class="kulissen-item">🎵 Auszug: ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                <div class="kulissen-item"><span style="color: #4ade80;">→</span> <strong>Einzug:</strong> ${pp.einzugCD ? 'Von CD' : 'Von Kapelle'}</div>
+                <div class="kulissen-item"><span style="color: #f87171;">←</span> <strong>Auszug:</strong> ${pp.auszugCD ? 'Von CD' : 'Von Kapelle'}</div>
               </div>
             </div>
           `).join('')}
@@ -508,7 +508,7 @@ function DruckenView() {
                   <span class="nummer">${pp.nummer}</span>
                   <span class="name">${pp.name}</span>
                   <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
+                    ♪ Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
                   </span>
                 </div>
                 <div class="typ">${pp.typ}</div>
@@ -680,9 +680,18 @@ function DruckenView() {
             const notes = Array.isArray(pp.pinboardNotes) ? pp.pinboardNotes : [];
             const notesHtml = notes.length > 0
               ? notes.map((note, idx) => {
+                  const noteTitle = note.title || (note.type === 'audio' && note.audioName) || `Notiz ${idx + 1}`;
+                  
+                  if (note.type === 'audio') {
+                    return `<div class="sticky-note" style="background: ${note.color || '#e0f7fa'}">
+                      <div class="sticky-note-title">🎵 ${noteTitle}</div>
+                      <div class="sticky-note-content" style="color: #666;">Audio-Datei: ${note.audioName || 'Ohne Namen'}</div>
+                    </div>`;
+                  }
+                  
                   const content = (note.text || 'Leer').replace(/\n/g, '<br>');
                   const bg = note.color || '#fff3cd';
-                  return `<div class="sticky-note" style="background: ${bg}"><div class="sticky-note-title">Notiz ${idx + 1}</div><div class="sticky-note-content">${content}</div></div>`;
+                  return `<div class="sticky-note" style="background: ${bg}"><div class="sticky-note-title">${noteTitle}</div><div class="sticky-note-content">${content}</div></div>`;
                 }).join('')
               : '<div class="sticky-note-empty">Keine Notizen vorhanden</div>';
             return `
@@ -692,7 +701,7 @@ function DruckenView() {
                   <span class="nummer">${pp.nummer}</span>
                   <span class="name">${pp.name}</span>
                   <span style="margin-left: auto; font-size: 12px; color: #666;">
-                    🎵 Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
+                    ♪ Einzug: ${pp.einzugCD ? 'CD' : 'Kapelle'} | Auszug: ${pp.auszugCD ? 'CD' : 'Kapelle'}
                   </span>
                 </div>
                 <div class="typ">${pp.typ}</div>
