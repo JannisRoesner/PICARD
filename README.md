@@ -18,7 +18,8 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 ### Technik-Ansicht
 ![](/Screenshot2.png)
 - **Programmablauf**: Übersicht aller Programmpunkte
-- **Pinboard/Notizen**: Klebezettel pro Programmpunkt (Farben, Mehrzeilig)
+- **Pinboard/Notizen**: Klebezettel pro Programmpunkt (Farben, Mehrzeilig, mit Titeln)
+- **Audio-Dateien**: Upload mit Waveform-Visualisierung, Play/Pause-Steuerung
 - **Statusleiste**: Aktiver Programmpunkt, Timer, Einzug/Auszug-Hinweise
 - **Live-Zettel**: Kommunikation mit Moderation und anderen Ansichten
 
@@ -28,7 +29,7 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 
 ### Kulissen-Ansicht
 ![](/Screenshot3.png)
-- **Kulissen-Informationen**: Einzug/Auszug von CD oder Kapelle
+- **Musik-Informationen**: Einzug (→) und Auszug (←) von CD oder Kapelle mit farbigen Symbolen
 - **Bühnenaufbau**: Details zu Bütt, Notenständer oder anderen Bühnenrequisiten
 - **Live-Zettel**: Kommunikation mit anderen Ansichten
 - **Spezielle Anzeige**: Optimiert für Kulissenschieber
@@ -58,8 +59,9 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Querformat**: Kulissen, Moderation und Technik im Landscape-Modus
 - **Jahreszahl**: Automatisch in alle Überschriften eingefügt
 - **Fußzeile**: Mit Server-URL und Hinweis auf Änderungen
-- **Spezielle Ansichten**: Jede Druckoption zeigt relevante Informationen
+- **Spezielle Ansichten**: Jede Druckoption zeigt relevante Informationen (inkl. Notiz-Titel und Audio-Dateien)
 - **Clientseitige PDF-Generierung**: "Als PDF speichern" über Browser-Druckfunktion
+- **Passwortgeschützt**: Erfordert Authentifizierung
 
 ### Timer-Funktionen
 - **Automatischer Timer**: Startet automatisch bei Moderation-Auswahl
@@ -83,12 +85,21 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Multi-User**: Mehrere Benutzer können gleichzeitig arbeiten
 - **Automatisches Speichern**: Änderungen werden automatisch gespeichert
 
+### Sicherheit & Verwaltung
+- **Passwortschutz**: Sensible Ansichten (Startseite, Moderation, Programm-bearbeiten, Drucken) erfordern Authentifizierung
+- **Session-basierte Authentifizierung**: SQLite-gestützte Sessions mit 7-Tagen-Gültigkeit
+- **Öffentliche Ansichten**: Zettel-API und Anzeige-Ansichten (Technik, Elferrat, Kulissen, Sitzungsablauf, Programmansicht) bleiben ohne Login zugänglich
+- **Passwort-Verwaltung**: Initiales Passwort über Umgebungsvariable `ADMIN_PASSWORD` (Standard: "admin")
+- **Export/Import**: Sitzungs-Export als ZIP mit allen Daten und Audio-Dateien
+
 ## 🗄️ Datenhaltung
 
 Die Anwendung speichert Daten persistent in einer lokalen SQLite-Datenbank.
 - Standardpfad: `./data/app.db` (konfigurierbar über Umgebungsvariable `DB_PATH`)
 - Zettel werden nicht gelöscht, sondern als `geschlossen` markiert (Historie bleibt erhalten)
-- In Docker wird die Datenbank unter `/data/app.db` gespeichert und über ein Volume persistiert
+- Audio-Dateien werden im `./data` Verzeichnis gespeichert und bleiben persistiert
+- In Docker wird das komplette `/app/data` Verzeichnis als Bind-Mount unter `./data` persistiert
+- Passwort-Hashes werden bcrypt-verschlüsselt in der Datenbank gespeichert
 
 ## 🚀 Installation & Betrieb
 
@@ -99,11 +110,14 @@ docker compose up --build -d
 
 # Anwendung öffnen
 # http://localhost:5000
+
+# Optionales Admin-Passwort setzen (sonst "admin")
+ADMIN_PASSWORD=meinPasswort docker compose up --build -d
 ```
 
 Persistenz:
-- Volume-Name: `picard-data`
-- DB-Datei im Container: `/data/app.db`
+- Bind-Mount: `./data` → `/app/data` (Datenbank und Audio-Dateien)
+- Initial-Passwort: Umgebungsvariable `ADMIN_PASSWORD` (Standard: "admin")
 
 ### Lokale Installation
 ```bash
@@ -140,6 +154,9 @@ node server.js
 - **Express 5**: Web-Framework
 - **Socket.IO**: Echtzeit-Kommunikation
 - **SQLite (better-sqlite3)**: Persistente Datenhaltung
+- **express-session + better-sqlite3-session-store**: Session-Management
+- **bcrypt**: Passwort-Hashing
+- **multer**: Datei-Uploads (Audio-Dateien)
 
 ### Frontend (React)
 - **React 19**: UI-Framework
@@ -162,6 +179,11 @@ node server.js
 - `GET /api/sitzung/:id/zettel` - Zettel abrufen
 - `POST /api/sitzung/:id/zettel` - Zettel erstellen
 - `DELETE /api/sitzung/:id/zettel/:zettelId` - Zettel schließen (Historie bleibt erhalten)
+- `POST /api/sitzung/:id/programmpunkt/:punktId/pinboard-audio` - Audio-Datei zum Pinboard hochladen
+- `POST /api/auth/login` - Anmeldung mit Passwort
+- `POST /api/auth/logout` - Abmeldung
+- `GET /api/auth/status` - Authentifizierungsstatus prüfen
+- `POST /api/auth/change-password` - Passwort ändern
 
 ## 🎨 Design
 
@@ -171,7 +193,18 @@ node server.js
 - **Intuitive Navigation**: Klare Struktur und einfache Bedienung
 
 ## 📝 Changelog
-### Version 5.1.0 (Aktuell)
+### Version 5.2.0 (Aktuell)
+- **Passwortschutz**: Authentifizierung für sensible Ansichten (Startseite, Moderation, Programm-bearbeiten, Drucken)
+- **Session-Management**: SQLite-gestützte Sessions mit bcrypt-Passwort-Hashing
+- **Audio-Pinboard**: Upload und Wiedergabe von Audio-Dateien mit Waveform-Visualisierung
+- **Audio-Persistenz**: Docker bind mount statt named volume für dauerhafte Speicherung
+- **Notiz-Titel**: Pinboard-Notizen haben eigene Titel (Standard: "Notiz")
+- **Musik-Informationen**: Kulissen-Ansicht zeigt Einzug (→) und Auszug (←) mit farbigen Symbolen
+- **Druckansicht-Updates**: Notizen zeigen Titel, Audio-Dateien werden erkannt und dargestellt
+- **UX-Verbesserungen**: Navigation während Login zugänglich, bessere Button-Positionierung, Löschbestätigung für Pinboard-Notizen
+- **Export/Import**: Sitzungs-Export als ZIP inkl. Audio-Dateien aus Verwaltungsansicht
+
+### Version 5.1.0
 - **Neue Elferrat-Ansicht**: Eigene View mit Fokus auf Zettel schreiben + Historie lesen
 - **Zettel-Empfänger erweitert**: Unterstützung für `An Kulissen` und `An Küche`
 - **Elferrat-Empfangslogik**: Elferrat empfängt wie Moderation, ohne eigenen Empfängertyp
