@@ -16,8 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-RUN npm install --omit=dev --no-audit --no-fund --silent \
-  && cd client && npm install --omit=dev --no-audit --no-fund --silent && cd .. \
+RUN npm ci --omit=dev --no-audit --no-fund --silent \
+  && cd client && npm ci --omit=dev --no-audit --no-fund --silent && cd .. \
   && npm rebuild better-sqlite3 --unsafe-perm
 
 # Alle anderen Dateien kopieren

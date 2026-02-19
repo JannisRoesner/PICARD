@@ -171,6 +171,18 @@ const ZettelModal = styled.div`
   padding: 20px;
 `;
 
+const HistorieBackground = styled.div`
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 10px 100px 10px;
+`;
+
+const HistorieScroll = styled.div`
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding-right: 4px;
+`;
+
 const ModalContent = styled.div`
   background: #1a1a1a;
   border: 2px solid #333;
@@ -270,7 +282,7 @@ const Button = styled.button`
   }
 `;
 
-function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
+function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = false }) {
   const [zettel, setZettel] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showHistorie, setShowHistorie] = useState(false);
@@ -451,6 +463,9 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
 
   const visibleZettel = getVisibleZettel();
   const allZettel = zettel; // Alle Zettel für die Historie
+  const historieZettel = [...allZettel].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
 
   if (!aktiveSitzung) {
     return null;
@@ -458,6 +473,88 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
 
   return (
     <>
+      {alwaysShowHistorie && (
+        <HistorieBackground>
+          <HistorieScroll>
+            {historieZettel.length === 0 ? (
+              <div style={{ textAlign: 'center', color: '#ccc', padding: '20px' }}>
+                Keine Zettel vorhanden.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {historieZettel.map((zettelItem) => (
+                  <div
+                    key={zettelItem.id}
+                    style={{
+                      background: zettelItem.priority === 'dringend' ? '#dc3545' : 
+                                 zettelItem.priority === 'wichtig' ? '#ff6b35' :
+                                 zettelItem.type === 'anModeration' ? '#007bff' :
+                                 zettelItem.type === 'anTechnik' ? '#28a745' :
+                                 zettelItem.type === 'anKulissen' ? '#6f42c1' :
+                                 zettelItem.type === 'anKueche' ? '#20c997' : '#fbbf24',
+                      color: zettelItem.priority === 'dringend' || zettelItem.priority === 'wichtig' ? '#fff' : '#181818',
+                      borderRadius: '8px',
+                      padding: '12px',
+                      border: '2px solid',
+                      borderColor: zettelItem.priority === 'dringend' ? '#c82333' :
+                                  zettelItem.priority === 'wichtig' ? '#e55a2b' :
+                                  zettelItem.type === 'anModeration' ? '#0056b3' :
+                                  zettelItem.type === 'anTechnik' ? '#1e7e34' :
+                                  zettelItem.type === 'anKulissen' ? '#5a32a3' :
+                                  zettelItem.type === 'anKueche' ? '#199d7e' : '#e0a800',
+                      opacity: zettelItem.geschlossen ? '0.6' : '1',
+                      position: 'relative'
+                    }}
+                  >
+                    {zettelItem.geschlossen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        background: '#666',
+                        color: '#fff',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '0.7rem',
+                        fontWeight: 'bold'
+                      }}>
+                        GESCHLOSSEN
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                      <span>
+                        {getZettelIcon(zettelItem.type)} {getPriorityIcon(zettelItem.priority)}
+                        {getZettelTypeLabel(zettelItem.type)}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '1rem', lineHeight: '1.4', wordWrap: 'break-word', marginBottom: '8px' }}>
+                      {zettelItem.text}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', opacity: '0.8' }}>
+                      <span style={{ fontWeight: 'bold' }}>
+                        {new Date(zettelItem.timestamp).toLocaleString('de-DE', { 
+                          day: '2-digit',
+                          month: '2-digit',
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </span>
+                      <span style={{ fontStyle: 'italic' }}>
+                        Von: {zettelItem.sender === 'moderation' ? 'Moderation' : 
+                              zettelItem.sender === 'technik' ? 'Technik' : 
+                              zettelItem.sender === 'programmansicht' ? 'Programmansicht' :
+                              zettelItem.sender === 'kulissen' ? 'Kulissen' :
+                              zettelItem.sender === 'elferrat' ? 'Elferrat' : zettelItem.sender}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </HistorieScroll>
+        </HistorieBackground>
+      )}
+
       {visibleZettel.length > 0 && (
         <ZettelContainer>
           {visibleZettel.map((zettelItem) => (
@@ -497,9 +594,11 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
         <ZettelButton onClick={() => setShowModal(true)} title="Neuen Zettel erstellen">
           📝
         </ZettelButton>
-        <HistorieButton onClick={() => setShowHistorie(true)} title="Zettel-Historie anzeigen">
-          📋
-        </HistorieButton>
+        {!alwaysShowHistorie && (
+          <HistorieButton onClick={() => setShowHistorie(true)} title="Zettel-Historie anzeigen">
+            📋
+          </HistorieButton>
+        )}
       </ZettelButtonContainer>
 
       {showModal && (
@@ -602,13 +701,13 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt }) {
             <ModalTitle>📋 Zettel-Historie</ModalTitle>
             
             <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-              {allZettel.length === 0 ? (
+              {historieZettel.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#ccc', padding: '20px' }}>
                   Keine Zettel vorhanden.
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {allZettel.map((zettelItem) => (
+                  {historieZettel.map((zettelItem) => (
                     <div
                       key={zettelItem.id}
                       style={{

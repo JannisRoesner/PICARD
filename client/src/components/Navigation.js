@@ -331,22 +331,26 @@ function Navigation() {
 
     try {
       setExporting(true);
-      const response = await axios.get(`/api/sitzung/${aktiveSitzung}`);
-      const sitzungData = response.data;
-      
-      const dataStr = JSON.stringify(sitzungData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const response = await axios.get(`/api/sitzung/${aktiveSitzung}/export`, {
+        responseType: 'blob'
+      });
+
+      const contentDisposition = response.headers['content-disposition'] || '';
+      const matchedName = contentDisposition.match(/filename="?([^";]+)"?/i);
+      const fileName = matchedName?.[1] || `sitzung_export_${new Date().toISOString().split('T')[0]}.zip`;
+
+      const dataBlob = new Blob([response.data], { type: 'application/zip' });
       const url = URL.createObjectURL(dataBlob);
       
       const link = document.createElement('a');
       link.href = url;
-      link.download = `sitzung_${sitzungData.name}_${new Date().toISOString().split('T')[0]}.json`;
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
       
-      alert('Sitzung erfolgreich exportiert!');
+      alert('Sitzung erfolgreich als ZIP exportiert!');
     } catch (error) {
       console.error('Fehler beim Exportieren:', error);
       alert('Fehler beim Exportieren der Sitzung');
@@ -360,6 +364,20 @@ function Navigation() {
     if (!file) return;
 
     try {
+      if (file.name.toLowerCase().endsWith('.zip')) {
+        const formData = new FormData();
+        formData.append('archive', file);
+
+        await axios.post('/api/sitzung/import-zip', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        alert('ZIP-Sitzung erfolgreich importiert!');
+        window.location.reload();
+        event.target.value = '';
+        return;
+      }
+
       const text = await file.text();
       const sitzungData = JSON.parse(text);
       
@@ -367,9 +385,29 @@ function Navigation() {
         throw new Error('Ungültige Sitzungsdatei');
       }
 
+      const normalizedProgrammpunkte = (Array.isArray(sitzungData.programmpunkte) ? sitzungData.programmpunkte : []).map((punkt) => {
+        const normalizedPinboardNotes = Array.isArray(punkt.pinboardNotes)
+          ? punkt.pinboardNotes.map((note) => ({
+              ...note,
+              type: note?.type === 'audio' ? 'audio' : 'text',
+              title: typeof note?.title === 'string' ? note.title : (note?.type === 'audio' ? (note?.audioName || 'Audio') : 'Notiz'),
+              text: typeof note?.text === 'string' ? note.text : '',
+              audioSrc: typeof note?.audioSrc === 'string' ? note.audioSrc : undefined,
+              audioName: typeof note?.audioName === 'string' ? note.audioName : undefined,
+              audioMimeType: typeof note?.audioMimeType === 'string' ? note.audioMimeType : undefined,
+              waveformBars: Array.isArray(note?.waveformBars) ? note.waveformBars : undefined
+            }))
+          : [];
+
+        return {
+          ...punkt,
+          pinboardNotes: normalizedPinboardNotes
+        };
+      });
+
       const response = await axios.post('/api/sitzung', {
         name: `${sitzungData.name} (Importiert)`,
-        programmpunkte: sitzungData.programmpunkte
+        programmpunkte: normalizedProgrammpunkte
       });
 
       alert('Sitzung erfolgreich importiert!');
@@ -378,7 +416,10 @@ function Navigation() {
       event.target.value = '';
     } catch (error) {
       console.error('Fehler beim Importieren:', error);
-      alert('Fehler beim Importieren der Sitzung: ' + error.message);
+      const errorMessage = error?.response?.status === 413
+        ? 'Die Datei ist zu groß. Bitte Audio-Dateien verkleinern oder serverseitigen Dateiupload nutzen.'
+        : error.message;
+      alert('Fehler beim Importieren der Sitzung: ' + errorMessage);
       event.target.value = '';
     }
   };
@@ -463,7 +504,7 @@ function Navigation() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".json"
+                  accept=".zip,.json"
                   onChange={importSitzung}
                   style={{ display: 'none' }}
                 />

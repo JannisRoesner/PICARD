@@ -5,11 +5,69 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import multer from 'multer';
+import AdmZip from 'adm-zip';
+import { randomUUID } from 'crypto';
 // Persistente Datenbank
 import * as db from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const mediaRoot = path.join(__dirname, 'data', 'media');
+
+if (!fs.existsSync(mediaRoot)) {
+  fs.mkdirSync(mediaRoot, { recursive: true });
+}
+
+const toPosixPath = (value = '') => value.replace(/\\/g, '/').replace(/^\/+/, '');
+const getAbsoluteMediaPath = (relativePath = '') => path.resolve(mediaRoot, toPosixPath(relativePath));
+const isPathInsideMediaRoot = (absolutePath) => absolutePath.startsWith(path.resolve(mediaRoot));
+
+const getAudioStoragePathFromNote = (note = {}) => {
+  if (typeof note.audioStoragePath === 'string' && note.audioStoragePath.trim()) {
+    return toPosixPath(note.audioStoragePath.trim());
+  }
+  if (typeof note.audioUrl === 'string' && note.audioUrl.startsWith('/media/')) {
+    return toPosixPath(note.audioUrl.slice('/media/'.length));
+  }
+  return null;
+};
+
+const getProgrammpunktIdMap = (sitzung) => {
+  return new Map((sitzung?.programmpunkte || []).map((punkt) => [punkt.id, punkt]));
+};
+
+const audioUploadStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const sitzungId = req.params.id;
+    const punktId = req.params.punktId;
+    const relativeDir = toPosixPath(path.join('audio', sitzungId, punktId));
+    const absoluteDir = getAbsoluteMediaPath(relativeDir);
+    fs.mkdirSync(absoluteDir, { recursive: true });
+    cb(null, absoluteDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname || '').slice(0, 10);
+    cb(null, `${randomUUID()}${ext}`);
+  }
+});
+
+const audioUpload = multer({
+  storage: audioUploadStorage,
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype || !file.mimetype.startsWith('audio/')) {
+      cb(new Error('Nur Audio-Dateien sind erlaubt.'));
+      return;
+    }
+    cb(null, true);
+  }
+});
+
+const zipUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 200 * 1024 * 1024 }
+});
 
 const app = express();
 const server = createServer(app);
@@ -22,8 +80,9 @@ const io = new SocketIOServer(server, {
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+app.use('/media', express.static(mediaRoot));
 
 // Prüfe ob Build-Verzeichnis existiert
 const buildPath = path.join(__dirname, 'client/build');
@@ -266,10 +325,196 @@ app.delete('/api/sitzung/:id', (req, res) => {
   if (!ok) {
     return res.status(404).json({ error: 'Sitzung nicht gefunden' });
   }
+  const sitzungMediaDir = getAbsoluteMediaPath(path.join('audio', zielId));
+  if (isPathInsideMediaRoot(sitzungMediaDir) && fs.existsSync(sitzungMediaDir)) {
+    fs.rmSync(sitzungMediaDir, { recursive: true, force: true });
+  }
   if (warAktiv) {
     io.emit('aktiveSitzungGeaendert', { sitzungId: null });
   }
   res.json({ success: true });
+});
+
+app.post('/api/sitzung/:id/programmpunkt/:punktId/pinboard-audio', audioUpload.single('audio'), (req, res) => {
+  const sitzung = db.getSitzungById(req.params.id);
+  if (!sitzung) {
+    return res.status(404).json({ error: 'Sitzung nicht gefunden' });
+  }
+
+  const punktMap = getProgrammpunktIdMap(sitzung);
+  if (!punktMap.has(req.params.punktId)) {
+    return res.status(404).json({ error: 'Programmpunkt nicht gefunden' });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'Keine Audio-Datei hochgeladen' });
+  }
+
+  const audioStoragePath = toPosixPath(path.join('audio', req.params.id, req.params.punktId, req.file.filename));
+
+  res.json({
+    success: true,
+    audioStoragePath,
+    audioUrl: `/media/${audioStoragePath}`,
+    audioName: req.file.originalname,
+    audioMimeType: req.file.mimetype,
+    audioSize: req.file.size
+  });
+});
+
+app.delete('/api/sitzung/:id/programmpunkt/:punktId/pinboard-audio', (req, res) => {
+  const { audioStoragePath } = req.body || {};
+  if (!audioStoragePath || typeof audioStoragePath !== 'string') {
+    return res.status(400).json({ error: 'audioStoragePath fehlt' });
+  }
+
+  const normalized = toPosixPath(audioStoragePath);
+  const expectedPrefix = toPosixPath(path.join('audio', req.params.id, req.params.punktId));
+  if (!normalized.startsWith(`${expectedPrefix}/`) && normalized !== expectedPrefix) {
+    return res.status(400).json({ error: 'Ungültiger Audio-Pfad' });
+  }
+
+  const absolutePath = getAbsoluteMediaPath(normalized);
+  if (!isPathInsideMediaRoot(absolutePath)) {
+    return res.status(400).json({ error: 'Ungültiger Audio-Pfad' });
+  }
+
+  if (fs.existsSync(absolutePath)) {
+    fs.unlinkSync(absolutePath);
+  }
+
+  res.json({ success: true });
+});
+
+app.get('/api/sitzung/:id/export', (req, res) => {
+  const sitzung = db.getSitzungById(req.params.id);
+  if (!sitzung) {
+    return res.status(404).json({ error: 'Sitzung nicht gefunden' });
+  }
+
+  const exportPayload = JSON.parse(JSON.stringify(sitzung));
+  const zip = new AdmZip();
+
+  (exportPayload.programmpunkte || []).forEach((punkt) => {
+    punkt.pinboardNotes = (punkt.pinboardNotes || []).map((note) => {
+      if (note?.type !== 'audio') return note;
+
+      const storagePath = getAudioStoragePathFromNote(note);
+      if (!storagePath) return note;
+
+      const absoluteSource = getAbsoluteMediaPath(storagePath);
+      if (!isPathInsideMediaRoot(absoluteSource) || !fs.existsSync(absoluteSource)) {
+        return note;
+      }
+
+      const zipPath = toPosixPath(path.join('media', storagePath));
+      zip.addFile(zipPath, fs.readFileSync(absoluteSource));
+
+      return {
+        ...note,
+        audioStoragePath: storagePath,
+        audioUrl: `/media/${storagePath}`
+      };
+    });
+  });
+
+  zip.addFile('sitzung.json', Buffer.from(JSON.stringify(exportPayload, null, 2), 'utf8'));
+  const zipBuffer = zip.toBuffer();
+
+  const fileName = `sitzung_${(sitzung.name || 'export').replace(/[^a-zA-Z0-9-_]/g, '_')}_${new Date().toISOString().split('T')[0]}.zip`;
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+  res.send(zipBuffer);
+});
+
+app.post('/api/sitzung/import-zip', zipUpload.single('archive'), (req, res) => {
+  if (!req.file?.buffer) {
+    return res.status(400).json({ error: 'Keine ZIP-Datei hochgeladen' });
+  }
+
+  let zip;
+  try {
+    zip = new AdmZip(req.file.buffer);
+  } catch {
+    return res.status(400).json({ error: 'Ungültige ZIP-Datei' });
+  }
+
+  const entries = zip.getEntries();
+  const sitzungEntry = entries.find((entry) => !entry.isDirectory && entry.entryName.endsWith('sitzung.json'));
+  if (!sitzungEntry) {
+    return res.status(400).json({ error: 'sitzung.json fehlt in der ZIP-Datei' });
+  }
+
+  let sitzungData;
+  try {
+    sitzungData = JSON.parse(sitzungEntry.getData().toString('utf8'));
+  } catch {
+    return res.status(400).json({ error: 'sitzung.json ist ungültig' });
+  }
+
+  if (!sitzungData?.name || !Array.isArray(sitzungData.programmpunkte)) {
+    return res.status(400).json({ error: 'Ungültige Sitzungsstruktur in sitzung.json' });
+  }
+
+  const preparedProgrammpunkte = sitzungData.programmpunkte.map((punkt) => ({
+    ...punkt,
+    pinboardNotes: Array.isArray(punkt.pinboardNotes) ? punkt.pinboardNotes : []
+  }));
+
+  const createdSitzung = db.createSitzung(`${sitzungData.name} (Importiert)`, preparedProgrammpunkte);
+  const createdPunkte = createdSitzung?.programmpunkte || [];
+
+  createdPunkte.forEach((createdPunkt, index) => {
+    const importedPunkt = preparedProgrammpunkte[index] || {};
+    const importedNotes = Array.isArray(importedPunkt.pinboardNotes) ? importedPunkt.pinboardNotes : [];
+
+    const mappedNotes = importedNotes.map((note) => {
+      if (note?.type !== 'audio') {
+        return { ...note, type: 'text' };
+      }
+
+      const oldStoragePath = getAudioStoragePathFromNote(note);
+      const zipCandidates = [
+        oldStoragePath ? toPosixPath(path.join('media', oldStoragePath)) : null,
+        oldStoragePath || null
+      ].filter(Boolean);
+
+      const audioEntry = zipCandidates
+        .map((candidate) => entries.find((entry) => !entry.isDirectory && toPosixPath(entry.entryName) === candidate))
+        .find(Boolean);
+
+      if (!audioEntry) {
+        return {
+          ...note,
+          type: 'audio'
+        };
+      }
+
+      const extFromEntry = path.extname(audioEntry.entryName || '');
+      const extFromName = path.extname(note.audioName || '');
+      const ext = (extFromEntry || extFromName || '').slice(0, 10);
+      const newFileName = `${randomUUID()}${ext}`;
+      const newStoragePath = toPosixPath(path.join('audio', createdSitzung.id, createdPunkt.id, newFileName));
+      const absoluteTarget = getAbsoluteMediaPath(newStoragePath);
+      fs.mkdirSync(path.dirname(absoluteTarget), { recursive: true });
+      fs.writeFileSync(absoluteTarget, audioEntry.getData());
+
+      return {
+        ...note,
+        type: 'audio',
+        audioStoragePath: newStoragePath,
+        audioUrl: `/media/${newStoragePath}`,
+        audioSrc: undefined
+      };
+    });
+
+    db.updateProgrammpunkt(createdSitzung.id, createdPunkt.id, {
+      pinboardNotes: mappedNotes
+    });
+  });
+
+  const refreshed = db.getSitzungById(createdSitzung.id);
+  res.json({ success: true, sitzung: refreshed });
 });
 
 // Zettel-System API
@@ -335,6 +580,22 @@ io.on('connection', (socket) => {
       type: 'timerStop'
     });
   });
+});
+
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ error: 'Datei ist zu groß' });
+    }
+    return res.status(400).json({ error: error.message || 'Upload-Fehler' });
+  }
+
+  if (error) {
+    console.error('API-Fehler:', error);
+    return res.status(400).json({ error: error.message || 'Unbekannter Fehler' });
+  }
+
+  next();
 });
 
 // Serve React App (nur im Produktionsmodus)

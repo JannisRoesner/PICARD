@@ -9,12 +9,25 @@ import Pinboard from './Pinboard';
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 400px 1fr;
-  grid-template-rows: 60px 1fr;
+  grid-template-columns: minmax(280px, 340px) minmax(360px, 1fr) minmax(280px, 360px);
+  grid-template-rows: 60px minmax(0, 1fr);
   height: calc(100vh - 60px);
   gap: 10px;
   padding: 10px;
   background: #000;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: minmax(260px, 340px) minmax(300px, 1fr);
+    grid-template-rows: 60px minmax(0, 1fr) auto;
+    height: calc(100vh - 60px);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    height: auto;
+    min-height: calc(100vh - 60px);
+  }
 `;
 
 const StatusBar = styled.div`
@@ -28,12 +41,30 @@ const StatusBar = styled.div`
   padding: 0 20px;
   font-size: 1.2rem;
   font-weight: bold;
+
+  @media (max-width: 900px) {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    padding: 8px;
+    gap: 6px;
+  }
 `;
 
 const StatusItem = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  @media (max-width: 480px) {
+    gap: 4px;
+  }
 `;
 
 const StatusLabel = styled.span`
@@ -60,6 +91,45 @@ const Panel = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
+`;
+
+const ProgramPanel = styled(Panel)`
+  @media (max-width: 1200px) {
+    grid-column: 1;
+  }
+
+  @media (max-width: 900px) {
+    grid-column: 1;
+    max-height: 38vh;
+  }
+`;
+
+const PinboardPanel = styled(Panel)`
+  @media (max-width: 1200px) {
+    grid-column: 2;
+  }
+
+  @media (max-width: 900px) {
+    grid-column: 1;
+    min-height: 52vh;
+  }
+`;
+
+const HistoriePanel = styled(Panel)`
+  @media (max-width: 1200px) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  @media (max-width: 900px) {
+    grid-column: 1;
+    grid-row: 4;
+  }
 `;
 
 const PanelTitle = styled.h3`
@@ -73,6 +143,7 @@ const PanelTitle = styled.h3`
 const ProgramList = styled.div`
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
 `;
 
 const ProgramItem = styled.div`
@@ -95,6 +166,12 @@ const ProgramItem = styled.div`
   font-weight: ${props => (props.active || props.isActive) ? 'bold' : 'normal'};
   animation: ${props => props.isActive ? 'blink 1s infinite' : 'none'};
   color: ${props => props.isActive ? '#181818' : '#fff'};
+  line-height: 1.35;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    padding: 10px;
+  }
 
   &:hover {
     background: ${props => {
@@ -121,6 +198,84 @@ const ProgramType = styled.span`
 const ProgramDuration = styled.span`
   color: ${props => props.isActive ? '#181818' : '#888'};
   margin-left: 8px;
+`;
+
+const HistorieHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+`;
+
+const HistorieTitle = styled(PanelTitle)`
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+`;
+
+const HistorieToggle = styled.button`
+  background: #2d2d2d;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+
+  &:hover {
+    background: #3a3a3a;
+  }
+`;
+
+const HistorieList = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+`;
+
+const HistorieItem = styled.div`
+  background: ${props => {
+    if (props.priority === 'dringend') return '#dc3545';
+    if (props.priority === 'wichtig') return '#ff6b35';
+    if (props.type === 'anModeration') return '#007bff';
+    if (props.type === 'anTechnik') return '#28a745';
+    if (props.type === 'anKulissen') return '#6f42c1';
+    if (props.type === 'anKueche') return '#20c997';
+    return '#fbbf24';
+  }};
+  color: ${props => props.priority === 'dringend' || props.priority === 'wichtig' ? '#fff' : '#181818'};
+  border-radius: 8px;
+  padding: 10px;
+  border: 2px solid ${props => {
+    if (props.priority === 'dringend') return '#c82333';
+    if (props.priority === 'wichtig') return '#e55a2b';
+    if (props.type === 'anModeration') return '#0056b3';
+    if (props.type === 'anTechnik') return '#1e7e34';
+    if (props.type === 'anKulissen') return '#5a32a3';
+    if (props.type === 'anKueche') return '#199d7e';
+    return '#e0a800';
+  }};
+  opacity: ${props => props.closed ? 0.6 : 1};
+`;
+
+const HistorieMeta = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  opacity: 0.85;
+  margin-top: 6px;
+`;
+
+const EmptyHistorie = styled.div`
+  color: #888;
+  text-align: center;
+  padding: 20px 10px;
 `;
 
 // Entfernt: Unbenutzte TechInfo-Styles
@@ -181,6 +336,9 @@ const ModerationProgressFill = styled.div`
 function TechnikView() {
   const [sitzung, setSitzung] = useState(null);
   const [selectedProgrammpunkt, setSelectedProgrammpunkt] = useState(null);
+  const [zettelHistorie, setZettelHistorie] = useState([]);
+  const [isCompactLayout, setIsCompactLayout] = useState(() => window.innerWidth <= 1200);
+  const [isHistorieOpen, setIsHistorieOpen] = useState(() => window.innerWidth > 1200);
   // Entfernt: Audio-/Licht-Cues-Zustände, da UI nicht mehr vorhanden ist
   const { aktiveSitzung } = useContext(SitzungContext);
   const socket = useContext(SocketContext);
@@ -199,6 +357,7 @@ function TechnikView() {
     if (aktiveSitzung) {
       setStableSitzungId(aktiveSitzung);
       loadSitzung();
+      loadZettelHistorie();
       socket?.emit('joinSitzung', aktiveSitzung);
     }
 
@@ -215,15 +374,32 @@ function TechnikView() {
           socket.on('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
       socket.on('programmpunktAktualisiert', handleProgrammpunktUpdate);
       socket.on('programmpunktGeloescht', handleProgrammpunktUpdate);
+    socket.on('zettelHinzugefuegt', handleZettelUpdate);
+    socket.on('zettelGeschlossen', handleZettelUpdate);
       // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
 
     return () => {
               socket.off('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
         socket.off('programmpunktAktualisiert', handleProgrammpunktUpdate);
         socket.off('programmpunktGeloescht', handleProgrammpunktUpdate);
+      socket.off('zettelHinzugefuegt', handleZettelUpdate);
+      socket.off('zettelGeschlossen', handleZettelUpdate);
         // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
     };
   }, [socket, aktiveSitzung]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const compact = window.innerWidth <= 1200;
+      setIsCompactLayout(compact);
+      if (!compact) {
+        setIsHistorieOpen(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (sitzung && sitzung.programmpunkte.length > 0 && !selectedProgrammpunkt) {
@@ -254,6 +430,76 @@ function TechnikView() {
     if (data.sitzungId === aktiveSitzung) {
       loadSitzung();
     }
+  };
+
+  const loadZettelHistorie = async () => {
+    try {
+      const response = await axios.get(`/api/sitzung/${aktiveSitzung}/zettel`);
+      const sorted = [...response.data].sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+      setZettelHistorie(sorted);
+    } catch (error) {
+      console.error('Fehler beim Laden der Zettel-Historie:', error);
+      setZettelHistorie([]);
+    }
+  };
+
+  const handleZettelUpdate = (data) => {
+    if (data.sitzungId === aktiveSitzung) {
+      loadZettelHistorie();
+    }
+  };
+
+  const getZettelIcon = (type) => {
+    switch (type) {
+      case 'anModeration': return '📝';
+      case 'anTechnik': return '🎛️';
+      case 'anKulissen': return '🎭';
+      case 'anKueche': return '🍽️';
+      case 'anAlle': return '📢';
+      default: return '📄';
+    }
+  };
+
+  const getPriorityIcon = (priority) => {
+    switch (priority) {
+      case 'dringend': return '🚨';
+      case 'wichtig': return '⚠️';
+      default: return '';
+    }
+  };
+
+  const getZettelTypeLabel = (type) => {
+    switch (type) {
+      case 'anModeration': return 'An Moderation';
+      case 'anTechnik': return 'An Technik';
+      case 'anKulissen': return 'An Kulissen';
+      case 'anKueche': return 'An Küche';
+      case 'anAlle':
+      default:
+        return 'An Alle';
+    }
+  };
+
+  const getSenderLabel = (sender) => {
+    switch (sender) {
+      case 'moderation': return 'Moderation';
+      case 'technik': return 'Technik';
+      case 'kulissen': return 'Kulissen';
+      case 'programmansicht': return 'Programmansicht';
+      case 'elferrat': return 'Elferrat';
+      default: return sender;
+    }
+  };
+
+  const formatHistorieTimestamp = (timestamp) => {
+    return new Date(timestamp).toLocaleString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   // Lade Cues aus dem Programmpunkt (falls vorhanden), sonst Standardwerte
@@ -297,6 +543,8 @@ function TechnikView() {
       </NoSitzungMessage>
     );
   }
+
+  const showHistoriePanel = !isCompactLayout || isHistorieOpen;
 
   return (
     <Container>
@@ -365,7 +613,7 @@ function TechnikView() {
       </StatusBar>
 
       {/* Programmablauf (Links) */}
-      <Panel>
+      <ProgramPanel>
         <PanelTitle>Programmablauf</PanelTitle>
         <ProgramList>
           {sitzung.programmpunkte.map((programmpunkt) => (
@@ -380,11 +628,11 @@ function TechnikView() {
             </ProgramItem>
           ))}
         </ProgramList>
-      </Panel>
+      </ProgramPanel>
 
       {/* Technische Informationen (Rechts) */}
-      <Panel>
-        <PanelTitle>🗒️ Notizen</PanelTitle>
+      <PinboardPanel>
+        <PanelTitle>🗂️ Pinnwand</PanelTitle>
         {selectedProgrammpunkt ? (
           <div style={{ flex: 1, minHeight: 0 }}>
             <Pinboard
@@ -399,7 +647,46 @@ function TechnikView() {
         ) : (
           <div style={{ color: '#888' }}>Kein Programmpunkt ausgewählt</div>
         )}
-      </Panel>
+      </PinboardPanel>
+
+      <HistoriePanel>
+        <HistorieHeader>
+          <HistorieTitle>📋 Zettel-Historie</HistorieTitle>
+          {isCompactLayout && (
+            <HistorieToggle onClick={() => setIsHistorieOpen(prev => !prev)}>
+              {isHistorieOpen ? 'Einklappen' : 'Aufklappen'}
+            </HistorieToggle>
+          )}
+        </HistorieHeader>
+
+        {showHistoriePanel ? (
+          <HistorieList>
+            {zettelHistorie.length === 0 ? (
+              <EmptyHistorie>Keine Zettel vorhanden.</EmptyHistorie>
+            ) : (
+              zettelHistorie.map((zettelItem) => (
+                <HistorieItem
+                  key={zettelItem.id}
+                  type={zettelItem.type}
+                  priority={zettelItem.priority}
+                  closed={zettelItem.geschlossen}
+                >
+                  <div style={{ fontWeight: 'bold', marginBottom: '6px' }}>
+                    {getZettelIcon(zettelItem.type)} {getPriorityIcon(zettelItem.priority)} {getZettelTypeLabel(zettelItem.type)}
+                  </div>
+                  <div style={{ lineHeight: '1.35' }}>{zettelItem.text}</div>
+                  <HistorieMeta>
+                    <span>{formatHistorieTimestamp(zettelItem.timestamp)}</span>
+                    <span>Von: {getSenderLabel(zettelItem.sender)}</span>
+                  </HistorieMeta>
+                </HistorieItem>
+              ))
+            )}
+          </HistorieList>
+        ) : (
+          <EmptyHistorie>Historie ist eingeklappt.</EmptyHistorie>
+        )}
+      </HistoriePanel>
     </Container>
   );
 }
