@@ -62,7 +62,7 @@ function LoginDialog({ onSuccess }) {
         }}>
           <button
             type="button"
-            onClick={() => navigate('/technik')}
+            onClick={() => navigate('/kulissen')}
             style={{
               background: 'transparent',
               border: 'none',

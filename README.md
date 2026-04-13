@@ -86,9 +86,10 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 - **Automatisches Speichern**: Änderungen werden automatisch gespeichert
 
 ### Sicherheit & Verwaltung
-- **Passwortschutz**: Sensible Ansichten (Startseite, Moderation, Programm-bearbeiten, Drucken) erfordern Authentifizierung
+![](/Screenshot9.png)
+- **Passwortschutz**: Sensible Ansichten (Startseite, Moderation, Technik, Programm-bearbeiten, Drucken) erfordern Authentifizierung
 - **Session-basierte Authentifizierung**: SQLite-gestützte Sessions mit 7-Tagen-Gültigkeit
-- **Öffentliche Ansichten**: Zettel-API und Anzeige-Ansichten (Technik, Elferrat, Kulissen, Sitzungsablauf, Programmansicht) bleiben ohne Login zugänglich
+- **Öffentliche Ansichten**: Zettel-API und Anzeige-Ansichten (Elferrat, Kulissen, Sitzungsablauf, Programmansicht) bleiben ohne Login zugänglich
 - **Passwort-Verwaltung**: Initiales Passwort über Umgebungsvariable `ADMIN_PASSWORD` (Standard: "admin")
 - **Export/Import**: Sitzungs-Export als ZIP mit allen Daten und Audio-Dateien
 
@@ -194,7 +195,7 @@ node server.js
 
 ## 📝 Changelog
 ### Version 5.2.0 (Aktuell)
-- **Passwortschutz**: Authentifizierung für sensible Ansichten (Startseite, Moderation, Programm-bearbeiten, Drucken)
+- **Passwortschutz**: Authentifizierung für sensible Ansichten (Startseite, Moderation, Technik, Programm-bearbeiten, Drucken)
 - **Session-Management**: SQLite-gestützte Sessions mit bcrypt-Passwort-Hashing
 - **Audio-Pinboard**: Upload und Wiedergabe von Audio-Dateien mit Waveform-Visualisierung
 - **Audio-Persistenz**: Docker bind mount statt named volume für dauerhafte Speicherung
