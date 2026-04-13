@@ -153,7 +153,7 @@ function App() {
                   <Routes>
                     <Route path="/" element={<ProtectedRoute><SitzungsAuswahl /></ProtectedRoute>} />
                     <Route path="/moderation" element={<ProtectedRoute><ModeratorView /></ProtectedRoute>} />
-                    <Route path="/technik" element={<TechnikView />} />
+                    <Route path="/technik" element={<ProtectedRoute><TechnikView /></ProtectedRoute>} />
                     <Route path="/programm-bearbeiten" element={<ProtectedRoute><ProgrammBearbeiten /></ProtectedRoute>} />
                     <Route path="/sitzungsablauf" element={<Sitzungsablauf />} />
                     <Route path="/programmansicht" element={<Programmansicht />} />
