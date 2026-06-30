@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
@@ -308,6 +308,12 @@ const ErrorMessage = styled.div`
   padding: 20px;
 `;
 
+const isElementFullyVisible = (container, element) => {
+  const c = container.getBoundingClientRect();
+  const e = element.getBoundingClientRect();
+  return e.top >= c.top && e.bottom <= c.bottom;
+};
+
 function KulissenView() {
   const [sitzung, setSitzung] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -318,6 +324,8 @@ function KulissenView() {
   const { aktiveSitzung } = useContext(SitzungContext);
   const socket = useContext(SocketContext);
   const { activeProgrammpunkt } = useTimer();
+  const mainAreaRef = useRef(null);
+  const activeItemRef = useRef(null);
 
   useEffect(() => {
     if (aktiveSitzung) {
@@ -365,6 +373,21 @@ function KulissenView() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (loading || !activeProgrammpunkt?.id) return;
+
+    const container = mainAreaRef.current;
+    const item = activeItemRef.current;
+    if (!container || !item) return;
+
+    const frame = requestAnimationFrame(() => {
+      if (!isElementFullyVisible(container, item)) {
+        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeProgrammpunkt?.id, loading]);
 
   const loadSitzung = async () => {
     try {
@@ -446,11 +469,12 @@ function KulissenView() {
 
   return (
     <Container>
-      <MainArea>
+      <MainArea ref={mainAreaRef}>
       <ProgramList>
         {visibleProgrammpunkte.map((programmpunkt) => (
           <ProgramItem
             key={programmpunkt.id} 
+            ref={activeProgrammpunkt?.id === programmpunkt.id ? activeItemRef : null}
             active={false}
             isActive={activeProgrammpunkt?.id === programmpunkt.id}
           >
