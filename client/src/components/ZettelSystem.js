@@ -3,6 +3,14 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
 import { SitzungContext } from '../context/SitzungContext';
+import {
+  getZettelIcon,
+  getZettelTypeLabel,
+  getPriorityIcon,
+  getSenderLabel,
+  formatTime,
+  formatDateTime
+} from './zettelUtils';
 
 const ZETTEL_SYNC_INTERVAL_MS = 30000;
 
@@ -282,7 +290,7 @@ const Button = styled.button`
   }
 `;
 
-function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = false }) {
+function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = false, hideHistorieButton = false }) {
   const [zettel, setZettel] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showHistorie, setShowHistorie] = useState(false);
@@ -404,44 +412,6 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = 
     }
   };
 
-  const getZettelIcon = (type) => {
-    switch (type) {
-      case 'anModeration': return '📝';
-      case 'anTechnik': return '🎛️';
-      case 'anKulissen': return '🎭';
-      case 'anKueche': return '🍽️';
-      case 'anAlle': return '📢';
-      default: return '📄';
-    }
-  };
-
-  const getZettelTypeLabel = (type) => {
-    switch (type) {
-      case 'anModeration': return 'An Moderation';
-      case 'anTechnik': return 'An Technik';
-      case 'anKulissen': return 'An Kulissen';
-      case 'anKueche': return 'An Küche';
-      case 'anAlle':
-      default:
-        return 'An Alle';
-    }
-  };
-
-  const getPriorityIcon = (priority) => {
-    switch (priority) {
-      case 'dringend': return '🚨';
-      case 'wichtig': return '⚠️';
-      default: return '';
-    }
-  };
-
-  const formatTimestamp = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString('de-DE', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
-
   // Filtere Zettel basierend auf der Ansicht
   const getVisibleZettel = () => {
     // Nur nicht-geschlossene Zettel anzeigen
@@ -532,19 +502,10 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = 
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', opacity: '0.8' }}>
                       <span style={{ fontWeight: 'bold' }}>
-                        {new Date(zettelItem.timestamp).toLocaleString('de-DE', { 
-                          day: '2-digit',
-                          month: '2-digit',
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
+                        {formatDateTime(zettelItem.timestamp)}
                       </span>
                       <span style={{ fontStyle: 'italic' }}>
-                        Von: {zettelItem.sender === 'moderation' ? 'Moderation' : 
-                              zettelItem.sender === 'technik' ? 'Technik' : 
-                              zettelItem.sender === 'programmansicht' ? 'Programmansicht' :
-                              zettelItem.sender === 'kulissen' ? 'Kulissen' :
-                              zettelItem.sender === 'elferrat' ? 'Elferrat' : zettelItem.sender}
+                        Von: {getSenderLabel(zettelItem.sender)}
                       </span>
                     </div>
                   </div>
@@ -584,7 +545,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = 
               </div>
             </ZettelHeader>
             <ZettelText>{zettelItem.text}</ZettelText>
-            <ZettelTimestamp>{formatTimestamp(zettelItem.timestamp)}</ZettelTimestamp>
+            <ZettelTimestamp>{formatTime(zettelItem.timestamp)}</ZettelTimestamp>
                       </ZettelCard>
           ))}
         </ZettelContainer>
@@ -594,7 +555,7 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = 
         <ZettelButton onClick={() => setShowModal(true)} title="Neuen Zettel erstellen">
           📝
         </ZettelButton>
-        {!alwaysShowHistorie && (
+        {!alwaysShowHistorie && !hideHistorieButton && (
           <HistorieButton onClick={() => setShowHistorie(true)} title="Zettel-Historie anzeigen">
             📋
           </HistorieButton>
@@ -757,19 +718,10 @@ function ZettelSystem({ viewType, onZettelToProgrammpunkt, alwaysShowHistorie = 
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', opacity: '0.8' }}>
                         <span style={{ fontWeight: 'bold' }}>
-                          {new Date(zettelItem.timestamp).toLocaleString('de-DE', { 
-                            day: '2-digit',
-                            month: '2-digit',
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })}
+                          {formatDateTime(zettelItem.timestamp)}
                         </span>
                         <span style={{ fontStyle: 'italic' }}>
-                          Von: {zettelItem.sender === 'moderation' ? 'Moderation' : 
-                                zettelItem.sender === 'technik' ? 'Technik' : 
-                                zettelItem.sender === 'programmansicht' ? 'Programmansicht' :
-                                zettelItem.sender === 'kulissen' ? 'Kulissen' :
-                                zettelItem.sender === 'elferrat' ? 'Elferrat' : zettelItem.sender}
+                          Von: {getSenderLabel(zettelItem.sender)}
                         </span>
                       </div>
                     </div>

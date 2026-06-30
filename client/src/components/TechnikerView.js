@@ -6,6 +6,13 @@ import { SitzungContext } from '../context/SitzungContext';
 import { useTimer } from '../context/TimerContext';
 import ZettelSystem from './ZettelSystem';
 import Pinboard from './Pinboard';
+import {
+  getZettelIcon,
+  getZettelTypeLabel,
+  getPriorityIcon,
+  getSenderLabel,
+  formatDateTime
+} from './zettelUtils';
 
 const Container = styled.div`
   display: grid;
@@ -451,57 +458,6 @@ function TechnikView() {
     }
   };
 
-  const getZettelIcon = (type) => {
-    switch (type) {
-      case 'anModeration': return '📝';
-      case 'anTechnik': return '🎛️';
-      case 'anKulissen': return '🎭';
-      case 'anKueche': return '🍽️';
-      case 'anAlle': return '📢';
-      default: return '📄';
-    }
-  };
-
-  const getPriorityIcon = (priority) => {
-    switch (priority) {
-      case 'dringend': return '🚨';
-      case 'wichtig': return '⚠️';
-      default: return '';
-    }
-  };
-
-  const getZettelTypeLabel = (type) => {
-    switch (type) {
-      case 'anModeration': return 'An Moderation';
-      case 'anTechnik': return 'An Technik';
-      case 'anKulissen': return 'An Kulissen';
-      case 'anKueche': return 'An Küche';
-      case 'anAlle':
-      default:
-        return 'An Alle';
-    }
-  };
-
-  const getSenderLabel = (sender) => {
-    switch (sender) {
-      case 'moderation': return 'Moderation';
-      case 'technik': return 'Technik';
-      case 'kulissen': return 'Kulissen';
-      case 'programmansicht': return 'Programmansicht';
-      case 'elferrat': return 'Elferrat';
-      default: return sender;
-    }
-  };
-
-  const formatHistorieTimestamp = (timestamp) => {
-    return new Date(timestamp).toLocaleString('de-DE', {
-      day: '2-digit',
-      month: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   // Lade Cues aus dem Programmpunkt (falls vorhanden), sonst Standardwerte
   const handleProgrammpunktSelect = (programmpunkt) => {
     setSelectedProgrammpunkt(programmpunkt);
@@ -548,7 +504,7 @@ function TechnikView() {
 
   return (
     <Container>
-      <ZettelSystem viewType="technik" />
+      <ZettelSystem viewType="technik" hideHistorieButton />
       <StatusBar>
         <StatusItem>
           <StatusLabel>Nummer:</StatusLabel>
@@ -676,7 +632,7 @@ function TechnikView() {
                   </div>
                   <div style={{ lineHeight: '1.35' }}>{zettelItem.text}</div>
                   <HistorieMeta>
-                    <span>{formatHistorieTimestamp(zettelItem.timestamp)}</span>
+                    <span>{formatDateTime(zettelItem.timestamp)}</span>
                     <span>Von: {getSenderLabel(zettelItem.sender)}</span>
                   </HistorieMeta>
                 </HistorieItem>

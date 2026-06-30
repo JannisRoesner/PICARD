@@ -31,14 +31,17 @@ Eine moderne Webanwendung für die professionelle Durchführung von Karnevalssit
 ![](/Screenshot3.png)
 - **Musik-Informationen**: Einzug (→) und Auszug (←) von CD oder Kapelle mit farbigen Symbolen
 - **Bühnenaufbau**: Details zu Bütt, Notenständer oder anderen Bühnenrequisiten
-- **Live-Zettel**: Kommunikation mit anderen Ansichten
+- **Live-Zettel**: Kommunikation mit anderen Ansichten (Banner für akute Meldungen)
+- **Zettel-Historie-Panel**: Dauerhaftes Panel mit allen Zetteln der Sitzung (auf schmalen Screens einklappbar), analog zur Technik-Ansicht
 - **Spezielle Anzeige**: Optimiert für Kulissenschieber
 
 ### Elferrat-Ansicht
-- **Zettel-Fokus**: Eigene Ansicht ausschließlich für das Live-Zettel-System
-- **Identität „Elferrat“**: Zettel können als Elferrat erstellt werden
+- **Messenger-Design**: Durchgehender Chat-Verlauf statt fixiertem Banner/Modal – eigene Nachrichten rechts, eingehende links, chronologisch mit Auto-Scroll
+- **Eingabeleiste unten**: Empfänger-Auswahl (`An Moderation/Technik/Kulissen/Küche/Alle`), Priorität und Textfeld (Enter sendet, Shift+Enter für neue Zeile)
+- **Identität „Elferrat“**: Nachrichten werden als Elferrat gesendet
 - **Empfang wie Moderation**: Elferrat sieht dieselben eingehenden Zettel wie die Moderation (`An Moderation` und `An Alle`)
 - **Kein separater Empfänger**: Es gibt bewusst keinen eigenen Typ `An Elferrat`
+- **Erledigt-Markierung**: Eingehende Nachrichten können als erledigt markiert werden; erledigte bleiben dezent im Verlauf
 
 ### Sitzungsablauf (Mobile)
 ![](/Screenshot5.png)

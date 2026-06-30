@@ -5,13 +5,135 @@ import { SocketContext } from '../context/SocketContext';
 import { SitzungContext } from '../context/SitzungContext';
 import { useTimer } from '../context/TimerContext';
 import ZettelSystem from './ZettelSystem';
+import {
+  getZettelIcon,
+  getZettelTypeLabel,
+  getPriorityIcon,
+  getSenderLabel,
+  formatDateTime
+} from './zettelUtils';
 
 const Container = styled.div`
-  max-width: 100%;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  grid-template-rows: minmax(0, 1fr);
+  height: calc(100vh - 60px);
+  gap: 10px;
   padding: 10px;
-  min-height: calc(100vh - 60px);
   background: #000;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  @media (max-width: 900px) {
+    height: auto;
+    min-height: calc(100vh - 60px);
+  }
+`;
+
+const MainArea = styled.div`
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 4px;
+
+  @media (max-width: 900px) {
+    max-height: 52vh;
+  }
+`;
+
+const HistoriePanel = styled.div`
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
+`;
+
+const HistorieHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+`;
+
+const HistorieTitle = styled.h3`
+  color: ${props => props.theme?.colors?.primary || '#fbbf24'};
+  margin: 0;
+  font-size: 1.2rem;
+`;
+
+const HistorieToggle = styled.button`
+  background: #2d2d2d;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+
+  &:hover {
+    background: #3a3a3a;
+  }
+`;
+
+const HistorieList = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+`;
+
+const HistorieItem = styled.div`
+  background: ${props => {
+    if (props.priority === 'dringend') return '#dc3545';
+    if (props.priority === 'wichtig') return '#ff6b35';
+    if (props.type === 'anModeration') return '#007bff';
+    if (props.type === 'anTechnik') return '#28a745';
+    if (props.type === 'anKulissen') return '#6f42c1';
+    if (props.type === 'anKueche') return '#20c997';
+    return '#fbbf24';
+  }};
+  color: ${props => props.priority === 'dringend' || props.priority === 'wichtig' ? '#fff' : '#181818'};
+  border-radius: 8px;
+  padding: 10px;
+  border: 2px solid ${props => {
+    if (props.priority === 'dringend') return '#c82333';
+    if (props.priority === 'wichtig') return '#e55a2b';
+    if (props.type === 'anModeration') return '#0056b3';
+    if (props.type === 'anTechnik') return '#1e7e34';
+    if (props.type === 'anKulissen') return '#5a32a3';
+    if (props.type === 'anKueche') return '#199d7e';
+    return '#e0a800';
+  }};
+  opacity: ${props => props.closed ? 0.6 : 1};
+`;
+
+const HistorieMeta = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  opacity: 0.85;
+  margin-top: 6px;
+`;
+
+const EmptyHistorie = styled.div`
+  color: #888;
+  text-align: center;
+  padding: 20px 10px;
 `;
 
 const Header = styled.div`
@@ -190,6 +312,9 @@ function KulissenView() {
   const [sitzung, setSitzung] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [zettelHistorie, setZettelHistorie] = useState([]);
+  const [isCompactLayout, setIsCompactLayout] = useState(() => window.innerWidth <= 1200);
+  const [isHistorieOpen, setIsHistorieOpen] = useState(() => window.innerWidth > 1200);
   const { aktiveSitzung } = useContext(SitzungContext);
   const socket = useContext(SocketContext);
   const { activeProgrammpunkt } = useTimer();
@@ -197,24 +322,49 @@ function KulissenView() {
   useEffect(() => {
     if (aktiveSitzung) {
       loadSitzung();
+      loadZettelHistorie();
+      socket?.emit('joinSitzung', aktiveSitzung);
     }
-  }, [aktiveSitzung]);
+
+    return () => {
+      if (aktiveSitzung) {
+        socket?.emit('leaveSitzung', aktiveSitzung);
+      }
+    };
+  }, [aktiveSitzung, socket]);
 
   useEffect(() => {
     if (socket) {
       socket.on('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
       socket.on('programmpunktAktualisiert', handleProgrammpunktUpdate);
       socket.on('programmpunktGeloescht', handleProgrammpunktUpdate);
+      socket.on('zettelHinzugefuegt', handleZettelUpdate);
+      socket.on('zettelGeschlossen', handleZettelUpdate);
       // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
 
       return () => {
         socket.off('programmpunktHinzugefuegt', handleProgrammpunktUpdate);
         socket.off('programmpunktAktualisiert', handleProgrammpunktUpdate);
         socket.off('programmpunktGeloescht', handleProgrammpunktUpdate);
+        socket.off('zettelHinzugefuegt', handleZettelUpdate);
+        socket.off('zettelGeschlossen', handleZettelUpdate);
         // Entfernt: programmpunkteReordered (Server sendet dieses Event nicht)
       };
     }
-  }, [socket]);
+  }, [socket, aktiveSitzung]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const compact = window.innerWidth <= 1200;
+      setIsCompactLayout(compact);
+      if (!compact) {
+        setIsHistorieOpen(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const loadSitzung = async () => {
     try {
@@ -230,9 +380,28 @@ function KulissenView() {
     }
   };
 
+  const loadZettelHistorie = async () => {
+    try {
+      const response = await axios.get(`/api/sitzung/${aktiveSitzung}/zettel`);
+      const sorted = [...response.data].sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+      setZettelHistorie(sorted);
+    } catch (err) {
+      console.error('Fehler beim Laden der Zettel-Historie:', err);
+      setZettelHistorie([]);
+    }
+  };
+
   const handleProgrammpunktUpdate = (data) => {
     if (data.sitzungId === aktiveSitzung) {
       loadSitzung();
+    }
+  };
+
+  const handleZettelUpdate = (data) => {
+    if (data.sitzungId === aktiveSitzung) {
+      loadZettelHistorie();
     }
   };
 
@@ -273,9 +442,11 @@ function KulissenView() {
   }
 
   const visibleProgrammpunkte = getVisibleProgrammpunkte();
+  const showHistoriePanel = !isCompactLayout || isHistorieOpen;
 
   return (
     <Container>
+      <MainArea>
       <ProgramList>
         {visibleProgrammpunkte.map((programmpunkt) => (
           <ProgramItem
@@ -324,8 +495,48 @@ function KulissenView() {
           </ProgramItem>
         ))}
       </ProgramList>
+      </MainArea>
 
-      <ZettelSystem viewType="kulissen" />
+      <HistoriePanel>
+        <HistorieHeader>
+          <HistorieTitle>📋 Zettel-Historie</HistorieTitle>
+          {isCompactLayout && (
+            <HistorieToggle onClick={() => setIsHistorieOpen(prev => !prev)}>
+              {isHistorieOpen ? 'Einklappen' : 'Aufklappen'}
+            </HistorieToggle>
+          )}
+        </HistorieHeader>
+
+        {showHistoriePanel ? (
+          <HistorieList>
+            {zettelHistorie.length === 0 ? (
+              <EmptyHistorie>Keine Zettel vorhanden.</EmptyHistorie>
+            ) : (
+              zettelHistorie.map((zettelItem) => (
+                <HistorieItem
+                  key={zettelItem.id}
+                  type={zettelItem.type}
+                  priority={zettelItem.priority}
+                  closed={zettelItem.geschlossen}
+                >
+                  <div style={{ fontWeight: 'bold', marginBottom: '6px' }}>
+                    {getZettelIcon(zettelItem.type)} {getPriorityIcon(zettelItem.priority)} {getZettelTypeLabel(zettelItem.type)}
+                  </div>
+                  <div style={{ lineHeight: '1.35' }}>{zettelItem.text}</div>
+                  <HistorieMeta>
+                    <span>{formatDateTime(zettelItem.timestamp)}</span>
+                    <span>Von: {getSenderLabel(zettelItem.sender)}</span>
+                  </HistorieMeta>
+                </HistorieItem>
+              ))
+            )}
+          </HistorieList>
+        ) : (
+          <EmptyHistorie>Historie ist eingeklappt.</EmptyHistorie>
+        )}
+      </HistoriePanel>
+
+      <ZettelSystem viewType="kulissen" hideHistorieButton />
     </Container>
   );
 }
