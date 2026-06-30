@@ -2,45 +2,24 @@
   "name": "sitzungsmaster-client",
   "version": "0.2.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.1",
-    "@testing-library/user-event": "^14.6.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-scripts": "5.0.1",
-    "socket.io-client": "^4.8.1",
-    "axios": "^1.13.2",
-    "react-router-dom": "^7.11.0",
-    "styled-components": "^6.1.19",
-    "qrcode": "^1.5.3",
-    "react-rnd": "^10.5.2",
-    "web-vitals": "^5.1.0"
+    "axios": "^1.18.1",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-rnd": "^10.5.3",
+    "react-router": "^8.0.1",
+    "socket.io-client": "^4.8.3",
+    "styled-components": "^6.4.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "devDependencies": {},
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "proxy": "http://localhost:5000"
-} 
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.3",
+    "vite": "^8.1.0"
+  }
+}

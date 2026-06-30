@@ -1,5 +1,5 @@
 # Basis-Image mit Node.js
-FROM node:24-bookworm-slim
+FROM node:24.18.0-bookworm-slim
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 RUN npm ci --omit=dev --no-audit --no-fund --silent \
-  && cd client && npm ci --omit=dev --no-audit --no-fund --silent && cd .. \
+  && cd client && npm ci --no-audit --no-fund --silent && cd .. \
   && npm rebuild better-sqlite3 --unsafe-perm
 
 # Alle anderen Dateien kopieren

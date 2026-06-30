@@ -13,19 +13,19 @@
     "heroku-postbuild": "npm run install-client && npm run build"
   },
   "dependencies": {
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.5.18",
     "bcrypt": "^6.0.0",
-    "better-sqlite3": "^12.5.0",
+    "better-sqlite3": "^12.11.1",
     "better-sqlite3-session-store": "^0.1.0",
-    "cors": "^2.8.5",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
-    "multer": "^2.0.2",
-    "socket.io": "^4.8.1",
-    "uuid": "^13.0.0"
+    "multer": "^2.1.1",
+    "socket.io": "^4.8.3",
+    "uuid": "^14.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.14"
   },
   "keywords": [
     "karneval",
