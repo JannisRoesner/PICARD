@@ -25,7 +25,15 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 60px);
+  height: calc(100dvh - 60px); /* mobile: excludes browser chrome */
   background: #000;
+
+  @media (max-width: 480px) {
+    height: calc(100dvh - 50px);
+  }
+  @media (max-width: 360px) {
+    height: calc(100dvh - 45px);
+  }
 `;
 
 const ChatHeader = styled.div`
@@ -156,6 +164,7 @@ const Composer = styled.form`
   border-top: 1px solid #222;
   background: #111;
   padding: 10px 12px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -211,13 +220,17 @@ const SendButton = styled.button`
   background: ${props => props.theme?.colors?.primary || '#fbbf24'};
   color: #181818;
   border: none;
-  border-radius: 10px;
-  padding: 0 18px;
+  border-radius: 50%;
+  padding: 0;
+  width: 44px;
   height: 44px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
@@ -433,9 +446,9 @@ function ElferratView() {
             onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value }))}
             aria-label="Priorität"
           >
-            <option value="normal">Normal</option>
-            <option value="wichtig">Wichtig</option>
-            <option value="dringend">Dringend</option>
+            <option value="normal">Priorität: Normal</option>
+            <option value="wichtig">Priorität: ⚠️ Wichtig</option>
+            <option value="dringend">Priorität: 🚨 Dringend</option>
           </Select>
         </ComposerOptions>
         <ComposerInputRow>
@@ -446,8 +459,8 @@ function ElferratView() {
             placeholder="Nachricht schreiben... (Enter sendet, Shift+Enter für neue Zeile)"
             rows={1}
           />
-          <SendButton type="submit" disabled={isSubmitting || !formData.text.trim()}>
-            {isSubmitting ? '...' : 'Senden'}
+          <SendButton type="submit" disabled={isSubmitting || !formData.text.trim()} aria-label="Senden">
+            {isSubmitting ? '…' : '➤'}
           </SendButton>
         </ComposerInputRow>
       </Composer>
